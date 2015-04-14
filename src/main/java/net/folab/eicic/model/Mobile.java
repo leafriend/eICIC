@@ -177,4 +177,20 @@ public class Mobile {
         return nonPicoLambdaR;
     }
 
+    public double getThroughput() {
+        return throughput;
+    }
+
+    public double getUserRate() {
+        return userRate;
+    }
+
+    public double getLambda() {
+        return lambda;
+    }
+
+    public double getMu() {
+        return mu;
+    }
+
 }
