@@ -2,6 +2,7 @@ package net.folab.eicic.model;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public abstract class BaseStation<T extends BaseStation<T>> {
 
@@ -15,6 +16,8 @@ public abstract class BaseStation<T extends BaseStation<T>> {
 
     final Set<Edge<T>> edges = new HashSet<>();
 
+    final Set<Mobile> mobiles = new HashSet<>();
+
     public BaseStation(int idx, double x, double y, double txPower) {
         super();
         this.idx = idx;
@@ -25,6 +28,10 @@ public abstract class BaseStation<T extends BaseStation<T>> {
 
     public void generateChannelGain() {
         edges.forEach(edge -> edge.generateChannelGain());
+    }
+
+    public void forEachMobiles(Consumer<Mobile> action) {
+        mobiles.forEach(action);
     }
 
 }

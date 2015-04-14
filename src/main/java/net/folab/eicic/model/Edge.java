@@ -37,9 +37,11 @@ public class Edge<T extends BaseStation<T>> {
                     || distance < mobile.macroEdge.distance) {
                 if (mobile.macroEdge != null) {
                     mobile.macroEdge.baseStation.edges.remove(mobile.macroEdge);
+                    mobile.macroEdge.baseStation.mobiles.remove(mobile);
                 }
                 mobile.macroEdge = macroEdge;
                 baseStation.edges.add(this);
+                baseStation.mobiles.add(mobile);
             }
         } else if (baseStation instanceof Pico) {
             @SuppressWarnings("unchecked")
@@ -49,9 +51,11 @@ public class Edge<T extends BaseStation<T>> {
             if (mobile.picoEdge == null || distance < mobile.picoEdge.distance) {
                 if (mobile.picoEdge != null) {
                     mobile.picoEdge.baseStation.edges.remove(mobile.picoEdge);
+                    mobile.macroEdge.baseStation.mobiles.remove(mobile);
                 }
                 mobile.picoEdge = picoEdge;
                 baseStation.edges.add(this);
+                baseStation.mobiles.add(mobile);
             }
         }
 
