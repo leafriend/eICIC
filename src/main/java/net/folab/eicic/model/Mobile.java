@@ -22,11 +22,15 @@ public class Mobile {
 
     private double userRate;
 
+    private final Edge<?>[] edges = new Edge[NUM_RB];
+
     Edge<Macro> macroEdge;
 
     final Set<Edge<Macro>> allMacroEdges = new HashSet<>();
 
     final double[] macroDataRateInMegaBps = new double[NUM_RB];
+
+    final double[] macroLambdaR = new double[NUM_RB];
 
     Edge<Pico> picoEdge;
 
@@ -34,7 +38,11 @@ public class Mobile {
 
     final double[] absPicoDataRateInMegaBps = new double[NUM_RB];
 
+    final double[] absPicoLambdaR = new double[NUM_RB];
+
     final double[] nonPicoDataRateInMegaBps = new double[NUM_RB];
+
+    final double[] nonPicoLambdaR = new double[NUM_RB];
 
     public Mobile(int idx, double x, double y, double qos) {
         super();
@@ -64,27 +72,25 @@ public class Mobile {
                     .map(edge -> edge.channelGain[_i]).reduce(0.0, Double::sum);
 
             macroDataRateInMegaBps[i] = calculateDataRate(BW_PER_RB,
-                    macroEdge.channelGain[i], macroChannelGain
-                            + picoChannelGain - macroEdge.channelGain[i]
-                            + NOISE, MEGA);
-
-            macroDataRateInMegaBps[i] = calculateDataRate(BW_PER_RB,
                     macroEdge.channelGain[i], //
                     macroChannelGain + picoChannelGain
                             - macroEdge.channelGain[i] + NOISE, //
                     MEGA);
+            macroLambdaR[i] = lambda * macroDataRateInMegaBps[i];
 
             absPicoDataRateInMegaBps[i] = calculateDataRate(BW_PER_RB,
                     picoEdge.channelGain[i], //
                     /* macroChannelGain + */picoChannelGain
                             - macroEdge.channelGain[i] + NOISE, //
                     MEGA);
+            absPicoLambdaR[i] = lambda * absPicoDataRateInMegaBps[i];
 
             nonPicoDataRateInMegaBps[i] = calculateDataRate(BW_PER_RB,
                     picoEdge.channelGain[i], //
                     macroChannelGain + picoChannelGain
                             - picoEdge.channelGain[i] + NOISE, //
                     MEGA);
+            nonPicoLambdaR[i] = lambda * nonPicoDataRateInMegaBps[i];
 
         }
 
@@ -94,4 +100,27 @@ public class Mobile {
             double denominator, double unit) {
         return bandwidth * log(1 + numerator / denominator) / unit;
     }
+
+    /* bean getter/setter *************************************************** */
+
+    public Macro getMacro() {
+        return macroEdge.baseStation;
+    }
+
+    public Pico getPico() {
+        return picoEdge.baseStation;
+    }
+
+    public double[] getMacroLambdaR() {
+        return macroLambdaR;
+    }
+
+    public double[] getAbsPicoLambdaR() {
+        return absPicoLambdaR;
+    }
+
+    public double[] getNonPicoLambdaR() {
+        return nonPicoLambdaR;
+    }
+
 }
