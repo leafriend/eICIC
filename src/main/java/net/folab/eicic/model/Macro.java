@@ -8,4 +8,11 @@ public class Macro extends BaseStation<Macro> {
         super(idx, x, y, txPower);
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s<%d@%.3f,%.3f>", (state ? getClass()
+                .getSimpleName().toUpperCase() : getClass().getSimpleName()
+                .toLowerCase()), idx, x, y);
+    }
+
 }
