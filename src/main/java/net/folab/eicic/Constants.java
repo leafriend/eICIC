@@ -10,6 +10,12 @@ public interface Constants {
 
     double LN_SHAD = 4.0;
 
+    int NUM_MACROS = 7;
+
+    int NUM_PICOS = 15;
+
+    int NUM_MOBILES = 50;
+
     int NUM_RB = 100;
 
     double MACRO_TX_POWER = 40.0;
