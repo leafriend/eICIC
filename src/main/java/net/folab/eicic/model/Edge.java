@@ -67,6 +67,12 @@ public class Edge<T extends BaseStation<T>> {
                     + pow(RANDOM.nextGaussian() / 1.2533, 2));
             double logNormal = pow(10, RANDOM.nextGaussian() * LN_SHAD * 0.1);
             channelGain[i] = channelGainFactor * rayleigh * logNormal;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Edge<" + baseStation + "-" + mobile + ">";
     }
 
 }

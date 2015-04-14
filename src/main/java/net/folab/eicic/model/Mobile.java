@@ -110,7 +110,7 @@ public class Mobile {
         forEachRbs(i -> {
             switch (connectionStates[i]) {
             case NOTHING:
-                //instantRate += 0.0;
+                // instantRate += 0.0;
                 break;
             case MACRO:
                 instantRate += macroDataRateInMegaBps[i];
@@ -151,6 +151,11 @@ public class Mobile {
         else
             mu = this.mu - step_size2 * (log(userRate) - qos);
         this.mu = (0.0 > mu) ? 0.0 : mu;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Mobile<%d@%.3f,%.3f>", idx, x, y);
     }
 
     /* bean getter/setter *************************************************** */
