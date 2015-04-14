@@ -128,6 +128,13 @@ public class Mobile {
         throughput += instantRate;
     }
 
+    public void calculateUserRate() {
+        if (lambda == 0.0)
+            userRate = RATE_MAX;
+        else
+            userRate = 0.8 * userRate + 0.2 * (1.0 + mu) / lambda;
+    }
+
     /* bean getter/setter *************************************************** */
 
     public Macro getMacro() {

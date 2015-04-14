@@ -62,6 +62,8 @@ public class Main {
 
             mobiles.forEach(mobile -> mobile.calculateThroughput());
 
+            mobiles.forEach(mobile -> mobile.calculateUserRate());
+
         }
 
         System.out.println(secondFrom(start));

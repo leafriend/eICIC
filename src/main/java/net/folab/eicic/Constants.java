@@ -40,6 +40,8 @@ public interface Constants {
 
     double MEGA = 1048576;
 
+    double RATE_MAX = 100.0;
+
     static void forEachRbs(IntConsumer action) {
         for (int i = 0; i < NUM_RB; i++)
             action.accept(i);
