@@ -3,7 +3,11 @@ package net.folab.eicic.model;
 import static java.lang.Math.*;
 import static net.folab.eicic.Constants.*;
 
+import java.util.Random;
+
 public class Edge<T extends BaseStation> {
+
+    private static final Random RANDOM = new Random(System.currentTimeMillis());
 
     public final T baseStation;
 
@@ -12,6 +16,8 @@ public class Edge<T extends BaseStation> {
     public final double distance;
 
     private final double channelGainFactor;
+
+    private final double[] channelGain = new double[NUM_RB];
 
     public Edge(T baseStation, Mobile mobile) {
         super();
@@ -36,8 +42,7 @@ public class Edge<T extends BaseStation> {
         } else if (baseStation instanceof Pico) {
             if (mobile.picoEdge == null || distance < mobile.picoEdge.distance) {
                 if (mobile.picoEdge != null) {
-                    mobile.picoEdge.baseStation.mobiles
-                            .remove(mobile.picoEdge);
+                    mobile.picoEdge.baseStation.mobiles.remove(mobile.picoEdge);
                 }
                 @SuppressWarnings("unchecked")
                 Edge<Pico> picoEdge = (Edge<Pico>) this;
@@ -46,4 +51,13 @@ public class Edge<T extends BaseStation> {
         }
 
     }
+
+    public void generateChannelGain() {
+        double rayleigh = sqrt(pow(RANDOM.nextGaussian() / 1.2533, 2)
+                + pow(RANDOM.nextGaussian() / 1.2533, 2));
+        double logNormal = pow(10, RANDOM.nextGaussian() * LN_SHAD * 0.1);
+        for (int i = 0; i < NUM_RB; i++)
+            channelGain[i] = channelGainFactor * rayleigh * logNormal;
+    }
+
 }
