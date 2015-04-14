@@ -28,6 +28,8 @@ public class Edge<T extends BaseStation<T>> {
         this.channelGainFactor = baseStation.txPower
                 * pow((1.0 / distance), PATH_LOSS_EXPO);
 
+        baseStation.edgesInterfered.add(this);
+
         if (baseStation instanceof Macro) {
             @SuppressWarnings("unchecked")
             Edge<Macro> macroEdge = (Edge<Macro>) this;
@@ -51,7 +53,7 @@ public class Edge<T extends BaseStation<T>> {
             if (mobile.picoEdge == null || distance < mobile.picoEdge.distance) {
                 if (mobile.picoEdge != null) {
                     mobile.picoEdge.baseStation.edges.remove(mobile.picoEdge);
-                    mobile.macroEdge.baseStation.mobiles.remove(mobile);
+                    mobile.picoEdge.baseStation.mobiles.remove(mobile);
                 }
                 mobile.picoEdge = picoEdge;
                 baseStation.edges.add(this);
