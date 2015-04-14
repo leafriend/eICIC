@@ -5,7 +5,7 @@ import static net.folab.eicic.Constants.*;
 
 import java.util.Random;
 
-public class Edge<T extends BaseStation> {
+public class Edge<T extends BaseStation<T>> {
 
     private static final Random RANDOM = new Random(System.currentTimeMillis());
 
@@ -32,21 +32,22 @@ public class Edge<T extends BaseStation> {
             if (mobile.macroEdge == null
                     || distance < mobile.macroEdge.distance) {
                 if (mobile.macroEdge != null) {
-                    mobile.macroEdge.baseStation.mobiles
-                            .remove(mobile.macroEdge);
+                    mobile.macroEdge.baseStation.edges.remove(mobile.macroEdge);
                 }
                 @SuppressWarnings("unchecked")
                 Edge<Macro> macroEdge = (Edge<Macro>) this;
                 mobile.macroEdge = macroEdge;
+                baseStation.edges.add(this);
             }
         } else if (baseStation instanceof Pico) {
             if (mobile.picoEdge == null || distance < mobile.picoEdge.distance) {
                 if (mobile.picoEdge != null) {
-                    mobile.picoEdge.baseStation.mobiles.remove(mobile.picoEdge);
+                    mobile.picoEdge.baseStation.edges.remove(mobile.picoEdge);
                 }
                 @SuppressWarnings("unchecked")
                 Edge<Pico> picoEdge = (Edge<Pico>) this;
                 mobile.picoEdge = picoEdge;
+                baseStation.edges.add(this);
             }
         }
 
