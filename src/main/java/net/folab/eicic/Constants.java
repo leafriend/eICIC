@@ -25,6 +25,8 @@ public interface Constants {
 
     double MACRO_TX_POWER = 40.0;
 
+    double MACRO_INTERFERING_RANGE_ON_PICO = 1000.0;
+
     double PICO_TX_POWER = 1.0;
 
     double MOBILE_QOS_FACTOR = 0.0001;

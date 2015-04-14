@@ -41,6 +41,7 @@ public class Main {
                         .getValue1()[3], pair.getValue1()[4]));
 
         macros.forEach(macro -> mobiles.forEach(mobile -> new Edge<>(macro, mobile)));
+        macros.forEach(macro -> picos.forEach(pico -> pico.checkInterference(macro)));
         picos.forEach(pico -> mobiles.forEach(mobile -> new Edge<>(pico, mobile)));
 
         Algorithm algorithm = new Algorithm3();
