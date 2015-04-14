@@ -1,10 +1,19 @@
 package net.folab.eicic.model;
 
-import static net.folab.eicic.Constants.*;
-import static java.lang.Math.*;
+import static java.lang.Math.abs;
+import static java.lang.Math.log;
+import static net.folab.eicic.Constants.BW_PER_RB;
+import static net.folab.eicic.Constants.MEGA;
+import static net.folab.eicic.Constants.NOISE;
+import static net.folab.eicic.Constants.NUM_RB;
+import static net.folab.eicic.Constants.RATE_MAX;
+import static net.folab.eicic.Constants.STEPSIZE2;
+import static net.folab.eicic.Constants.STEPSIZE3;
+import static net.folab.eicic.Constants.STEPSIZE4;
+import static net.folab.eicic.Constants.forEachRbs;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Mobile {
 
@@ -30,7 +39,7 @@ public class Mobile {
 
     Edge<Macro> macroEdge;
 
-    final Set<Edge<Macro>> allMacroEdges = new HashSet<>();
+    final List<Edge<Macro>> allMacroEdges = new ArrayList<>();
 
     final double[] macroDataRateInMegaBps = new double[NUM_RB];
 
@@ -38,7 +47,7 @@ public class Mobile {
 
     Edge<Pico> picoEdge;
 
-    final Set<Edge<Pico>> allPicoEdges = new HashSet<>();
+    final List<Edge<Pico>> allPicoEdges = new ArrayList<>();
 
     final double[] absPicoDataRateInMegaBps = new double[NUM_RB];
 

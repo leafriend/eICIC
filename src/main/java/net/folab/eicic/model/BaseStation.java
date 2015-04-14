@@ -1,7 +1,7 @@
 package net.folab.eicic.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public abstract class BaseStation<T extends BaseStation<T>> {
@@ -14,9 +14,11 @@ public abstract class BaseStation<T extends BaseStation<T>> {
 
     public final double txPower;
 
-    final Set<Edge<T>> edges = new HashSet<>();
+    final List<Edge<T>> edges = new ArrayList<>();
 
-    final Set<Mobile> mobiles = new HashSet<>();
+    final List<Edge<T>> edgesInterfered = new ArrayList<>();
+
+    final List<Mobile> mobiles = new ArrayList<>();
 
     // PA3
 
@@ -31,7 +33,7 @@ public abstract class BaseStation<T extends BaseStation<T>> {
     }
 
     public void generateChannelGain() {
-        edges.forEach(edge -> edge.generateChannelGain());
+        edgesInterfered.forEach(edge -> edge.generateChannelGain());
     }
 
     public void forEachMobiles(Consumer<Mobile> action) {
