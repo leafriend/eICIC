@@ -41,6 +41,14 @@ public class Main {
         macros.forEach(macro -> mobiles.forEach(mobile -> new Edge<>(macro, mobile)));
         picos.forEach(pico -> mobiles.forEach(mobile -> new Edge<>(pico, mobile)));
 
+        for (int t = 0; t < SIMULATION_TIME; t++) {
+
+            macros.forEach(macro -> macro.generateChannelGain());
+            picos.forEach(pico -> pico.generateChannelGain());
+            mobiles.forEach(mobile -> mobile.calculateBaseThroughput());
+
+        }
+
     }
 
     public static <T> List<T> loadObject(String file,
