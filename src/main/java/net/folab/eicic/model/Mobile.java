@@ -135,6 +135,26 @@ public class Mobile {
             userRate = 0.8 * userRate + 0.2 * (1.0 + mu) / lambda;
     }
 
+    public void calculateDualVariables(int t) {
+        final double step_size = 1.0 / ((double) t);
+        final double step_size2 = (t > 100000) ? STEPSIZE4
+                : ((t < 10000) ? STEPSIZE2 : STEPSIZE3);
+
+        final double lambda;
+        if ((abs(throughput / t - userRate) * this.lambda < 0.05))
+            lambda = this.lambda - step_size * (instantRate - userRate);
+        else
+            lambda = this.lambda - step_size2 * (instantRate - userRate);
+        this.lambda = lambda > 0 ? lambda : 0.0;
+
+        final double mu;
+        if ((abs(log(userRate) - qos) * this.mu < 0.01))
+            mu = this.mu - step_size * (log(userRate) - qos);
+        else
+            mu = this.mu - step_size2 * (log(userRate) - qos);
+        this.mu = (0.0 > mu) ? 0.0 : mu;
+    }
+
     /* bean getter/setter *************************************************** */
 
     public Macro getMacro() {

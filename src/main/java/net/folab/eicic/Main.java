@@ -61,8 +61,9 @@ public class Main {
             algorithm.calculate(macros, picos, mobiles);
 
             mobiles.forEach(mobile -> mobile.calculateThroughput());
-
             mobiles.forEach(mobile -> mobile.calculateUserRate());
+            final int _t = t;
+            mobiles.forEach(mobile -> mobile.calculateDualVariables(_t));
 
         }
 
