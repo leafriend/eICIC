@@ -24,4 +24,9 @@ public class Pico extends BaseStation<Pico> {
             macrosInterfering.add(macro);
     }
 
+    public boolean isAbs() {
+        return macrosInterfering.stream().map(macro -> macro.state)
+                .reduce(false, Boolean::logicalOr);
+    }
+
 }
