@@ -23,4 +23,8 @@ public abstract class BaseStation<T extends BaseStation<T>> {
         this.txPower = txPower;
     }
 
+    public void generateChannelGain() {
+        edges.forEach(edge -> edge.generateChannelGain());
+    }
+
 }
