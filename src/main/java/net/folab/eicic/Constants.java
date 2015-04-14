@@ -1,5 +1,10 @@
 package net.folab.eicic;
 
+import java.util.function.Consumer;
+import java.util.function.IntConsumer;
+
+import net.folab.eicic.model.Mobile;
+
 public interface Constants {
 
     int SIMULATION_TIME = 1000;
@@ -35,5 +40,10 @@ public interface Constants {
     double NOISE = (BW_PER_RB * Math.pow(10, (NOISE_FACTOR / 10)));
 
     double MEGA = 1048576;
+
+    static void forEachRbs(IntConsumer action) {
+        for (int i = 0; i < NUM_RB; i++)
+            action.accept(i);
+    }
 
 }
