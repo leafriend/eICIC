@@ -20,4 +20,14 @@ public interface Constants {
 
     double MOBILE_QOS = Math.log(MOBILE_QOS_FACTOR);
 
+    double BANDWIDTH = 20000000;
+
+    double BW_PER_RB = 180000;
+
+    double NOISE_FACTOR = -174;
+
+    double NOISE = (BW_PER_RB * Math.pow(10, (NOISE_FACTOR / 10)));
+
+    double MEGA = 1048576;
+
 }
