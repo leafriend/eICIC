@@ -28,8 +28,6 @@ public class Mobile {
 
     private double mu;
 
-    private final Edge<?>[] edges = new Edge[NUM_RB];
-
     Edge<Macro> macroEdge;
 
     final Set<Edge<Macro>> allMacroEdges = new HashSet<>();
