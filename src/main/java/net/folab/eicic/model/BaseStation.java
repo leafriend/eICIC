@@ -1,6 +1,5 @@
 package net.folab.eicic.model;
 
-import java.util.List;
 import java.util.Set;
 
 public abstract class BaseStation {
