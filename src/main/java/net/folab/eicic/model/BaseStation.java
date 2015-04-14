@@ -1,5 +1,6 @@
 package net.folab.eicic.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public abstract class BaseStation<T extends BaseStation<T>> {
@@ -12,7 +13,7 @@ public abstract class BaseStation<T extends BaseStation<T>> {
 
     public final double txPower;
 
-    Set<Mobile> mobiles;
+    final Set<Edge<T>> edges = new HashSet<>();
 
     public BaseStation(int idx, double x, double y, double txPower) {
         super();
