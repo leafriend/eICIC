@@ -18,6 +18,10 @@ public abstract class BaseStation<T extends BaseStation<T>> {
 
     final Set<Mobile> mobiles = new HashSet<>();
 
+    // PA3
+
+    public double pa3LambdaR = 1.0;
+
     public BaseStation(int idx, double x, double y, double txPower) {
         super();
         this.idx = idx;

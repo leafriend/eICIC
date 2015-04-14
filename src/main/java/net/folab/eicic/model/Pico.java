@@ -12,8 +12,6 @@ import java.util.Set;
 
 public class Pico extends BaseStation<Pico> {
 
-    public double pa3LambdaR;
-
     final Set<Macro> macrosInterfering = new HashSet<>();
 
     @SuppressWarnings("unchecked")
