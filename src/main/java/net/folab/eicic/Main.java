@@ -43,6 +43,7 @@ public class Main {
         macros.forEach(macro -> mobiles.forEach(mobile -> new Edge<>(macro, mobile)));
         macros.forEach(macro -> picos.forEach(pico -> pico.checkInterference(macro)));
         picos.forEach(pico -> mobiles.forEach(mobile -> new Edge<>(pico, mobile)));
+        picos.forEach(Pico::init);
 
         Algorithm algorithm = new Algorithm3();
 
@@ -52,6 +53,8 @@ public class Main {
             picos.forEach(pico -> pico.generateChannelGain());
 
             mobiles.forEach(mobile -> mobile.calculateDataRate());
+
+            picos.forEach(pico -> pico.sortMobiles());
 
             algorithm.calculate(macros, picos, mobiles);
 
