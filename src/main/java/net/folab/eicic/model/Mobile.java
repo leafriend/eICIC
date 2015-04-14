@@ -10,6 +10,12 @@ public class Mobile {
 
     public final double qos;
 
+    private double lambda;
+
+    private double mu;
+
+    private double userRate;
+
     Edge<Macro> macroEdge;
 
     Edge<Pico> picoEdge;
@@ -20,6 +26,14 @@ public class Mobile {
         this.x = x;
         this.y = y;
         this.qos = qos;
+    }
+
+    public Mobile(int idx, double x, double y, double qos, double lambda,
+            double mu, double userRate) {
+        this(idx, x, y, qos);
+        this.lambda = lambda;
+        this.mu = mu;
+        this.userRate = userRate;
     }
 
 }
