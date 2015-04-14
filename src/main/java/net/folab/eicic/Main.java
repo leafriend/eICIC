@@ -45,7 +45,8 @@ public class Main {
 
             macros.forEach(macro -> macro.generateChannelGain());
             picos.forEach(pico -> pico.generateChannelGain());
-            mobiles.forEach(mobile -> mobile.calculateBaseThroughput());
+
+            mobiles.forEach(mobile -> mobile.calculateDataRate());
 
         }
 

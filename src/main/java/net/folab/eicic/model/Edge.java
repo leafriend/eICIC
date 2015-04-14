@@ -17,7 +17,7 @@ public class Edge<T extends BaseStation<T>> {
 
     private final double channelGainFactor;
 
-    private final double[] channelGain = new double[NUM_RB];
+    final double[] channelGain = new double[NUM_RB];
 
     public Edge(T baseStation, Mobile mobile) {
         super();
