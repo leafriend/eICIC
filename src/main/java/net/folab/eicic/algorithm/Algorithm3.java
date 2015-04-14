@@ -34,6 +34,23 @@ public class Algorithm3 implements Algorithm {
 
         });
 
-    }
+        double best_sum_lambda_r = Double.MIN_VALUE;
+        boolean[] bestMacroStates = new boolean[NUM_MACROS];
 
+        /* 가능한 모든 Macro 상태(2 ^ NUM_MACRO = 1 << NUM_MACRO)에 대한 반복문 */
+        int num_macro_state = 1 << NUM_MACROS;
+        for (int mask = 0; mask < num_macro_state; mask++) {
+
+            boolean[] macroStates = new boolean[NUM_MACROS];
+            /* Macro 상태(ON/OFF) 지정 */
+            final int _mask = mask;
+            macros.forEach(macro -> macro.state = 1 == (((1 << macro.idx) & _mask) >> macro.idx));
+
+            double curr_sum_lambda_r = 0.0;
+
+        }
+
+        macros.forEach(macro -> macro.state = bestMacroStates[macro.idx]);
+
+    }
 }
