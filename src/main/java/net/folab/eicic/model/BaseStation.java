@@ -1,5 +1,8 @@
 package net.folab.eicic.model;
 
+import java.util.List;
+import java.util.Set;
+
 public abstract class BaseStation {
 
     public final int idx;
@@ -9,6 +12,8 @@ public abstract class BaseStation {
     public final double y;
 
     public final double txPower;
+
+    Set<Mobile> mobiles;
 
     public BaseStation(int idx, double x, double y, double txPower) {
         super();

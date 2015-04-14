@@ -12,6 +12,8 @@ public class Mobile {
 
     Edge<Macro> macroEdge;
 
+    Edge<Pico> picoEdge;
+
     public Mobile(int idx, double x, double y, double qos) {
         super();
         this.idx = idx;

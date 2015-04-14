@@ -23,11 +23,27 @@ public class Edge<T extends BaseStation> {
                 * pow((1.0 / distance), PATH_LOSS_EXPO);
 
         if (baseStation instanceof Macro) {
-            if (mobile.macroEdge == null || distance < mobile.macroEdge.distance) {
+            if (mobile.macroEdge == null
+                    || distance < mobile.macroEdge.distance) {
+                if (mobile.macroEdge != null) {
+                    mobile.macroEdge.baseStation.mobiles
+                            .remove(mobile.macroEdge);
+                }
                 @SuppressWarnings("unchecked")
-                Edge<Macro> macro = (Edge<Macro>) this;
-                mobile.macroEdge = macro;
+                Edge<Macro> macroEdge = (Edge<Macro>) this;
+                mobile.macroEdge = macroEdge;
+            }
+        } else if (baseStation instanceof Pico) {
+            if (mobile.picoEdge == null || distance < mobile.picoEdge.distance) {
+                if (mobile.picoEdge != null) {
+                    mobile.picoEdge.baseStation.mobiles
+                            .remove(mobile.picoEdge);
+                }
+                @SuppressWarnings("unchecked")
+                Edge<Pico> picoEdge = (Edge<Pico>) this;
+                mobile.picoEdge = picoEdge;
             }
         }
+
     }
 }
