@@ -42,6 +42,12 @@ public interface Constants {
 
     double RATE_MAX = 100.0;
 
+    double STEPSIZE2 = 0.0005;
+
+    double STEPSIZE3 = 0.0001;
+
+    double STEPSIZE4 = 0.00005;
+
     static void forEachRbs(IntConsumer action) {
         for (int i = 0; i < NUM_RB; i++)
             action.accept(i);
