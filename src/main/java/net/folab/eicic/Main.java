@@ -1,5 +1,8 @@
 package net.folab.eicic;
 
+import static java.lang.Math.*;
+import static java.lang.String.format;
+import static java.lang.System.out;
 import static java.util.Arrays.*;
 import static net.folab.eicic.Constants.*;
 import static org.javatuples.Pair.*;
@@ -65,6 +68,10 @@ public class Main {
             final int _t = t;
             mobiles.forEach(mobile -> mobile.calculateDualVariables(_t));
 
+            if (t % 100 == 0) {
+                dump(t, macros, picos, mobiles);
+            }
+
         }
 
         System.out.println(secondFrom(start));
@@ -84,6 +91,26 @@ public class Main {
         }
         reader.close();
         return macros;
+    }
+
+    private static void dump(int t, List<Macro> macros, List<Pico> picos,
+            List<Mobile> mobiles) {
+
+        out.print("Time: " + format("%7d/%7d", t, SIMULATION_TIME) + "\n");
+
+        out.print("idx\t" + "   Rate User\t" + "       (log)\t" + "  Throughput\t" + "       (log)\t"
+                + "      lambda\t" + "          mu\n");
+
+        mobiles.forEach(mobile -> {
+            out.print(format("%3d", mobile.idx) + "\t");
+            out.print(format("%12.6f", mobile.getUserRate()) + "\t");
+            out.print(format("%12.6f", log(mobile.getUserRate())) + "\t");
+            out.print(format("%12.6f", mobile.getThroughput()) + "\t");
+            out.print(format("%12.6f", log(mobile.getThroughput())) + "\t");
+            out.print(format("%12.6f", mobile.getLambda()) + "\t");
+            out.print(format("%12.6f", mobile.getMu()) + "\n");
+        });
+
     }
 
     public static double secondFrom(long start) {
