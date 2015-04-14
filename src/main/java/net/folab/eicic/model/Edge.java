@@ -29,23 +29,27 @@ public class Edge<T extends BaseStation<T>> {
                 * pow((1.0 / distance), PATH_LOSS_EXPO);
 
         if (baseStation instanceof Macro) {
+            @SuppressWarnings("unchecked")
+            Edge<Macro> macroEdge = (Edge<Macro>) this;
+            mobile.allMacroEdges.add(macroEdge);
+
             if (mobile.macroEdge == null
                     || distance < mobile.macroEdge.distance) {
                 if (mobile.macroEdge != null) {
                     mobile.macroEdge.baseStation.edges.remove(mobile.macroEdge);
                 }
-                @SuppressWarnings("unchecked")
-                Edge<Macro> macroEdge = (Edge<Macro>) this;
                 mobile.macroEdge = macroEdge;
                 baseStation.edges.add(this);
             }
         } else if (baseStation instanceof Pico) {
+            @SuppressWarnings("unchecked")
+            Edge<Pico> picoEdge = (Edge<Pico>) this;
+            mobile.allPicoEdges.add(picoEdge);
+
             if (mobile.picoEdge == null || distance < mobile.picoEdge.distance) {
                 if (mobile.picoEdge != null) {
                     mobile.picoEdge.baseStation.edges.remove(mobile.picoEdge);
                 }
-                @SuppressWarnings("unchecked")
-                Edge<Pico> picoEdge = (Edge<Pico>) this;
                 mobile.picoEdge = picoEdge;
                 baseStation.edges.add(this);
             }
