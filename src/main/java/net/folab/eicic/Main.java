@@ -13,6 +13,8 @@ import java.util.function.Function;
 
 import org.javatuples.Pair;
 
+import net.folab.eicic.algorithm.Algorithm;
+import net.folab.eicic.algorithm.Algorithm3;
 import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
@@ -41,6 +43,8 @@ public class Main {
         macros.forEach(macro -> mobiles.forEach(mobile -> new Edge<>(macro, mobile)));
         picos.forEach(pico -> mobiles.forEach(mobile -> new Edge<>(pico, mobile)));
 
+        Algorithm algorithm = new Algorithm3();
+
         for (int t = 0; t < SIMULATION_TIME; t++) {
 
             macros.forEach(macro -> macro.generateChannelGain());
@@ -48,7 +52,11 @@ public class Main {
 
             mobiles.forEach(mobile -> mobile.calculateDataRate());
 
+            algorithm.calculate(macros, picos, mobiles);
+
         }
+
+
 
     }
 
