@@ -16,11 +16,17 @@ public class Mobile {
 
     public final double qos;
 
+    public ConnectionState[] connectionStates = new ConnectionState[NUM_RB];
+
+    private double instantRate;
+
+    private double throughput;
+
+    private double userRate;
+
     private double lambda;
 
     private double mu;
-
-    private double userRate;
 
     private final Edge<?>[] edges = new Edge[NUM_RB];
 
@@ -99,6 +105,27 @@ public class Mobile {
     private double calculateDataRate(double bandwidth, double numerator,
             double denominator, double unit) {
         return bandwidth * log(1 + numerator / denominator) / unit;
+    }
+
+    public void calculateThroughput() {
+        instantRate = 0.0;
+        forEachRbs(i -> {
+            switch (connectionStates[i]) {
+            case NOTHING:
+                //instantRate += 0.0;
+                break;
+            case MACRO:
+                instantRate += macroDataRateInMegaBps[i];
+                break;
+            case ABS_PICO:
+                instantRate += absPicoDataRateInMegaBps[i];
+                break;
+            case NON_PICO:
+                instantRate += nonPicoDataRateInMegaBps[i];
+                break;
+            }
+        });
+        throughput += instantRate;
     }
 
     /* bean getter/setter *************************************************** */

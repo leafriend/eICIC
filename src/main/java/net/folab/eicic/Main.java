@@ -24,6 +24,8 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
+        long start = System.currentTimeMillis();
+
         List<Macro> macros = loadObject(
                 "res/macro.txt",
                 pair -> new Macro(pair.getValue0(), pair.getValue1()[0], pair
@@ -47,7 +49,7 @@ public class Main {
 
         Algorithm algorithm = new Algorithm3();
 
-        for (int t = 0; t < SIMULATION_TIME; t++) {
+        for (int t = 1; t <= SIMULATION_TIME; t++) {
 
             macros.forEach(macro -> macro.generateChannelGain());
             picos.forEach(pico -> pico.generateChannelGain());
@@ -58,9 +60,11 @@ public class Main {
 
             algorithm.calculate(macros, picos, mobiles);
 
+            mobiles.forEach(mobile -> mobile.calculateThroughput());
+
         }
 
-
+        System.out.println(secondFrom(start));
 
     }
 
@@ -77,6 +81,10 @@ public class Main {
         }
         reader.close();
         return macros;
+    }
+
+    public static double secondFrom(long start) {
+        return ((double) System.currentTimeMillis() - start) / 1000;
     }
 
 }
