@@ -79,20 +79,12 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- HTTP Client -->
+        <!-- - - - -->
 
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.3.3</version>
-        </dependency>
-
-        <!-- HTML Parser -->
-
-        <dependency>
-            <groupId>net.sourceforge.htmlunit</groupId>
-            <artifactId>htmlunit</artifactId>
-            <version>2.15</version>
+            <groupId>org.javatuples</groupId>
+            <artifactId>javatuples</artifactId>
+            <version>1.2</version>
         </dependency>
 
     </dependencies>
