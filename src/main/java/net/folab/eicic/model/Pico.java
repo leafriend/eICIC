@@ -53,4 +53,12 @@ public class Pico extends BaseStation<Pico> {
         });
     }
 
+    public int absIndexOf(int i, Mobile mobile) {
+        return absEdges[i].indexOf(mobile.picoEdge);
+    }
+
+    public int nonIndexOf(int i, Mobile mobile) {
+        return nonEdges[i].indexOf(mobile.picoEdge);
+    }
+
 }
