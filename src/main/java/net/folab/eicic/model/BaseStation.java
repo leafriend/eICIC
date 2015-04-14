@@ -2,7 +2,7 @@ package net.folab.eicic.model;
 
 import java.util.Set;
 
-public abstract class BaseStation {
+public abstract class BaseStation<T extends BaseStation<T>> {
 
     public final int idx;
 
