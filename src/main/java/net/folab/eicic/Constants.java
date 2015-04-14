@@ -1,9 +1,6 @@
 package net.folab.eicic;
 
-import java.util.function.Consumer;
 import java.util.function.IntConsumer;
-
-import net.folab.eicic.model.Mobile;
 
 public interface Constants {
 
