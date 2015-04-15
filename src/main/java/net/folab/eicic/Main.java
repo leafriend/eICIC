@@ -53,9 +53,15 @@ public class Main {
         }
         for (Iterator<Macro> iter = macros.iterator(); iter.hasNext();) {
             Macro macro = iter.next();
-            picos.forEach(pico -> pico.checkInterference(macro);
+            for (Iterator<Pico> pi = picos.iterator(); pi.hasNext();) {
+                Pico pico = pi.next();
+                pico.checkInterference(macro);
+            }
         }
-        picos.forEach(pico -> mobiles.forEach(mobile -> new Edge<>(pico, mobile)));
+        for (Iterator<Pico> iter = picos.iterator(); iter.hasNext();) {
+            Pico pico = iter.next();
+            mobiles.forEach(mobile -> new Edge<>(pico, mobile));
+        }
         picos.forEach(Pico::init);
 
 //        for (Iterator<Macro> iter = macros.iterator(); iter.hasNext();) {
@@ -65,11 +71,12 @@ public class Main {
 //            System.out.println();
 //        }
 
-//        picos.forEach(pico -> {
+//        for (Iterator<Pico> iter = picos.iterator(); iter.hasNext();) {
+//            Pico pico = iter.next();
 //            System.out.print(pico.idx + ":\t");
 //            pico.forEachMobiles(mobile -> System.out.print(mobile.idx + "\t"));
 //            System.out.println();
-//        });
+//        }
 
         Algorithm algorithm = new Algorithm3();
 
@@ -79,11 +86,17 @@ public class Main {
                 Macro macro = iter.next();
                 macro.generateChannelGain();
             }
-            picos.forEach(pico -> pico.generateChannelGain());
+            for (Iterator<Pico> iter = picos.iterator(); iter.hasNext();) {
+                Pico pico = iter.next();
+                pico.generateChannelGain();
+            }
 
             mobiles.forEach(mobile -> mobile.calculateDataRate());
 
-            picos.forEach(pico -> pico.sortMobiles());
+            for (Iterator<Pico> iter = picos.iterator(); iter.hasNext();) {
+                Pico pico = iter.next();
+                pico.sortMobiles();
+            }
 
             algorithm.calculate(macros, picos, mobiles);
 
