@@ -68,7 +68,7 @@ public class Algorithm3 implements Algorithm {
                         } else {
 
                             lambdaRSum += calculatePicoLambdaRSum(mobile,
-                                    edges[mobile.idx]);
+                                    edges[mobile.idx], mobileConnectsMacro);
 
                         }
 
@@ -89,7 +89,7 @@ public class Algorithm3 implements Algorithm {
 
                     for (Mobile mobile : macro.getMobiles())
                         lambdaRSum += calculatePicoLambdaRSum(mobile,
-                                edges[mobile.idx]);
+                                edges[mobile.idx], mobileConnectsMacro);
 
                 }
 
@@ -117,33 +117,58 @@ public class Algorithm3 implements Algorithm {
 
     }
 
-    public double calculatePicoLambdaRSum(Mobile mobile, Edge<?>[] edges) {
+    /**
+     * Mobile이 Pico에 연결했을 때 모든 Subchannel에서 수신할 수 있는 Lambda R 값의 합을 계산한다.
+     *
+     * @param mobile
+     *            Pico로 연결할 Mobile
+     * @param edges
+     *            Mobile의 Subchannel 연결 상태를 확인한 결과를 저장할 배열; 메소드 호출 후 배열의 내용이
+     *            바뀐다.
+     * @param mobileConnectsMacro
+     *            각 Mobile의 Macro 연결 여부; Pico Subchannel 순위에서 Macro에 연결된 Mobile을
+     *            제외할 때 사용
+     *
+     * @return 전달받은 Mobile의 Lambda R 합
+     */
+    public double calculatePicoLambdaRSum(Mobile mobile, Edge<?>[] edges,
+            boolean[] mobileConnectsMacro) {
+        // Mobile의 Lambda R 합
         double lambdaRSum = 0.0;
         Pico pico = mobile.getPico();
+
+        // Mobile이 연결하려는 Pico의 각 Subchannel에 정렬된 Mobile 목록
+        List<Edge<Pico>>[] sortedEdges;
         boolean isAbs = pico.isAbs();
-        List<Edge<Pico>>[] absEdges = pico.getAbsEdges();
-        List<Edge<Pico>>[] nonEdges = pico.getNonEdges();
-        RB: for (int i = 0; i < NUM_RB; i++) {
-            if (isAbs) {
-                if (!(mobile.getActiveEdges()[i].baseStation instanceof Pico)) {
-                    for (Edge<Pico> edge : absEdges[i]) {
-                        lambdaRSum += mobile.getAbsPicoLambdaR()[i];
-                        edges[i] = mobile.getPicoEdge();
-                        continue RB;
-                    }
-                }
-                edges[i] = null;
-            } else {
-                if (!(mobile.getActiveEdges()[i].baseStation instanceof Pico)) {
-                    for (Edge<Pico> edge : absEdges[i]) {
-                        lambdaRSum += mobile.getNonPicoLambdaR()[i];
-                        edges[i] = mobile.getPicoEdge();
-                        continue RB;
-                    }
-                }
-                edges[i] = null;
-            }
+        if (isAbs) {
+            sortedEdges = pico.getAbsEdges();
+        } else {
+            sortedEdges = pico.getNonEdges();
         }
+
+        for (int i = 0; i < NUM_RB; i++) {
+
+            // 각 Subchannel에서 내가 Macro에 연결한 다른 Mobile을 제외하고 첫 번째 순위인지 확인
+            Edge<Pico> firstEdge = null;
+            for (Edge<Pico> edge : sortedEdges[i]) {
+                if (mobileConnectsMacro[edge.mobile.idx])
+                    continue;
+                firstEdge = edge;
+                break;
+            }
+
+            // Pico의 현재 Subchannel의 첫 번째 Mobile이 전달받은 Mobile이라면
+            Edge<Pico> picoEdge = mobile.getPicoEdge();
+            if (firstEdge == picoEdge) {
+                if (isAbs)
+                    lambdaRSum += mobile.getAbsPicoLambdaR()[i];
+                else
+                    lambdaRSum += mobile.getNonPicoLambdaR()[i];
+                edges[i] = picoEdge;
+            }
+
+        }
+
         return lambdaRSum;
     }
 
