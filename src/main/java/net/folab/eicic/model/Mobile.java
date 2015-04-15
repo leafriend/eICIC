@@ -28,10 +28,10 @@ public class Mobile {
 
     private double mu;
 
-    Edge<Macro> macroEdge;
-
     @SuppressWarnings("unchecked")
-    final Edge<Macro>[] activeMacroEdges = new Edge[NUM_RB];
+    final Edge<? extends BaseStation<?>>[] activeEdges = new Edge[NUM_RB];
+
+    Edge<Macro> macroEdge;
 
     final List<Edge<Macro>> allMacroEdges = new ArrayList<>();
 
@@ -40,9 +40,6 @@ public class Mobile {
     final double[] macroLambdaR = new double[NUM_RB];
 
     Edge<Pico> picoEdge;
-
-    @SuppressWarnings("unchecked")
-    final Edge<Pico>[] activePicoEdges = new Edge[NUM_RB];
 
     final List<Edge<Pico>> allPicoEdges = new ArrayList<>();
 

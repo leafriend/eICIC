@@ -78,36 +78,23 @@ public class Edge<T extends BaseStation<T>> {
         return isActivated[i];
     }
 
-    @SuppressWarnings("unchecked")
     public void setActivated(int i, boolean isActivated) {
         this.isActivated[i] = isActivated;
         if (isActivated) {
             Edge<T> activeBaseStationEdge = baseStation.activeEdges[i];
-            Edge<T> activeMobileEdge = null;
-            if (baseStation instanceof Macro) {
-                activeMobileEdge = (Edge<T>) mobile.activeMacroEdges[i];
-            } else if (baseStation instanceof Macro) {
-                activeMobileEdge = (Edge<T>) mobile.activePicoEdges[i];
-            }
+            Edge<? extends BaseStation<?>> activeMobileEdge = mobile.activeEdges[i];
             assert activeBaseStationEdge == activeMobileEdge;
-
             if (activeBaseStationEdge != null) {
                 activeBaseStationEdge.isActivated[i] = false;
+                activeMobileEdge.isActivated[i] = false;
             }
             baseStation.activeEdges[i] = this;
-            if (baseStation instanceof Macro) {
-                mobile.activeMacroEdges[i] = (Edge<Macro>) this;
-            } else if (baseStation instanceof Macro) {
-                mobile.activePicoEdges[i] = (Edge<Pico>) this;
-            }
+            mobile.activeEdges[i] = this;
         } else {
             assert baseStation.activeEdges[i] == this;
+            assert mobile.activeEdges[i] == this;
             baseStation.activeEdges[i] = null;
-            if (baseStation instanceof Macro) {
-                mobile.activeMacroEdges[i] = null;
-            } else if (baseStation instanceof Macro) {
-                mobile.activePicoEdges[i] = null;
-            }
+            mobile.activeEdges[i] = null;
         }
     }
 
