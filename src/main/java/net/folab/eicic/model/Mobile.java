@@ -1,15 +1,7 @@
 package net.folab.eicic.model;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.log;
-import static net.folab.eicic.Constants.BW_PER_RB;
-import static net.folab.eicic.Constants.MEGA;
-import static net.folab.eicic.Constants.NOISE;
-import static net.folab.eicic.Constants.NUM_RB;
-import static net.folab.eicic.Constants.RATE_MAX;
-import static net.folab.eicic.Constants.STEPSIZE2;
-import static net.folab.eicic.Constants.STEPSIZE3;
-import static net.folab.eicic.Constants.STEPSIZE4;
+import static java.lang.Math.*;
+import static net.folab.eicic.Constants.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +32,7 @@ public class Mobile {
 
     final List<Edge<Macro>> allMacroEdges = new ArrayList<>();
 
-    final double[] macroDataRateInMegaBps = new double[NUM_RB];
+    final double[] macroDataRate = new double[NUM_RB];
 
     final double[] macroLambdaR = new double[NUM_RB];
 
@@ -48,11 +40,11 @@ public class Mobile {
 
     final List<Edge<Pico>> allPicoEdges = new ArrayList<>();
 
-    final double[] absPicoDataRateInMegaBps = new double[NUM_RB];
+    final double[] absPicoDataRate = new double[NUM_RB];
 
     final double[] absPicoLambdaR = new double[NUM_RB];
 
-    final double[] nonPicoDataRateInMegaBps = new double[NUM_RB];
+    final double[] nonPicoDataRate = new double[NUM_RB];
 
     final double[] nonPicoLambdaR = new double[NUM_RB];
 
@@ -85,34 +77,36 @@ public class Mobile {
             for (Edge<Pico> edge : allPicoEdges)
                 picoChannelGain += edge.channelGain[_i];
 
-            macroDataRateInMegaBps[i] = calculateDataRate(BW_PER_RB,
+            macroDataRate[i] = calculateDataRate(BW_PER_RB,
                     macroEdge.channelGain[i], //
                     macroChannelGain + picoChannelGain
-                            - macroEdge.channelGain[i] + NOISE, //
-                    MEGA);
-            macroLambdaR[i] = lambda * macroDataRateInMegaBps[i];
+                            - macroEdge.channelGain[i] + NOISE)
+                    / MEGA;
+            macroLambdaR[i] = lambda * macroDataRate[i];
 
-            absPicoDataRateInMegaBps[i] = calculateDataRate(BW_PER_RB,
+            absPicoDataRate[i] = calculateDataRate(BW_PER_RB,
                     picoEdge.channelGain[i], //
                     /* macroChannelGain + */picoChannelGain
-                            - picoEdge.channelGain[i] + NOISE, //
-                    MEGA);
-            absPicoLambdaR[i] = lambda * absPicoDataRateInMegaBps[i];
+                            - picoEdge.channelGain[i] + NOISE)
+                    / MEGA;
+            ;
+            absPicoLambdaR[i] = lambda * absPicoDataRate[i];
 
-            nonPicoDataRateInMegaBps[i] = calculateDataRate(BW_PER_RB,
+            nonPicoDataRate[i] = calculateDataRate(BW_PER_RB,
                     picoEdge.channelGain[i], //
                     macroChannelGain + picoChannelGain
-                            - picoEdge.channelGain[i] + NOISE, //
-                    MEGA);
-            nonPicoLambdaR[i] = lambda * nonPicoDataRateInMegaBps[i];
+                            - picoEdge.channelGain[i] + NOISE)
+                    / MEGA;
+            ;
+            nonPicoLambdaR[i] = lambda * nonPicoDataRate[i];
 
         }
 
     }
 
     private double calculateDataRate(double bandwidth, double numerator,
-            double denominator, double unit) {
-        return bandwidth * log(1 + numerator / denominator) / unit;
+            double denominator) {
+        return bandwidth * log(1 + numerator / denominator);
     }
 
     public void calculateThroughput() {
@@ -123,14 +117,18 @@ public class Mobile {
                 // instantRate += 0.0;
                 break;
             case MACRO:
-                instantRate += macroDataRateInMegaBps[i];
+                instantRate += macroDataRate[i];
                 break;
             case ABS_PICO:
-                instantRate += absPicoDataRateInMegaBps[i];
+                instantRate += absPicoDataRate[i];
                 break;
             case NON_PICO:
-                instantRate += nonPicoDataRateInMegaBps[i];
+                instantRate += nonPicoDataRate[i];
                 break;
+            default:
+                throw new RuntimeException("Unexpected connection state on "
+                        + this + ".connectionStates[" + i + "]: "
+                        + connectionStates[i]);
             }
         }
         throughput += instantRate;
