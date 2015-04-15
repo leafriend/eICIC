@@ -9,6 +9,7 @@ import static net.folab.eicic.Constants.MACRO_INTERFERING_RANGE_ON_PICO;
 import static net.folab.eicic.Constants.NUM_RB;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Pico extends BaseStation<Pico> {
@@ -20,6 +21,30 @@ public class Pico extends BaseStation<Pico> {
 
     @SuppressWarnings("unchecked")
     private final List<Edge<Pico>>[] nonEdges = new List[NUM_RB];
+
+    private static class PicoEdgeComparator implements Comparator<Edge<Pico>> {
+
+        private final int i;
+
+        public PicoEdgeComparator(int i) {
+            this.i = i;
+        }
+
+        @Override
+        public int compare(Edge<Pico> a, Edge<Pico> b) {
+            return (int) signum( //
+            a.mobile.absPicoLambdaR[i] - b.mobile.absPicoLambdaR[i] //
+            );
+        }
+
+    }
+
+    private static final PicoEdgeComparator[] COMPARATORS = new PicoEdgeComparator[NUM_RB];
+    static {
+        for (int i = 0; i < COMPARATORS.length; i++) {
+            COMPARATORS[i] = new PicoEdgeComparator(i);
+        }
+    }
 
     public Pico(int idx, double x, double y, double txPower) {
         super(idx, x, y, txPower);
@@ -40,15 +65,16 @@ public class Pico extends BaseStation<Pico> {
     }
 
     public boolean isAbs() {
-        return macrosInterfering.stream().map(macro -> macro.state)
-                .reduce(false, Boolean::logicalOr);
+        for (Macro macro : macrosInterfering) {
+            if (macro.state)
+                return false;
+        }
+        return false;
     }
 
     public void sortMobiles() {
         for (int i = 0; i < NUM_RB; i++) {
-            sort(absEdges[i], (a, b) -> (int) signum( //
-                    a.mobile.absPicoLambdaR[i] - b.mobile.absPicoLambdaR[i] //
-                    ));
+            sort(absEdges[i], COMPARATORS[i]);
         }
     }
 
