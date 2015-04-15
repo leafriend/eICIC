@@ -16,20 +16,20 @@ public class Algorithm3 implements Algorithm {
     public void calculate(List<Macro> macros, List<Pico> picos,
             List<Mobile> mobiles) {
 
-        final boolean[] mobileConnectsMacro = chooseMobileConnection(mobiles);
-
-        double mostLambdaRSum = Double.NEGATIVE_INFINITY;
         boolean[] bestMacroStates = new boolean[NUM_MACROS];
         ConnectionState[][] bestMobileStates = new ConnectionState[NUM_MOBILES][NUM_RB];
 
+        final boolean[] mobileConnectsMacro = chooseMobileConnection(mobiles);
+
+        double mostLambdaRSum = Double.NEGATIVE_INFINITY;
         // 가능한 모든 Macro 상태(2 ^ NUM_MACRO = 1 << NUM_MACRO)에 대한 반복문
         int macroStatesCount = 1 << NUM_MACROS;
         for (int mask = 1; mask < macroStatesCount; mask++) {
 
+            boolean[] macroStates = new boolean[NUM_MACROS];
             // Macro 상태(ON/OFF) 지정
-            final int _mask = mask;
-            for (Macro macro : macros)
-                macro.state = 1 == (((1 << macro.idx) & _mask) >> macro.idx);
+            for (int m = 0; m < NUM_MACROS; m++)
+                macroStates[m] = 1 == (((1 << m) & mask) >> m);
 
             ConnectionState[][] mobileStates = new ConnectionState[NUM_MOBILES][NUM_RB];
             for (Mobile mobile : mobiles)
@@ -39,7 +39,7 @@ public class Algorithm3 implements Algorithm {
             double lambdaRSum = 0.0;
             for (Macro macro : macros) {
 
-                if (macro.state) {
+                if (macroStates[macro.idx]) {
                     // Mobile의 Macro가 켜졌다면
                     // 위에서 정한 Cell Association에 따라 lambdaR 가산
                     // 각 서브 채널별 할당 대상 결정
@@ -91,11 +91,11 @@ public class Algorithm3 implements Algorithm {
 
             if (lambdaRSum > mostLambdaRSum) {
                 mostLambdaRSum = lambdaRSum;
-                for (Macro macro : macros)
-                    bestMacroStates[macro.idx] = macro.state;
-                for (Mobile mobile : mobiles)
-                    for (int i = 0; i < NUM_RB; i++)
-                        bestMobileStates[mobile.idx][i] = mobileStates[mobile.idx][i];
+                for (int m = 0; m < NUM_MACROS; m++)
+                    bestMacroStates[m] = macroStates[m];
+                for (int u = 0; u < NUM_MOBILES; u++)
+                        for (int i = 0; i < NUM_RB; i++)
+                        bestMobileStates[u][i] = mobileStates[u][i];
             }
 
         }
@@ -163,6 +163,7 @@ public class Algorithm3 implements Algorithm {
             mobileConnectsMacro[mobile.idx] = macroRatio > picoRatio;
 
         }
+
         return mobileConnectsMacro;
     }
 
