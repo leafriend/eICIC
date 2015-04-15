@@ -12,7 +12,6 @@ import static net.folab.eicic.Constants.STEPSIZE3;
 import static net.folab.eicic.Constants.STEPSIZE4;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class Mobile {
@@ -79,16 +78,12 @@ public class Mobile {
             final int _i = i;
 
             double macroChannelGain = 0.0;
-            for (Iterator<Edge<Macro>> ei = allMacroEdges.iterator(); ei.hasNext();) {
-                Edge<Macro> edge = ei.next();
+            for (Edge<Macro> edge : allMacroEdges)
                 macroChannelGain += edge.channelGain[_i];
-            }
 
             double picoChannelGain = 0.0;
-            for (Iterator<Edge<Pico>> ei = allPicoEdges.iterator(); ei.hasNext();) {
-                Edge<Pico> edge = ei.next();
+            for (Edge<Pico> edge : allPicoEdges)
                 picoChannelGain += edge.channelGain[_i];
-            }
 
             macroDataRateInMegaBps[i] = calculateDataRate(BW_PER_RB,
                     macroEdge.channelGain[i], //

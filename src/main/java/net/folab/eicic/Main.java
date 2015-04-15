@@ -11,7 +11,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 
@@ -47,38 +46,25 @@ public class Main {
                         .getValue1()[1], MOBILE_QOS, pair.getValue1()[2], pair
                         .getValue1()[3], pair.getValue1()[4]));
 
-        for (Iterator<Macro> iter = macros.iterator(); iter.hasNext();) {
-            Macro macro = iter.next();
-            for (Iterator<Mobile> ui = mobiles.iterator(); ui.hasNext();) {
-                Mobile mobile = ui.next();
+        for (Macro macro : macros)
+            for (Mobile mobile : mobiles)
                 new Edge<>(macro, mobile);
-            }
-        }
-        for (Iterator<Macro> iter = macros.iterator(); iter.hasNext();) {
-            Macro macro = iter.next();
-            for (Iterator<Pico> pi = picos.iterator(); pi.hasNext();) {
-                Pico pico = pi.next();
+        for (Macro macro : macros)
+            for (Pico pico : picos)
                 pico.checkInterference(macro);
-            }
-        }
-        for (Iterator<Pico> iter = picos.iterator(); iter.hasNext();) {
-            Pico pico = iter.next();
-            for (Iterator<Mobile> ui = mobiles.iterator(); ui.hasNext();) {
-                Mobile mobile = ui.next();
+        for (Pico pico : picos)
+            for (Mobile mobile : mobiles)
                 new Edge<>(pico, mobile);
-            }
-        }
-        picos.forEach(Pico::init);
+        for (Pico pico : picos)
+            pico.init();
 
-//        for (Iterator<Macro> iter = macros.iterator(); iter.hasNext();) {
-//            Macro macro = iter.next(); {
+//        for (Macro macro : macros) {
 //            System.out.print(macro.idx + ":\t");
 //            macro.forEachMobiles(mobile -> System.out.print(mobile.idx + "\t"));
 //            System.out.println();
 //        }
 
-//        for (Iterator<Pico> iter = picos.iterator(); iter.hasNext();) {
-//            Pico pico = iter.next();
+//        for (Pico pico : picos) {
 //            System.out.print(pico.idx + ":\t");
 //            pico.forEachMobiles(mobile -> System.out.print(mobile.idx + "\t"));
 //            System.out.println();
@@ -88,32 +74,22 @@ public class Main {
 
         for (int t = 1; t <= SIMULATION_TIME; t++) {
 
-            for (Iterator<Macro> iter = macros.iterator(); iter.hasNext();) {
-                Macro macro = iter.next();
+            for (Macro macro : macros)
                 macro.generateChannelGain();
-            }
-            for (Iterator<Pico> iter = picos.iterator(); iter.hasNext();) {
-                Pico pico = iter.next();
+            for (Pico pico : picos)
                 pico.generateChannelGain();
-            }
 
-            for (Iterator<Mobile> ui = mobiles.iterator(); ui.hasNext();) {
-                Mobile mobile = ui.next();
+            for (Mobile mobile : mobiles)
                 mobile.calculateDataRate();
-            }
 
-            for (Iterator<Pico> iter = picos.iterator(); iter.hasNext();) {
-                Pico pico = iter.next();
+            for (Pico pico : picos)
                 pico.sortMobiles();
-            }
 
             algorithm.calculate(macros, picos, mobiles);
 
-//            for (Iterator<Mobile> ui = mobiles.iterator(); ui.hasNext();) {
-//                Mobile mobile = ui.next();
+//            for (Mobile mobile : mobiles) {
 //                System.out.println("m: " + mobile.idx);
-//                for (Iterator<Edge<Macro>> ei = mobile.allMacroEdges.iteraror(); ei.hasNext();) {
-//                    Edge<Macro> edge = ei.next();
+//                for (Edge<Macro> edge : mobile.allMacroEdges) {
 //                    System.out.print("    M: " + edge.baseStation.idx + "\t");
 //                    for (int i = 0; i < NUM_RB; i++) { System.out.print(String.format("%8.4f",
 //                            edge.channelGain[i] * 1000000000l) + "\t"); }
@@ -122,25 +98,18 @@ public class Main {
 //                System.out.println();
 //            }
 
-//            for (Iterator<Mobile> ui = mobiles.iterator(); ui.hasNext();) {
-//                Mobile mobile = ui.next();
+//            for (Mobile mobile : mobiles) {
 //                for (int i = 0; i < NUM_RB; i++) { System.out.print(mobile.connectionStates[i] + "\t"); }
 //                System.out.println();
 //            }
 
-            for (Iterator<Mobile> ui = mobiles.iterator(); ui.hasNext();) {
-                Mobile mobile = ui.next();
+            for (Mobile mobile : mobiles)
                 mobile.calculateThroughput();
-            }
-            for (Iterator<Mobile> ui = mobiles.iterator(); ui.hasNext();) {
-                Mobile mobile = ui.next();
+            for (Mobile mobile : mobiles)
                 mobile.calculateUserRate();
-            }
             final int _t = t;
-            for (Iterator<Mobile> ui = mobiles.iterator(); ui.hasNext();) {
-                Mobile mobile = ui.next();
+            for (Mobile mobile : mobiles)
                 mobile.calculateDualVariables(_t);
-            }
 
             if (t % 100 == 0) {
                 dump(t, macros, picos, mobiles, elapsed, execute);
@@ -172,8 +141,7 @@ public class Main {
     private static void dump(int t, List<Macro> macros, List<Pico> picos,
             List<Mobile> mobiles, long elapsed, long execute) {
 
-        for (Iterator<Mobile> ui = mobiles.iterator(); ui.hasNext();) {
-            Mobile mobile = ui.next();
+        for (Mobile mobile : mobiles) {
             for (int i = 0; i < NUM_RB; i++) { System.out.print(mobile.connectionStates[i] + "\t"); }
             System.out.println();
         }
@@ -185,8 +153,7 @@ public class Main {
         out.print("idx\t" + "   Rate User\t" + "       (log)\t" + "  Throughput\t" + "       (log)\t"
                 + "      lambda\t" + "          mu\n");
 
-        for (Iterator<Mobile> ui = mobiles.iterator(); ui.hasNext();) {
-            Mobile mobile = ui.next();
+        for (Mobile mobile : mobiles) {
             out.print(format("%3d", mobile.idx) + "\t");
             out.print(format("%12.6f", mobile.getUserRate()) + "\t");
             out.print(format("%12.6f", log(mobile.getUserRate())) + "\t");

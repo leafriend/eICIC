@@ -1,7 +1,6 @@
 package net.folab.eicic.model;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -36,8 +35,7 @@ public abstract class BaseStation<T extends BaseStation<T>> {
     }
 
     public void generateChannelGain() {
-        for (Iterator<Edge<T>> iter = edgesInterfered.iterator(); iter.hasNext();) {
-            Edge<T> edge = iter.next();
+        for (Edge<T> edge : edgesInterfered) {
             edge.generateChannelGain();
         }
     }

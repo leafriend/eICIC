@@ -4,7 +4,6 @@ import static java.util.Arrays.*;
 import static net.folab.eicic.Constants.*;
 import static net.folab.eicic.model.ConnectionState.*;
 
-import java.util.Iterator;
 import java.util.List;
 
 import net.folab.eicic.model.ConnectionState;
@@ -47,18 +46,14 @@ public class Algorithm3 implements Algorithm {
 
             /* Macro 상태(ON/OFF) 지정 */
             final int _mask = mask;
-            for (Iterator<Macro> iter = macros.iterator(); iter.hasNext();) {
-                Macro macro = iter.next();
+            for (Macro macro : macros)
                 macro.state = 1 == (((1 << macro.idx) & _mask) >> macro.idx);
-            }
 
             ConnectionState[][] states = new ConnectionState[NUM_MOBILES][NUM_RB];
-            for (Iterator<Mobile> ui = mobiles.iterator(); ui.hasNext();) {
-                Mobile mobile = ui.next();
+            for (Mobile mobile : mobiles)
                 for (int i = 0; i < NUM_RB; i++) {
                     states[mobile.idx][i] = NOTHING;
                 }
-            }
             double curr_sum_lambda_r = macros.stream().map(macro -> {
 
                 double lambdaR = 0.0;
@@ -132,31 +127,23 @@ public class Algorithm3 implements Algorithm {
 
             if (curr_sum_lambda_r > best_sum_lambda_r) {
                 best_sum_lambda_r = curr_sum_lambda_r;
-                for (Iterator<Macro> iter = macros.iterator(); iter.hasNext();) {
-                    Macro macro = iter.next();
+                for (Macro macro : macros)
                     bestMacroStates[macro.idx] = macro.state;
-                }
-                for (Iterator<Mobile> ui = mobiles.iterator(); ui.hasNext();) {
-                    Mobile mobile = ui.next();
+                for (Mobile mobile : mobiles)
                     for (int i = 0; i < NUM_RB; i++) {
                         bestConnectionStates[mobile.idx][i] = states[mobile.idx][i];
                     }
-                }
             }
 
         }
 
-        for (Iterator<Macro> iter = macros.iterator(); iter.hasNext();) {
-            Macro macro = iter.next();
+        for (Macro macro : macros)
             macro.state = bestMacroStates[macro.idx];
-        }
 
-        for (Iterator<Mobile> ui = mobiles.iterator(); ui.hasNext();) {
-            Mobile mobile = ui.next();
+        for (Mobile mobile : mobiles)
             for (int i = 0; i < NUM_RB; i++) {
                 mobile.connectionStates[i] = bestConnectionStates[mobile.idx][i];
             }
-        }
 
     }
 
