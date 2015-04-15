@@ -39,9 +39,6 @@ public class Algorithm3 implements Algorithm {
         double best_sum_lambda_r = Double.NEGATIVE_INFINITY;
         boolean[] bestMacroStates = new boolean[NUM_MACROS];
         ConnectionState[][] bestConnectionStates = new ConnectionState[NUM_MOBILES][NUM_RB];
-        mobiles.forEach(mobile -> forEachRbs(i -> {
-            bestConnectionStates[mobile.idx][i] = NOTHING;
-        }));
 
         /* 가능한 모든 Macro 상태(2 ^ NUM_MACRO = 1 << NUM_MACRO)에 대한 반복문 */
         int num_macro_state = 1 << NUM_MACROS;
