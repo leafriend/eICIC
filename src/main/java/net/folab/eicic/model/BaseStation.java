@@ -18,7 +18,7 @@ public abstract class BaseStation<T extends BaseStation<T>> {
     final List<Edge<T>> edges = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
-    private final Edge<T>[] activeEdges = new Edge[NUM_RB];
+    final Edge<T>[] activeEdges = new Edge[NUM_RB];
 
     final List<Edge<T>> edgesInterfered = new ArrayList<>();
 
@@ -40,15 +40,6 @@ public abstract class BaseStation<T extends BaseStation<T>> {
         for (Edge<T> edge : edgesInterfered) {
             edge.generateChannelGain();
         }
-    }
-
-    public void setEdgeActivated(int i, Edge<T> edge, boolean isActivated) {
-        assert edge.baseStation == this : "edge.baseStation != this";
-        Edge<T> activeEdge = activeEdges[i];
-        if (activeEdge != null)
-            activeEdge.isActivated = false;
-        edge.isActivated = true;
-        activeEdges[i] = edge;
     }
 
     public List<Edge<T>> getEdges() {

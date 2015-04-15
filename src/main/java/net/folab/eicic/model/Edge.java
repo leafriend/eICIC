@@ -19,7 +19,7 @@ public class Edge<T extends BaseStation<T>> {
 
     final double[] channelGain = new double[NUM_RB];
 
-    boolean isActivated;
+    private final boolean[] isActivated = new boolean[NUM_RB];
 
     public Edge(T baseStation, Mobile mobile) {
         super();
@@ -71,6 +71,24 @@ public class Edge<T extends BaseStation<T>> {
                     + pow(RANDOM.nextGaussian() / 1.2533, 2));
             double logNormal = pow(10, RANDOM.nextGaussian() * LN_SHAD * 0.1);
             channelGain[i] = channelGainFactor * rayleigh * logNormal;
+        }
+    }
+
+    public boolean isActivated(int i) {
+        return isActivated[i];
+    }
+
+    public void setActivated(int i, boolean isActivated) {
+        this.isActivated[i] = isActivated;
+        if (isActivated) {
+            Edge<T> activeEdge = baseStation.activeEdges[i];
+            if (activeEdge != null) {
+                activeEdge.isActivated[i] = false;
+            }
+            baseStation.activeEdges[i] = this;
+        } else {
+            assert baseStation.activeEdges[i] == this;
+            baseStation.activeEdges[i] = null;
         }
     }
 
