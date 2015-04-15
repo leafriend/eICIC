@@ -2,9 +2,6 @@ package net.folab.eicic.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 public abstract class BaseStation<T extends BaseStation<T>> {
 
@@ -40,12 +37,8 @@ public abstract class BaseStation<T extends BaseStation<T>> {
         }
     }
 
-    public void forEachMobiles(Consumer<Mobile> action) {
-        mobiles.forEach(action);
-    }
-
-    public <R> Stream<R> mapMobiles(Function<Mobile, R> mapper) {
-        return mobiles.stream().map(mapper);
+    public List<Mobile> getMobiles() {
+        return mobiles;
     }
 
     @Override
