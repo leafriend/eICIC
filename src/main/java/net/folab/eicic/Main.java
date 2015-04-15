@@ -27,7 +27,8 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        long start = System.currentTimeMillis();
+        long execute = System.currentTimeMillis();
+        long elapsed =  System.currentTimeMillis();
 
         List<Macro> macros = loadObject(
                 "res/macro.txt",
@@ -50,6 +51,18 @@ public class Main {
         picos.forEach(pico -> mobiles.forEach(mobile -> new Edge<>(pico, mobile)));
         picos.forEach(Pico::init);
 
+//        macros.forEach(macro -> {
+//            System.out.print(macro.idx + ":\t");
+//            macro.forEachMobiles(mobile -> System.out.print(mobile.idx + "\t"));
+//            System.out.println();
+//        });
+
+//        picos.forEach(pico -> {
+//            System.out.print(pico.idx + ":\t");
+//            pico.forEachMobiles(mobile -> System.out.print(mobile.idx + "\t"));
+//            System.out.println();
+//        });
+
         Algorithm algorithm = new Algorithm3();
 
         for (int t = 1; t <= SIMULATION_TIME; t++) {
@@ -63,18 +76,36 @@ public class Main {
 
             algorithm.calculate(macros, picos, mobiles);
 
+//            mobiles.forEach(mobile -> {
+//                System.out.println("m: " + mobile.idx);
+//                mobile.allMacroEdges.forEach(edge -> {
+//                    System.out.print("    M: " + edge.baseStation.idx + "\t");
+//                    forEachRbs(i -> System.out.print(String.format("%8.4f",
+//                            edge.channelGain[i] * 1000000000l) + "\t"));
+//                    System.out.println();
+//                });
+//                System.out.println();
+//            });
+
+//            mobiles.forEach(mobile -> {
+//                forEachRbs(i -> System.out.print(mobile.connectionStates[i] + "\t"));
+//                System.out.println();
+//            });
+
             mobiles.forEach(mobile -> mobile.calculateThroughput());
             mobiles.forEach(mobile -> mobile.calculateUserRate());
             final int _t = t;
             mobiles.forEach(mobile -> mobile.calculateDualVariables(_t));
 
             if (t % 100 == 0) {
-                dump(t, macros, picos, mobiles);
+                dump(t, macros, picos, mobiles, elapsed, execute);
+                elapsed =  System.currentTimeMillis();
             }
 
         }
 
-        System.out.println(secondFrom(start));
+        dump(SIMULATION_TIME, macros, picos, mobiles, elapsed, execute);
+        System.out.println(secondFrom(execute));
 
     }
 
@@ -94,9 +125,15 @@ public class Main {
     }
 
     private static void dump(int t, List<Macro> macros, List<Pico> picos,
-            List<Mobile> mobiles) {
+            List<Mobile> mobiles, long elapsed, long execute) {
 
-        out.print("Time: " + format("%7d/%7d", t, SIMULATION_TIME) + "\n");
+      mobiles.forEach(mobile -> {
+          forEachRbs(i -> System.out.print(mobile.connectionStates[i] + "\t"));
+          System.out.println();
+      });
+
+        double throughput =
+        mobiles.stream().map(mobile -> mobile.getThroughput() == 0.0 ? 0.0 : log(mobile.getThroughput() / t)).reduce(0.0, Double::sum);
 
         out.print("idx\t" + "   Rate User\t" + "       (log)\t" + "  Throughput\t" + "       (log)\t"
                 + "      lambda\t" + "          mu\n");
@@ -105,11 +142,16 @@ public class Main {
             out.print(format("%3d", mobile.idx) + "\t");
             out.print(format("%12.6f", mobile.getUserRate()) + "\t");
             out.print(format("%12.6f", log(mobile.getUserRate())) + "\t");
-            out.print(format("%12.6f", mobile.getThroughput()) + "\t");
-            out.print(format("%12.6f", log(mobile.getThroughput())) + "\t");
+            out.print(format("%12.6f", mobile.getThroughput() / t) + "\t");
+            out.print(format("%12.6f", log(mobile.getThroughput() / t)) + "\t");
             out.print(format("%12.6f", mobile.getLambda()) + "\t");
             out.print(format("%12.6f", mobile.getMu()) + "\n");
         });
+
+        out.print("Time: " + format("%7d/%7d", t, SIMULATION_TIME) + "\t");
+        out.print("Util: " + format("%8.4f", throughput) + "\t");
+        out.print("Elap: " + format("%8.4f", secondFrom(elapsed)) + "\t");
+        out.print("Exec: " + format("%8.4f", secondFrom(execute)) + "\n");
 
     }
 
