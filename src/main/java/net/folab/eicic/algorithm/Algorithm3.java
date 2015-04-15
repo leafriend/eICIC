@@ -4,6 +4,7 @@ import static java.util.Arrays.*;
 import static net.folab.eicic.Constants.*;
 import static net.folab.eicic.model.ConnectionState.*;
 
+import java.util.Iterator;
 import java.util.List;
 
 import net.folab.eicic.model.ConnectionState;
@@ -46,7 +47,10 @@ public class Algorithm3 implements Algorithm {
 
             /* Macro 상태(ON/OFF) 지정 */
             final int _mask = mask;
-            macros.forEach(macro -> macro.state = 1 == (((1 << macro.idx) & _mask) >> macro.idx));
+            for (Iterator<Macro> iter = macros.iterator(); iter.hasNext();) {
+                Macro macro = iter.next();
+                macro.state = 1 == (((1 << macro.idx) & _mask) >> macro.idx);
+            }
 
             ConnectionState[][] states = new ConnectionState[NUM_MOBILES][NUM_RB];
             mobiles.forEach(mobile -> for (int i = 0; i < NUM_RB; i++) {
@@ -125,7 +129,10 @@ public class Algorithm3 implements Algorithm {
 
             if (curr_sum_lambda_r > best_sum_lambda_r) {
                 best_sum_lambda_r = curr_sum_lambda_r;
-                macros.forEach(macro -> bestMacroStates[macro.idx] = macro.state);
+                for (Iterator<Macro> iter = macros.iterator(); iter.hasNext();) {
+                    Macro macro = iter.next();
+                    bestMacroStates[macro.idx] = macro.state;
+                }
                 mobiles.forEach(mobile -> for (int i = 0; i < NUM_RB; i++) {
                     bestConnectionStates[mobile.idx][i] = states[mobile.idx][i];
                 });
@@ -133,7 +140,10 @@ public class Algorithm3 implements Algorithm {
 
         }
 
-        macros.forEach(macro -> macro.state = bestMacroStates[macro.idx]);
+        for (Iterator<Macro> iter = macros.iterator(); iter.hasNext();) {
+            Macro macro = iter.next();
+            macro.state = bestMacroStates[macro.idx];
+        }
 
         mobiles.forEach(mobile -> for (int i = 0; i < NUM_RB; i++) {
             mobile.connectionStates[i] = bestConnectionStates[mobile.idx][i];

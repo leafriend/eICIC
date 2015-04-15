@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 
@@ -46,16 +47,23 @@ public class Main {
                         .getValue1()[1], MOBILE_QOS, pair.getValue1()[2], pair
                         .getValue1()[3], pair.getValue1()[4]));
 
-        macros.forEach(macro -> mobiles.forEach(mobile -> new Edge<>(macro, mobile)));
-        macros.forEach(macro -> picos.forEach(pico -> pico.checkInterference(macro)));
+        for (Iterator<Macro> iter = macros.iterator(); iter.hasNext();) {
+            Macro macro = iter.next();
+            mobiles.forEach(mobile -> new Edge<>(macro, mobile);
+        }
+        for (Iterator<Macro> iter = macros.iterator(); iter.hasNext();) {
+            Macro macro = iter.next();
+            picos.forEach(pico -> pico.checkInterference(macro);
+        }
         picos.forEach(pico -> mobiles.forEach(mobile -> new Edge<>(pico, mobile)));
         picos.forEach(Pico::init);
 
-//        macros.forEach(macro -> {
+//        for (Iterator<Macro> iter = macros.iterator(); iter.hasNext();) {
+//            Macro macro = iter.next(); {
 //            System.out.print(macro.idx + ":\t");
 //            macro.forEachMobiles(mobile -> System.out.print(mobile.idx + "\t"));
 //            System.out.println();
-//        });
+//        }
 
 //        picos.forEach(pico -> {
 //            System.out.print(pico.idx + ":\t");
@@ -67,7 +75,10 @@ public class Main {
 
         for (int t = 1; t <= SIMULATION_TIME; t++) {
 
-            macros.forEach(macro -> macro.generateChannelGain());
+            for (Iterator<Macro> iter = macros.iterator(); iter.hasNext();) {
+                Macro macro = iter.next();
+                macro.generateChannelGain();
+            }
             picos.forEach(pico -> pico.generateChannelGain());
 
             mobiles.forEach(mobile -> mobile.calculateDataRate());
