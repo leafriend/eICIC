@@ -3,18 +3,13 @@ package net.folab.eicic;
 import static java.lang.Math.*;
 import static java.lang.String.format;
 import static java.lang.System.out;
-import static java.util.Arrays.*;
 import static net.folab.eicic.Constants.*;
-import static org.javatuples.Pair.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
-
-import org.javatuples.Pair;
 
 import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.algorithm.Algorithm3;
@@ -25,6 +20,10 @@ import net.folab.eicic.model.Pico;
 
 public class Main {
 
+    public static interface Generator<T> {
+        public T generate(int idx, double[] values);
+    }
+
     public static void main(String[] args) throws IOException {
 
         long execute = System.currentTimeMillis();
@@ -32,19 +31,28 @@ public class Main {
 
         List<Macro> macros = loadObject(
                 "res/macro.txt",
-                pair -> new Macro(pair.getValue0(), pair.getValue1()[0], pair
-                        .getValue1()[1], MACRO_TX_POWER));
-
+                new Generator<Macro>() {
+                    @Override
+                    public Macro generate(int idx, double[] values) {
+                        return new Macro(idx, values[0], values[1], MACRO_TX_POWER);
+                    }
+                });
         List<Pico> picos = loadObject(
                 "res/pico.txt",
-                pair -> new Pico(pair.getValue0(), pair.getValue1()[0], pair
-                        .getValue1()[1], PICO_TX_POWER));
-
+                new Generator<Pico>() {
+                    @Override
+                    public Pico generate(int idx, double[] values) {
+                        return new Pico(idx, values[0], values[1], MACRO_TX_POWER);
+                    }
+                });
         List<Mobile> mobiles = loadObject(
                 "res/mobile.txt",
-                pair -> new Mobile(pair.getValue0(), pair.getValue1()[0], pair
-                        .getValue1()[1], MOBILE_QOS, pair.getValue1()[2], pair
-                        .getValue1()[3], pair.getValue1()[4]));
+                new Generator<Mobile>() {
+                    @Override
+                    public Mobile generate(int idx, double[] values) {
+                        return new Mobile(idx, values[0], values[1], MOBILE_QOS, values[2], values[3], values[4]);
+                    }
+                });
 
         for (Macro macro : macros)
             for (Mobile mobile : mobiles)
@@ -124,18 +132,21 @@ public class Main {
     }
 
     public static <T> List<T> loadObject(String file,
-            Function<Pair<Integer, double[]>, T> generator) throws IOException {
-        List<T> macros = new ArrayList<>();
+            Generator<T> generator) throws IOException {
+        List<T> list = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String line;
         int idx = 0;
         while ((line = reader.readLine()) != null) {
-            double[] values = stream(line.split("( |\t)+")).mapToDouble(
-                    Double::parseDouble).toArray();
-            macros.add(generator.apply(with(idx++, values)));
+            String[] tokens = line.split("( |\t)+");
+            double[] values = new double[tokens.length];
+            for (int i = 0; i < tokens.length; i++) {
+                values[i] = Double.parseDouble(tokens[i]);
+            }
+            list.add(generator.generate(idx++, values));
         }
         reader.close();
-        return macros;
+        return list;
     }
 
     private static void dump(int t, List<Macro> macros, List<Pico> picos,
@@ -145,10 +156,11 @@ public class Main {
             for (int i = 0; i < NUM_RB; i++) { System.out.print(mobile.connectionStates[i] + "\t"); }
             System.out.println();
         }
-        }
 
-        double throughput =
-        mobiles.stream().map(mobile -> mobile.getThroughput() == 0.0 ? 0.0 : log(mobile.getThroughput() / t)).reduce(0.0, Double::sum);
+        double throughput = 0.0;
+        for (Mobile mobile : mobiles) {
+            throughput += mobile.getThroughput() == 0.0 ? 0.0 : log(mobile.getThroughput() / t);
+        }
 
         out.print("idx\t" + "   Rate User\t" + "       (log)\t" + "  Throughput\t" + "       (log)\t"
                 + "      lambda\t" + "          mu\n");
