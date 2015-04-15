@@ -7,7 +7,6 @@ import static java.lang.Math.sqrt;
 import static java.util.Collections.sort;
 import static net.folab.eicic.Constants.MACRO_INTERFERING_RANGE_ON_PICO;
 import static net.folab.eicic.Constants.NUM_RB;
-import static net.folab.eicic.Constants.forEachRbs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +26,10 @@ public class Pico extends BaseStation<Pico> {
     }
 
     public void init() {
-        forEachRbs(i -> {
+        for (int i = 0; i < NUM_RB; i++) {
             absEdges[i] = new ArrayList<>(edges);
             nonEdges[i] = new ArrayList<>(edges);
-        });
+        }
     }
 
     public void checkInterference(Macro macro) {
@@ -46,11 +45,11 @@ public class Pico extends BaseStation<Pico> {
     }
 
     public void sortMobiles() {
-        forEachRbs(i -> {
+        for (int i = 0; i < NUM_RB; i++) {
             sort(absEdges[i], (a, b) -> (int) signum( //
                     a.mobile.absPicoLambdaR[i] - b.mobile.absPicoLambdaR[i] //
                     ));
-        });
+        }
     }
 
     public int absIndexOf(int i, Mobile mobile) {

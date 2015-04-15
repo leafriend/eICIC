@@ -10,7 +10,6 @@ import static net.folab.eicic.Constants.RATE_MAX;
 import static net.folab.eicic.Constants.STEPSIZE2;
 import static net.folab.eicic.Constants.STEPSIZE3;
 import static net.folab.eicic.Constants.STEPSIZE4;
-import static net.folab.eicic.Constants.forEachRbs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,7 +115,7 @@ public class Mobile {
 
     public void calculateThroughput() {
         instantRate = 0.0;
-        forEachRbs(i -> {
+        for (int i = 0; i < NUM_RB; i++) {
             switch (connectionStates[i]) {
             case NOTHING:
                 // instantRate += 0.0;
@@ -131,7 +130,7 @@ public class Mobile {
                 instantRate += nonPicoDataRateInMegaBps[i];
                 break;
             }
-        });
+        }
         throughput += instantRate;
     }
 

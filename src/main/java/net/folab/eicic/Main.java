@@ -80,15 +80,15 @@ public class Main {
 //                System.out.println("m: " + mobile.idx);
 //                mobile.allMacroEdges.forEach(edge -> {
 //                    System.out.print("    M: " + edge.baseStation.idx + "\t");
-//                    forEachRbs(i -> System.out.print(String.format("%8.4f",
-//                            edge.channelGain[i] * 1000000000l) + "\t"));
+//                    for (int i = 0; i < NUM_RB; i++) { System.out.print(String.format("%8.4f",
+//                            edge.channelGain[i] * 1000000000l) + "\t"); }
 //                    System.out.println();
 //                });
 //                System.out.println();
 //            });
 
 //            mobiles.forEach(mobile -> {
-//                forEachRbs(i -> System.out.print(mobile.connectionStates[i] + "\t"));
+//                for (int i = 0; i < NUM_RB; i++) { System.out.print(mobile.connectionStates[i] + "\t"); }
 //                System.out.println();
 //            });
 
@@ -128,7 +128,7 @@ public class Main {
             List<Mobile> mobiles, long elapsed, long execute) {
 
       mobiles.forEach(mobile -> {
-          forEachRbs(i -> System.out.print(mobile.connectionStates[i] + "\t"));
+          for (int i = 0; i < NUM_RB; i++) { System.out.print(mobile.connectionStates[i] + "\t"); }
           System.out.println();
       });
 

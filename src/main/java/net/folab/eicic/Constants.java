@@ -1,7 +1,5 @@
 package net.folab.eicic;
 
-import java.util.function.IntConsumer;
-
 public interface Constants {
 
     int SIMULATION_TIME = 1000;
@@ -47,10 +45,5 @@ public interface Constants {
     double STEPSIZE3 = 0.0001;
 
     double STEPSIZE4 = 0.00005;
-
-    static void forEachRbs(IntConsumer action) {
-        for (int i = 0; i < NUM_RB; i++)
-            action.accept(i);
-    }
 
 }

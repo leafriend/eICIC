@@ -49,7 +49,7 @@ public class Algorithm3 implements Algorithm {
             macros.forEach(macro -> macro.state = 1 == (((1 << macro.idx) & _mask) >> macro.idx));
 
             ConnectionState[][] states = new ConnectionState[NUM_MOBILES][NUM_RB];
-            mobiles.forEach(mobile -> forEachRbs(i -> {
+            mobiles.forEach(mobile -> for (int i = 0; i < NUM_RB; i++) {
                 states[mobile.idx][i] = NOTHING;
             }));
             double curr_sum_lambda_r = macros.stream().map(macro -> {
@@ -68,14 +68,14 @@ public class Algorithm3 implements Algorithm {
 
                         if (mobileConnectsMacro[mobile.idx]) {
 
-                            forEachRbs(ri -> {
+                            for (int i = 0; i < NUM_RB; i++) {
                                 double lambda_r = mobile.getMacroLambdaR()[ri];
                                 if (macro_rb_lambda_r[ri] < lambda_r) {
                                     macro_rb_lambda_r[ri] = lambda_r;
                                     macro_rb_mobile[ri] = mobile.idx;
                                 }
                                 states[mobile.idx][ri] = NOTHING;
-                            });
+                            }
 
                         }
 
@@ -126,18 +126,18 @@ public class Algorithm3 implements Algorithm {
             if (curr_sum_lambda_r > best_sum_lambda_r) {
                 best_sum_lambda_r = curr_sum_lambda_r;
                 macros.forEach(macro -> bestMacroStates[macro.idx] = macro.state);
-                mobiles.forEach(mobile -> forEachRbs(i -> {
+                mobiles.forEach(mobile -> for (int i = 0; i < NUM_RB; i++) {
                     bestConnectionStates[mobile.idx][i] = states[mobile.idx][i];
-                }));
+                });
             }
 
         }
 
         macros.forEach(macro -> macro.state = bestMacroStates[macro.idx]);
 
-        mobiles.forEach(mobile -> forEachRbs(i -> {
+        mobiles.forEach(mobile -> for (int i = 0; i < NUM_RB; i++) {
             mobile.connectionStates[i] = bestConnectionStates[mobile.idx][i];
-        }));
+        });
 
     }
 
