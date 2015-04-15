@@ -36,7 +36,7 @@ public class Algorithm3 implements Algorithm {
 
         });
 
-        double best_sum_lambda_r = Double.MIN_VALUE;
+        double best_sum_lambda_r = Double.NEGATIVE_INFINITY;
         boolean[] bestMacroStates = new boolean[NUM_MACROS];
         ConnectionState[][] bestConnectionStates = new ConnectionState[NUM_MOBILES][NUM_RB];
         mobiles.forEach(mobile -> forEachRbs(i -> {
