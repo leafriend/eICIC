@@ -79,7 +79,6 @@ public class Edge<T extends BaseStation<T>> {
     }
 
     public void setActivated(int i, boolean isActivated) {
-        this.isActivated[i] = isActivated;
         if (isActivated) {
             Edge<T> activeBaseStationEdge = baseStation.activeEdges[i];
             Edge<? extends BaseStation<?>> activeMobileEdge = mobile.activeEdges[i];
@@ -98,11 +97,14 @@ public class Edge<T extends BaseStation<T>> {
             baseStation.activeEdges[i] = this;
             mobile.activeEdges[i] = this;
         } else {
-            assert baseStation.activeEdges[i] == null || baseStation.activeEdges[i] == this;
-            assert mobile.activeEdges[i] == null || mobile.activeEdges[i] == this;
-            baseStation.activeEdges[i] = null;
-            mobile.activeEdges[i] = null;
+            if (this.isActivated[i]) {
+                assert baseStation.activeEdges[i] == null || baseStation.activeEdges[i] == this;
+                assert mobile.activeEdges[i] == null || mobile.activeEdges[i] == this;
+                baseStation.activeEdges[i] = null;
+                mobile.activeEdges[i] = null;
+            }
         }
+        this.isActivated[i] = isActivated;
     }
 
     @Override
