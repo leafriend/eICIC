@@ -1,5 +1,7 @@
 package net.folab.eicic.model;
 
+import static net.folab.eicic.Constants.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,9 @@ public abstract class BaseStation<T extends BaseStation<T>> {
     public final double txPower;
 
     final List<Edge<T>> edges = new ArrayList<>();
+
+    @SuppressWarnings("unchecked")
+    private final Edge<T>[] activeEdges = new Edge[NUM_RB];
 
     final List<Edge<T>> edgesInterfered = new ArrayList<>();
 
@@ -37,6 +42,20 @@ public abstract class BaseStation<T extends BaseStation<T>> {
         }
     }
 
+    public void setEdgeActivated(int i, Edge<T> edge, boolean isActivated) {
+        assert edge.baseStation == this : "edge.baseStation != this";
+        Edge<T> activeEdge = activeEdges[i];
+        if (activeEdge != null)
+            activeEdge.isActivated = false;
+        edge.isActivated = true;
+        activeEdges[i] = edge;
+    }
+
+    public List<Edge<T>> getEdges() {
+        return edges;
+    }
+
+    @Deprecated
     public List<Mobile> getMobiles() {
         return mobiles;
     }

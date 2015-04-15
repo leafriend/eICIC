@@ -19,6 +19,8 @@ public class Edge<T extends BaseStation<T>> {
 
     final double[] channelGain = new double[NUM_RB];
 
+    boolean isActivated;
+
     public Edge(T baseStation, Mobile mobile) {
         super();
         this.baseStation = baseStation;
