@@ -30,6 +30,9 @@ public class Mobile {
 
     Edge<Macro> macroEdge;
 
+    @SuppressWarnings("unchecked")
+    final Edge<Macro>[] activeMacroEdges = new Edge[NUM_RB];
+
     final List<Edge<Macro>> allMacroEdges = new ArrayList<>();
 
     final double[] macroDataRate = new double[NUM_RB];
@@ -37,6 +40,9 @@ public class Mobile {
     final double[] macroLambdaR = new double[NUM_RB];
 
     Edge<Pico> picoEdge;
+
+    @SuppressWarnings("unchecked")
+    final Edge<Pico>[] activePicoEdges = new Edge[NUM_RB];
 
     final List<Edge<Pico>> allPicoEdges = new ArrayList<>();
 
