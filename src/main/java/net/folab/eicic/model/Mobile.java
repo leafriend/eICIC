@@ -16,8 +16,6 @@ public class Mobile {
 
     public final double qos;
 
-    public ConnectionState[] connectionStates = new ConnectionState[NUM_RB];
-
     private double instantRate;
 
     private double throughput;
@@ -115,23 +113,20 @@ public class Mobile {
     public void calculateThroughput() {
         instantRate = 0.0;
         for (int i = 0; i < NUM_RB; i++) {
-            switch (connectionStates[i]) {
-            case NOTHING:
-                // instantRate += 0.0;
-                break;
-            case MACRO:
-                instantRate += macroDataRate[i];
-                break;
-            case ABS_PICO:
-                instantRate += absPicoDataRate[i];
-                break;
-            case NON_PICO:
-                instantRate += nonPicoDataRate[i];
-                break;
-            default:
-                throw new RuntimeException("Unexpected connection state on "
-                        + this + ".connectionStates[" + i + "]: "
-                        + connectionStates[i]);
+            Edge<?> edge = activeEdges[i];
+            if (edge != null) {
+                assert edge.isActivated(i);
+                if (edge.baseStation instanceof Macro) {
+                    instantRate += macroDataRate[i];
+
+                } else if (edge.baseStation instanceof Pico) {
+                    if (((Pico) edge.baseStation).isAbs()) {
+                        instantRate += absPicoDataRate[i];
+                    } else {
+                        instantRate += nonPicoDataRate[i];
+                    }
+
+                }
             }
         }
         throughput += instantRate;
@@ -175,8 +170,16 @@ public class Mobile {
         return macroEdge.baseStation;
     }
 
+    public Edge<Macro> getMacroEdge() {
+        return macroEdge;
+    }
+
     public Pico getPico() {
         return picoEdge.baseStation;
+    }
+
+    public Edge<Pico> getPicoEdge() {
+        return picoEdge;
     }
 
     public double[] getMacroLambdaR() {

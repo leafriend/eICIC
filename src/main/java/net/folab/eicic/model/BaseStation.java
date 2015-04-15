@@ -15,7 +15,7 @@ public abstract class BaseStation<T extends BaseStation<T>> {
 
     public final double txPower;
 
-    final List<Edge<T>> edges = new ArrayList<>();
+    public final List<Edge<T>> edges = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
     final Edge<T>[] activeEdges = new Edge[NUM_RB];

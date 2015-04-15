@@ -1,11 +1,10 @@
 package net.folab.eicic.algorithm;
 
 import static net.folab.eicic.Constants.*;
-import static net.folab.eicic.model.ConnectionState.*;
 
 import java.util.List;
 
-import net.folab.eicic.model.ConnectionState;
+import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
@@ -16,8 +15,18 @@ public class Algorithm3 implements Algorithm {
     public void calculate(List<Macro> macros, List<Pico> picos,
             List<Mobile> mobiles) {
 
+        for (Macro macro : macros)
+            for (Edge<Macro> edge : macro.edges)
+                for (int i = 0; i < NUM_RB; i++)
+                    edge.setActivated(i, false);
+
+        for (Pico pico : picos)
+            for (Edge<Pico> edge : pico.edges)
+                for (int i = 0; i < NUM_RB; i++)
+                    edge.setActivated(i, false);
+
         boolean[] bestMacroStates = new boolean[NUM_MACROS];
-        ConnectionState[][] bestMobileStates = new ConnectionState[NUM_MOBILES][NUM_RB];
+        Edge<?>[][] bestEdges = new Edge[NUM_MOBILES][NUM_RB];
 
         final boolean[] mobileConnectsMacro = chooseMobileConnection(mobiles);
 
@@ -31,10 +40,7 @@ public class Algorithm3 implements Algorithm {
             for (int m = 0; m < NUM_MACROS; m++)
                 macroStates[m] = 1 == (((1 << m) & mask) >> m);
 
-            ConnectionState[][] mobileStates = new ConnectionState[NUM_MOBILES][NUM_RB];
-            for (Mobile mobile : mobiles)
-                for (int i = 0; i < NUM_RB; i++)
-                    mobileStates[mobile.idx][i] = NOTHING;
+            Edge<?>[][] edges = new Edge[NUM_MOBILES][NUM_RB];
 
             double lambdaRSum = 0.0;
             for (Macro macro : macros) {
@@ -57,13 +63,12 @@ public class Algorithm3 implements Algorithm {
                                     macroLambdaRs[i] = lambdaR;
                                     macroMobiles[i] = mobile.idx;
                                 }
-                                mobileStates[mobile.idx][i] = NOTHING;
                             }
 
                         } else {
 
                             lambdaRSum += calculatePicoLambdaRSum(mobile,
-                                    mobileStates[mobile.idx]);
+                                    edges[mobile.idx]);
 
                         }
 
@@ -73,7 +78,8 @@ public class Algorithm3 implements Algorithm {
                         int mobileIdx = macroMobiles[ri];
                         if (mobileIdx >= 0) {
                             lambdaRSum += macroLambdaRs[ri];
-                            mobileStates[mobileIdx][ri] = MACRO;
+                            edges[mobileIdx][ri] = mobiles.get(mobileIdx)
+                                    .getMacroEdge();
                         }
                     }
 
@@ -83,7 +89,7 @@ public class Algorithm3 implements Algorithm {
 
                     for (Mobile mobile : macro.getMobiles())
                         lambdaRSum += calculatePicoLambdaRSum(mobile,
-                                mobileStates[mobile.idx]);
+                                edges[mobile.idx]);
 
                 }
 
@@ -94,8 +100,8 @@ public class Algorithm3 implements Algorithm {
                 for (int m = 0; m < NUM_MACROS; m++)
                     bestMacroStates[m] = macroStates[m];
                 for (int u = 0; u < NUM_MOBILES; u++)
-                        for (int i = 0; i < NUM_RB; i++)
-                        bestMobileStates[u][i] = mobileStates[u][i];
+                    for (int i = 0; i < NUM_RB; i++)
+                        bestEdges[u][i] = edges[u][i];
             }
 
         }
@@ -105,12 +111,13 @@ public class Algorithm3 implements Algorithm {
 
         for (Mobile mobile : mobiles)
             for (int i = 0; i < NUM_RB; i++)
-                mobile.connectionStates[i] = bestMobileStates[mobile.idx][i];
+                if (bestEdges[mobile.idx][i] != null)
+                    bestEdges[mobile.idx][i].setActivated(i, true);
+        ;
 
     }
 
-    public double calculatePicoLambdaRSum(Mobile mobile,
-            ConnectionState[] connectionStates) {
+    public double calculatePicoLambdaRSum(Mobile mobile, Edge<?>[] edges) {
         double lambdaRSum = 0.0;
         Pico pico = mobile.getPico();
         boolean isAbs = pico.isAbs();
@@ -118,16 +125,16 @@ public class Algorithm3 implements Algorithm {
             if (isAbs) {
                 if (pico.absIndexOf(ri, mobile) == 0) {
                     lambdaRSum += mobile.getAbsPicoLambdaR()[ri];
-                    connectionStates[ri] = ABS_PICO;
+                    edges[ri] = mobile.getPicoEdge();
                 } else {
-                    connectionStates[ri] = NOTHING;
+                    edges[ri] = null;
                 }
             } else {
                 if (pico.nonIndexOf(ri, mobile) == 0) {
                     lambdaRSum += mobile.getNonPicoLambdaR()[ri];
-                    connectionStates[ri] = NON_PICO;
+                    edges[ri] = mobile.getPicoEdge();
                 } else {
-                    connectionStates[ri] = NOTHING;
+                    edges[ri] = null;
                 }
             }
         }

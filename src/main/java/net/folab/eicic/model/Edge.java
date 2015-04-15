@@ -83,16 +83,23 @@ public class Edge<T extends BaseStation<T>> {
         if (isActivated) {
             Edge<T> activeBaseStationEdge = baseStation.activeEdges[i];
             Edge<? extends BaseStation<?>> activeMobileEdge = mobile.activeEdges[i];
-            assert activeBaseStationEdge == activeMobileEdge;
-            if (activeBaseStationEdge != null) {
+            assert activeBaseStationEdge == activeMobileEdge : activeBaseStationEdge
+                    + " != "
+                    + activeMobileEdge
+                    + " for "
+                    + this
+                    + "["
+                    + i
+                    + "]: " + isActivated;
+            if (activeBaseStationEdge != null)
                 activeBaseStationEdge.isActivated[i] = false;
+            if (activeMobileEdge != null)
                 activeMobileEdge.isActivated[i] = false;
-            }
             baseStation.activeEdges[i] = this;
             mobile.activeEdges[i] = this;
         } else {
-            assert baseStation.activeEdges[i] == this;
-            assert mobile.activeEdges[i] == this;
+            assert baseStation.activeEdges[i] == null || baseStation.activeEdges[i] == this;
+            assert mobile.activeEdges[i] == null || mobile.activeEdges[i] == this;
             baseStation.activeEdges[i] = null;
             mobile.activeEdges[i] = null;
         }
