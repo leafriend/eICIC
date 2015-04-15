@@ -42,11 +42,6 @@ public abstract class BaseStation<T extends BaseStation<T>> {
         }
     }
 
-    public List<Edge<T>> getEdges() {
-        return edges;
-    }
-
-    @Deprecated
     public List<Mobile> getMobiles() {
         return mobiles;
     }
