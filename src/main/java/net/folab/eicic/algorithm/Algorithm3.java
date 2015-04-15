@@ -53,9 +53,12 @@ public class Algorithm3 implements Algorithm {
             }
 
             ConnectionState[][] states = new ConnectionState[NUM_MOBILES][NUM_RB];
-            mobiles.forEach(mobile -> for (int i = 0; i < NUM_RB; i++) {
-                states[mobile.idx][i] = NOTHING;
-            }));
+            for (Iterator<Mobile> ui = mobiles.iterator(); ui.hasNext();) {
+                Mobile mobile = ui.next();
+                for (int i = 0; i < NUM_RB; i++) {
+                    states[mobile.idx][i] = NOTHING;
+                }
+            }
             double curr_sum_lambda_r = macros.stream().map(macro -> {
 
                 double lambdaR = 0.0;
@@ -133,9 +136,12 @@ public class Algorithm3 implements Algorithm {
                     Macro macro = iter.next();
                     bestMacroStates[macro.idx] = macro.state;
                 }
-                mobiles.forEach(mobile -> for (int i = 0; i < NUM_RB; i++) {
-                    bestConnectionStates[mobile.idx][i] = states[mobile.idx][i];
-                });
+                for (Iterator<Mobile> ui = mobiles.iterator(); ui.hasNext();) {
+                    Mobile mobile = ui.next();
+                    for (int i = 0; i < NUM_RB; i++) {
+                        bestConnectionStates[mobile.idx][i] = states[mobile.idx][i];
+                    }
+                }
             }
 
         }
@@ -145,9 +151,12 @@ public class Algorithm3 implements Algorithm {
             macro.state = bestMacroStates[macro.idx];
         }
 
-        mobiles.forEach(mobile -> for (int i = 0; i < NUM_RB; i++) {
-            mobile.connectionStates[i] = bestConnectionStates[mobile.idx][i];
-        });
+        for (Iterator<Mobile> ui = mobiles.iterator(); ui.hasNext();) {
+            Mobile mobile = ui.next();
+            for (int i = 0; i < NUM_RB; i++) {
+                mobile.connectionStates[i] = bestConnectionStates[mobile.idx][i];
+            }
+        }
 
     }
 
