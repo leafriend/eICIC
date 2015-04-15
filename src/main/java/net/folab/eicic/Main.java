@@ -112,12 +112,13 @@ public class Main {
 //            for (Iterator<Mobile> ui = mobiles.iterator(); ui.hasNext();) {
 //                Mobile mobile = ui.next();
 //                System.out.println("m: " + mobile.idx);
-//                mobile.allMacroEdges.forEach(edge -> {
+//                for (Iterator<Edge<Macro>> ei = mobile.allMacroEdges.iteraror(); ei.hasNext();) {
+//                    Edge<Macro> edge = ei.next();
 //                    System.out.print("    M: " + edge.baseStation.idx + "\t");
 //                    for (int i = 0; i < NUM_RB; i++) { System.out.print(String.format("%8.4f",
 //                            edge.channelGain[i] * 1000000000l) + "\t"); }
 //                    System.out.println();
-//                });
+//                }
 //                System.out.println();
 //            }
 
