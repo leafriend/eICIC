@@ -152,10 +152,10 @@ public class Main {
     private static void dump(int t, List<Macro> macros, List<Pico> picos,
             List<Mobile> mobiles, long elapsed, long execute) {
 
-        for (Mobile mobile : mobiles) {
-            for (int i = 0; i < NUM_RB; i++) { System.out.print(mobile.connectionStates[i] + "\t"); }
-            System.out.println();
-        }
+//        for (Mobile mobile : mobiles) {
+//            for (int i = 0; i < NUM_RB; i++) { System.out.print(mobile.connectionStates[i] + "\t"); }
+//            System.out.println();
+//        }
 
         double throughput = 0.0;
         for (Mobile mobile : mobiles) {
