@@ -94,7 +94,7 @@ public class Mobile {
             absPicoDataRateInMegaBps[i] = calculateDataRate(BW_PER_RB,
                     picoEdge.channelGain[i], //
                     /* macroChannelGain + */picoChannelGain
-                            - macroEdge.channelGain[i] + NOISE, //
+                            - picoEdge.channelGain[i] + NOISE, //
                     MEGA);
             absPicoLambdaR[i] = lambda * absPicoDataRateInMegaBps[i];
 
