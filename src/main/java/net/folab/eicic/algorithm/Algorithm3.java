@@ -60,43 +60,30 @@ public class Algorithm3 implements Algorithm {
                                 mobileStates[mobile.idx][i] = NOTHING;
                             }
 
+                        } else {
+
+                            lambdaRSum += calculatePicoLambdaRSum(mobile,
+                                    mobileStates[mobile.idx]);
+
                         }
 
                     }
 
                     for (int ri = 0; ri < NUM_RB; ri++) {
-                        if (macroMobiles[ri] >= 0) {
+                        int mobileIdx = macroMobiles[ri];
+                        if (mobileIdx >= 0) {
                             lambdaRSum += macroLambdaRs[ri];
-                            mobileStates[macroMobiles[ri]][ri] = MACRO;
+                            mobileStates[mobileIdx][ri] = MACRO;
                         }
-
                     }
 
                 } else {
                     // Mobile의 Macro가 꺼졌다면
                     // Mobile의 Pico의 ABS 여부에 따라 lambdaR 가산
 
-                    for (Mobile mobile : macro.getMobiles()) {
-                        Pico pico = mobile.getPico();
-                        boolean isAbs = pico.isAbs();
-                        for (int ri = 0; ri < NUM_RB; ri++) {
-                            if (isAbs) {
-                                if (pico.absIndexOf(ri, mobile) == 0) {
-                                    lambdaRSum += mobile.getAbsPicoLambdaR()[ri];
-                                    mobileStates[mobile.idx][ri] = ABS_PICO;
-                                } else {
-                                    mobileStates[mobile.idx][ri] = NOTHING;
-                                }
-                            } else {
-                                if (pico.nonIndexOf(ri, mobile) == 0) {
-                                    lambdaRSum += mobile.getNonPicoLambdaR()[ri];
-                                    mobileStates[mobile.idx][ri] = NON_PICO;
-                                } else {
-                                    mobileStates[mobile.idx][ri] = NOTHING;
-                                }
-                            }
-                        }
-                    }
+                    for (Mobile mobile : macro.getMobiles())
+                        lambdaRSum += calculatePicoLambdaRSum(mobile,
+                                mobileStates[mobile.idx]);
 
                 }
 
@@ -120,6 +107,31 @@ public class Algorithm3 implements Algorithm {
             for (int i = 0; i < NUM_RB; i++)
                 mobile.connectionStates[i] = bestMobileStates[mobile.idx][i];
 
+    }
+
+    public double calculatePicoLambdaRSum(Mobile mobile,
+            ConnectionState[] connectionStates) {
+        double lambdaRSum = 0.0;
+        Pico pico = mobile.getPico();
+        boolean isAbs = pico.isAbs();
+        for (int ri = 0; ri < NUM_RB; ri++) {
+            if (isAbs) {
+                if (pico.absIndexOf(ri, mobile) == 0) {
+                    lambdaRSum += mobile.getAbsPicoLambdaR()[ri];
+                    connectionStates[ri] = ABS_PICO;
+                } else {
+                    connectionStates[ri] = NOTHING;
+                }
+            } else {
+                if (pico.nonIndexOf(ri, mobile) == 0) {
+                    lambdaRSum += mobile.getNonPicoLambdaR()[ri];
+                    connectionStates[ri] = NON_PICO;
+                } else {
+                    connectionStates[ri] = NOTHING;
+                }
+            }
+        }
+        return lambdaRSum;
     }
 
     /**
