@@ -121,21 +121,27 @@ public class Algorithm3 implements Algorithm {
         double lambdaRSum = 0.0;
         Pico pico = mobile.getPico();
         boolean isAbs = pico.isAbs();
-        for (int ri = 0; ri < NUM_RB; ri++) {
+        List<Edge<Pico>>[] absEdges = pico.getAbsEdges();
+        List<Edge<Pico>>[] nonEdges = pico.getNonEdges();
+        RB: for (int i = 0; i < NUM_RB; i++) {
             if (isAbs) {
-                if (pico.absIndexOf(ri, mobile) == 0) {
-                    lambdaRSum += mobile.getAbsPicoLambdaR()[ri];
-                    edges[ri] = mobile.getPicoEdge();
-                } else {
-                    edges[ri] = null;
+                if (!(mobile.getActiveEdges()[i].baseStation instanceof Pico)) {
+                    for (Edge<Pico> edge : absEdges[i]) {
+                        lambdaRSum += mobile.getAbsPicoLambdaR()[i];
+                        edges[i] = mobile.getPicoEdge();
+                        continue RB;
+                    }
                 }
+                edges[i] = null;
             } else {
-                if (pico.nonIndexOf(ri, mobile) == 0) {
-                    lambdaRSum += mobile.getNonPicoLambdaR()[ri];
-                    edges[ri] = mobile.getPicoEdge();
-                } else {
-                    edges[ri] = null;
+                if (!(mobile.getActiveEdges()[i].baseStation instanceof Pico)) {
+                    for (Edge<Pico> edge : absEdges[i]) {
+                        lambdaRSum += mobile.getNonPicoLambdaR()[i];
+                        edges[i] = mobile.getPicoEdge();
+                        continue RB;
+                    }
                 }
+                edges[i] = null;
             }
         }
         return lambdaRSum;

@@ -210,4 +210,8 @@ public class Mobile {
         return mu;
     }
 
+    public Edge<? extends BaseStation<?>>[] getActiveEdges() {
+        return activeEdges;
+    }
+
 }

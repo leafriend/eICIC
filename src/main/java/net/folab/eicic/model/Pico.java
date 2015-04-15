@@ -86,4 +86,12 @@ public class Pico extends BaseStation<Pico> {
         return nonEdges[i].indexOf(mobile.picoEdge);
     }
 
+    public List<Edge<Pico>>[] getAbsEdges() {
+        return absEdges;
+    }
+
+    public List<Edge<Pico>>[] getNonEdges() {
+        return nonEdges;
+    }
+
 }
