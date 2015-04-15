@@ -45,16 +45,19 @@ public class Algorithm3 implements Algorithm {
 
         /* 가능한 모든 Macro 상태(2 ^ NUM_MACRO = 1 << NUM_MACRO)에 대한 반복문 */
         int num_macro_state = 1 << NUM_MACROS;
-        for (int mask = 0; mask < num_macro_state; mask++) {
+        for (int mask = 1; mask < num_macro_state; mask++) {
 
             /* Macro 상태(ON/OFF) 지정 */
             final int _mask = mask;
             macros.forEach(macro -> macro.state = 1 == (((1 << macro.idx) & _mask) >> macro.idx));
 
-            double curr_sum_lambda_r = 0.0;
-
             ConnectionState[][] states = new ConnectionState[NUM_MOBILES][NUM_RB];
-            macros.forEach(macro -> {
+            mobiles.forEach(mobile -> forEachRbs(i -> {
+                states[mobile.idx][i] = NOTHING;
+            }));
+            double curr_sum_lambda_r = macros.stream().map(macro -> {
+
+                double lambdaR = 0.0;
 
                 if (macro.state) {
                     // Mobile의 Macro가 켜졌다면
@@ -83,7 +86,7 @@ public class Algorithm3 implements Algorithm {
 
                     for (int ri = 0; ri < NUM_RB; ri++) {
                         if (macro_rb_mobile[ri] >= 0) {
-                            // TODO curr_sum_lambda_r += macro_rb_lambda_r[ri];
+                            lambdaR += macro_rb_lambda_r[ri];
                             states[macro_rb_mobile[ri]][ri] = MACRO;
                         }
 
@@ -93,31 +96,35 @@ public class Algorithm3 implements Algorithm {
                     // Mobile의 Macro가 꺼졌다면
                     // Mobile의 Pico의 ABS 여부에 따라 lambda_r 가산
 
-                    macro.forEachMobiles(mobile -> {
+                    lambdaR += macro.mapMobiles(mobile -> {
+                        double macroLambdaR = 0.0;
                         Pico pico = mobile.getPico();
                         boolean isAbs = pico.isAbs();
-                        forEachRbs(ri -> {
+                        for (int ri = 0; ri < NUM_RB; ri++) {
                             if (isAbs) {
                                 if (pico.absIndexOf(ri, mobile) == 0) {
-                                    // TODO curr_sum_lambda_r += mobile.getAbsPicoLambdaR()[ri];
+                                    macroLambdaR += mobile.getAbsPicoLambdaR()[ri];
                                     states[mobile.idx][ri] = ABS_PICO;
                                 } else {
                                     states[mobile.idx][ri] = NOTHING;
                                 }
                             } else {
                                 if (pico.nonIndexOf(ri, mobile) == 0) {
-                                    // TODO curr_sum_lambda_r += mobile.getNonPicoLambdaR()[ri];
+                                    macroLambdaR += mobile.getNonPicoLambdaR()[ri];
                                     states[mobile.idx][ri] = NON_PICO;
                                 } else {
                                     states[mobile.idx][ri] = NOTHING;
                                 }
                             }
-                        });
-                    });
+                        }
+                        return macroLambdaR;
+                    }).reduce(0.0, Double::sum);
 
                 }
 
-            });
+                return lambdaR;
+
+            }).reduce(0.0, Double::sum);
 
             if (curr_sum_lambda_r > best_sum_lambda_r) {
                 best_sum_lambda_r = curr_sum_lambda_r;
