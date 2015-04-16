@@ -56,7 +56,7 @@ public class Algorithm3 implements Algorithm {
                         if (mobileConnectsMacro[mobile.idx]) {
 
                             lambdaRSum += calculateMacroLambdaRSum(mobile,
-                                    mobileEdges);
+                                    mobileEdges, mobileConnectsMacro);
 
                         } else {
 
@@ -109,15 +109,26 @@ public class Algorithm3 implements Algorithm {
      * @param edges
      *            Mobile의 Subchannel 연결 상태를 확인한 결과를 저장할 배열; 메소드 호출 후 배열의 내용이
      *            바뀐다.
+     * @param mobileConnectsMacro
+     *            각 Mobile의 Macro 연결 여부; Macro Subchannel 순위에서 Macro에 연결되지 않은
+     *            Mobile을 제외할 때 사용
      *
      * @return 전달받은 Mobile의 Lambda R 합
      */
-    public static double calculateMacroLambdaRSum(Mobile mobile, Edge<?>[] edges) {
+    public static double calculateMacroLambdaRSum(Mobile mobile, Edge<?>[] edges,
+            boolean[] mobileConnectsMacro) {
         double lambdaRSum = 0;
         List<Edge<Macro>>[] sortedEdges = mobile.getMacro().getSortedEdges();
         for (int i = 0; i < NUM_RB; i++) {
+            Edge<Macro> firstEdge = null;
+            for (Edge<Macro> edge : sortedEdges[i]) {
+                if (!mobileConnectsMacro[edge.mobile.idx])
+                    continue;
+                firstEdge = edge;
+                break;
+            }
             Edge<Macro> macroEdge = mobile.getMacroEdge();
-            if (sortedEdges[i] == macroEdge) {
+            if (firstEdge == macroEdge) {
                 lambdaRSum += mobile.getMacroLambdaR()[i];
                 edges[i] = macroEdge;
             }
