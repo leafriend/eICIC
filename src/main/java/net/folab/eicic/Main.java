@@ -24,10 +24,8 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Console console = new TextConsole();
         Algorithm algorithm = new Algorithm3();
-        new Main(console, algorithm).execute();
+        new Main().execute(console, algorithm, SIMULATION_TIME);
     }
-
-    private Console console;
 
     private List<Macro> macros;
 
@@ -35,12 +33,9 @@ public class Main {
 
     private List<Mobile> mobiles;
 
-    private Algorithm algorithm;
+    private int t = 1;
 
-    public Main(Console console, Algorithm algorithm) throws IOException {
-
-        this.console = console;
-        this.algorithm = algorithm;
+    public Main() throws IOException {
 
         macros = loadObject(
                 "res/macro.txt",
@@ -95,14 +90,16 @@ public class Main {
 
     }
 
-    public void execute() {
+    public void execute(final Console console, final Algorithm algorithm,
+            final int times) {
+
+        new Thread() {
+            public void run() {
 
         long execute = System.currentTimeMillis();
         long elapsed = System.currentTimeMillis();
 
-        int times = SIMULATION_TIME;
-
-        for (int t = 1; t <= times; t++) {
+        for (; t <= times; t++) {
 
             for (Macro macro : macros)
                 macro.generateChannelGain();
@@ -124,7 +121,7 @@ public class Main {
 //                for (Edge<Macro> edge : mobile.allMacroEdges) {
 //                    System.out.print("    M: " + edge.baseStation.idx + "\t");
 //                    for (int i = 0; i < NUM_RB; i++) { System.out.print(String.format("%8.4f",
-//                            edge.channelGain[i] * 1000000000l) + "\t"); }
+//                        edge.channelGain[i] * 1000000000l) + "\t"); }
 //                    System.out.println();
 //                }
 //                System.out.println();
@@ -148,6 +145,9 @@ public class Main {
         }
 
         console.dump(SIMULATION_TIME, macros, picos, mobiles, elapsed, execute);
+
+            };
+        }.start();
 
     }
 
