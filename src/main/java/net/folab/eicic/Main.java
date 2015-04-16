@@ -22,7 +22,9 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        new Main().execute();
+        Console console = new TextConsole();
+        Algorithm algorithm = new Algorithm3();
+        new Main(console, algorithm).execute();
     }
 
     private Console console;
@@ -35,9 +37,10 @@ public class Main {
 
     private Algorithm algorithm;
 
-    public Main() throws IOException {
+    public Main(Console console, Algorithm algorithm) throws IOException {
 
-        console = new TextConsole();
+        this.console = console;
+        this.algorithm = algorithm;
 
         macros = loadObject(
                 "res/macro.txt",
@@ -89,8 +92,6 @@ public class Main {
 //            pico.forEachMobiles(mobile -> System.out.print(mobile.idx + "\t"));
 //            System.out.println();
 //        }
-
-        algorithm = new Algorithm3();
 
     }
 
