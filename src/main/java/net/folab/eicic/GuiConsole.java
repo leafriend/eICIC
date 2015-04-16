@@ -359,10 +359,8 @@ public class GuiConsole implements Console {
                     return;
                 timeText.setText(valueOf(t));
 
-                long now = System.currentTimeMillis() - execute;
-
-                long sec = now / 1000;
-                long mil = now - sec * 1000;
+                long sec = execute / 1000;
+                long mil = execute - sec * 1000;
 
                 long min = sec / 60;
                 sec -= min * 60;

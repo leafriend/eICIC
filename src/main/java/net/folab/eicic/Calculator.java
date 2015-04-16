@@ -17,6 +17,8 @@ public class Calculator {
 
     private int time = 1;
 
+    private int accumuMillis = 0;
+
     private boolean running = false;
 
     private Algorithm algorithm;
@@ -37,10 +39,11 @@ public class Calculator {
 
         running = true;
 
+        final long started = System.currentTimeMillis();
+
         new Thread() {
             public void run() {
 
-                long execute = System.currentTimeMillis();
                 long elapsed = System.currentTimeMillis();
 
                 for (; running && time <= times; time++) {
@@ -88,15 +91,20 @@ public class Calculator {
                         mobile.calculateDualVariables(_t);
 
                     elapsed = console.dump(time, macros, picos, mobiles,
-                            elapsed, execute);
+                            elapsed, System.currentTimeMillis() - started
+                                    + accumuMillis);
 
                 }
 
                 elapsed = console.dump(time - 1, macros, picos, mobiles,
-                        elapsed, execute);
+                        elapsed, System.currentTimeMillis() - started
+                                + accumuMillis);
+
+                accumuMillis += System.currentTimeMillis() - started;
 
             };
         }.start();
+
 
     }
 
