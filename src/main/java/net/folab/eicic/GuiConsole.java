@@ -151,16 +151,16 @@ public class GuiConsole implements Console {
         layoutData.bottom = new FormAttachment(100, 0);
         table.setLayoutData(layoutData);
 
-        addColumn(table, "#");
-        addColumn(table, "User Rate");
-        addColumn(table, "log(User Rate)");
-        addColumn(table, "Throughput");
-        addColumn(table, "log(Throughput)");
-        addColumn(table, LAMBDA);
-        addColumn(table, MU);
+        addColumn(table, 32, "#");
+        addColumn(table, 96, "User Rate");
+        addColumn(table, 96, "log(User Rate)");
+        addColumn(table, 96, "Throughput");
+        addColumn(table, 96, "log(Throughput)");
+        addColumn(table, 96, LAMBDA);
+        addColumn(table, 96, MU);
 
         for (int i = 0; i < NUM_RB; i++)
-            addColumn(table, valueOf(i));
+            addColumn(table, 96, valueOf(i));
 
         for (int i = 0; i < NUM_MOBILES; i++) {
             TableItem item = new TableItem(table, SWT.NONE);
@@ -169,14 +169,11 @@ public class GuiConsole implements Console {
 
     }
 
-    public static void addColumn(Table table, String text) {
+    public static void addColumn(Table table, int width, String text) {
         TableColumn column = new TableColumn(table, SWT.NONE);
         column.setText(text);
         column.setAlignment(SWT.RIGHT);
-        if ("#".equals(text))
-            column.setWidth(32);
-        else
-            column.setWidth(96);
+        column.setWidth(width);
     }
 
     @Override
