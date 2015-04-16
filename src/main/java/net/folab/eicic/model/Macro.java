@@ -36,7 +36,8 @@ public class Macro extends BaseStation<Macro> {
 
     public boolean state;
 
-    private List<Edge<Macro>>[] sortedEdges;
+    @SuppressWarnings("unchecked")
+    private final List<Edge<Macro>>[] sortedEdges = new List[NUM_RB];;
 
     public Macro(int idx, double x, double y, double txPower) {
         super(idx, x, y, txPower);
@@ -59,6 +60,10 @@ public class Macro extends BaseStation<Macro> {
         for (int i = 0; i < NUM_RB; i++) {
             sort(sortedEdges[i], COMPARATORS[i]);
         }
+    }
+
+    public List<Edge<Macro>>[] getSortedEdges() {
+        return sortedEdges;
     }
 
 }
