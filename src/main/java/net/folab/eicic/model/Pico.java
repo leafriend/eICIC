@@ -69,7 +69,7 @@ public class Pico extends BaseStation<Pico> {
             if (macro.state)
                 return false;
         }
-        return false;
+        return true;
     }
 
     public void sortMobiles() {
