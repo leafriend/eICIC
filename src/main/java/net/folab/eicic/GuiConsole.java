@@ -327,8 +327,6 @@ public class GuiConsole implements Console {
     @Override
     public void start(final Calculator calculator) {
         this.calculator = calculator;
-        SelectionEvent e = null;
-        executeButtonListener.widgetSelected(e);
 
         shell.open();
         shell.addShellListener(new ShellAdapter() {
