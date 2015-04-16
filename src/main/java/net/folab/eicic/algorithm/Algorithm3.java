@@ -131,7 +131,7 @@ public class Algorithm3 implements Algorithm {
      *
      * @return 전달받은 Mobile의 Lambda R 합
      */
-    public double calculatePicoLambdaRSum(Mobile mobile, Edge<?>[] edges,
+    public static double calculatePicoLambdaRSum(Mobile mobile, Edge<?>[] edges,
             boolean[] mobileConnectsMacro) {
         // Mobile의 Lambda R 합
         double lambdaRSum = 0.0;
