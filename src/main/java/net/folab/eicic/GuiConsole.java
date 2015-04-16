@@ -79,7 +79,11 @@ public class GuiConsole implements Console {
     public static void addColumn(Table table, String text) {
         TableColumn column = new TableColumn(table, SWT.NONE);
         column.setText(text);
-        column.pack();
+        column.setAlignment(SWT.RIGHT);
+        if ("#".equals(text))
+            column.setWidth(32);
+        else
+            column.setWidth(128);
     }
 
     @Override
