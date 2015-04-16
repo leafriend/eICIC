@@ -231,12 +231,13 @@ public class GuiConsole implements Console {
                 executeText.setText(format("%02d:%02d:%02d.%03d:", hour, min, sec, mil));
                 for (Mobile mobile : mobiles) {
                     TableItem item = table.getItem(mobile.idx);
-                    item.setText(1, format("%.6f", mobile.getUserRate()));
-                    item.setText(2, format("%.6f", log(mobile.getUserRate())));
-                    item.setText(3, format("%.6f", mobile.getThroughput() / t));
-                    item.setText(4, format("%.6f", log(mobile.getThroughput() / t)));
-                    item.setText(5, format("%.6f", mobile.getLambda()));
-                    item.setText(6, format("%.6f", mobile.getMu()));
+                    String[] texts = new String[7 + NUM_RB];
+                    texts[1] = format("%.6f", mobile.getUserRate());
+                    texts[2] = format("%.6f", log(mobile.getUserRate()));
+                    texts[3] = format("%.6f", mobile.getThroughput() / t);
+                    texts[4] = format("%.6f", log(mobile.getThroughput() / t));
+                    texts[5] = format("%.6f", mobile.getLambda());
+                    texts[6] = format("%.6f", mobile.getMu());
                     Edge<? extends BaseStation<?>>[] activeEdges = mobile.getActiveEdges();
                     double[] macroLambdaR = mobile.getMacroLambdaR();
                     double[] absPicoLambdaR = mobile.getAbsPicoLambdaR();
@@ -246,16 +247,20 @@ public class GuiConsole implements Console {
                         String text = "";
                         if (activeEdges[i] != null) {
                             if (activeEdges[i].baseStation instanceof Macro) {
-                                text = format("%.3f", 1000 * macroLambdaR[i]) + " M";
+                                text = format("%.3f", 1000 * macroLambdaR[i])
+                                        + " M";
                             } else if (activeEdges[i].baseStation instanceof Pico) {
                                 if (isAbs)
-                                    text = format("%.3f", 1000 * absPicoLambdaR[i]) + " P";
+                                    text = format("%.3f",
+                                            1000 * absPicoLambdaR[i]) + " P";
                                 else
-                                    text = format("%.3f", 1000 * nonPicoLambdaR[i]) + " p";
+                                    text = format("%.3f",
+                                            1000 * nonPicoLambdaR[i]) + " p";
                             }
                         }
-                        item.setText(7 + i, text);
+                        texts[7 + i] = text;
                     }
+                    item.setText(texts);
                 }
             }
         });
