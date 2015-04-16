@@ -57,4 +57,8 @@ public abstract class BaseStation<T extends BaseStation<T>> {
                 idx, x, y);
     }
 
+    public Edge<T>[] getActiveEdges() {
+        return activeEdges;
+    }
+
 }
