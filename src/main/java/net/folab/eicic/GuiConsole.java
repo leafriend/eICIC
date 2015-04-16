@@ -145,7 +145,7 @@ public class GuiConsole implements Console {
 
         dashboard.setLayout(new FormLayout());
 
-        macroTable = new Table(parent, SWT.BORDER);
+        macroTable = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION);
         macroTable.setLinesVisible(true);
         macroTable.setHeaderVisible(true);
         layoutData = new FormData();
@@ -167,7 +167,7 @@ public class GuiConsole implements Console {
 
         // - - -
 
-        picoTable = new Table(parent, SWT.BORDER);
+        picoTable = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION);
         picoTable.setLinesVisible(true);
         picoTable.setHeaderVisible(true);
         layoutData = new FormData();
@@ -189,7 +189,7 @@ public class GuiConsole implements Console {
 
         // - - -
 
-        table = new Table(parent, SWT.BORDER);
+        table = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION);
         table.setLinesVisible(true);
         table.setHeaderVisible(true);
         layoutData = new FormData();
