@@ -53,11 +53,15 @@ public class GuiConsole implements Console {
 
     private Text executeText;
 
+    private SelectionAdapter executeButtonListener;
+
     private Label utilityLabel;
 
     private Text utilityText;
 
     private Button executeButton;
+
+    private Button nextButton;
 
     private Table macroTable;
 
@@ -144,13 +148,13 @@ public class GuiConsole implements Console {
         // - - -
 
         executeButton = new Button(dashboard, SWT.PUSH);
-        executeButton.setText("Pau&se");
+        executeButton.setText("&Start");
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(100, 100, -64);
-        layoutData.right = new FormAttachment(100, 0);
+        layoutData.left = new FormAttachment(100, 100, -8 -64 -64);
+        layoutData.right = new FormAttachment(100, 100, -8 -64);
         executeButton.setLayoutData(layoutData);
-        executeButton.addSelectionListener(new SelectionAdapter() {
+        executeButtonListener = new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 if (executor != null) {
@@ -158,13 +162,43 @@ public class GuiConsole implements Console {
                     if ("Pau&se".endsWith(text)) {
                         executor.stop();
                         executeButton.setText("&Start");
+                        nextButton.setEnabled(true);
                     } else if ("&Start".endsWith(text)) {
                         executor.execute(GuiConsole.this, algorithm, SIMULATION_TIME);
                         executeButton.setText("Pau&se");
+                        nextButton.setEnabled(false);
+                    }
+                }
+            }
+        };
+        executeButton.addSelectionListener(executeButtonListener);
+
+        // - - -
+
+        nextButton = new Button(dashboard, SWT.PUSH);
+        nextButton.setText("N&ext");
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.left = new FormAttachment(100, 100, -64);
+        layoutData.right = new FormAttachment(100, 0);
+        nextButton.setLayoutData(layoutData);
+        nextButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (executor != null) {
+                    String text = nextButton.getText();
+                    if ("Pau&se".endsWith(text)) {
+                        executor.stop();
+                        nextButton.setText("&Start");
+                    } else if ("&Start".endsWith(text)) {
+                        executor.execute(GuiConsole.this, algorithm, SIMULATION_TIME);
+                        nextButton.setText("Pau&se");
                     }
                 }
             }
         });
+
+        // - - -
 
         dashboard.setLayout(new FormLayout());
 
@@ -260,7 +294,8 @@ public class GuiConsole implements Console {
     @Override
     public void start(final Main executor) {
         this.executor = executor;
-        executor.execute(this, algorithm, SIMULATION_TIME);
+        SelectionEvent e = null;
+        executeButtonListener.widgetSelected(e);
 
         shell.open();
         shell.addShellListener(new ShellAdapter() {
