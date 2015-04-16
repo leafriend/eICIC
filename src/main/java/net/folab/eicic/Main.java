@@ -1,8 +1,5 @@
 package net.folab.eicic;
 
-import static java.lang.Math.*;
-import static java.lang.String.format;
-import static java.lang.System.out;
 import static net.folab.eicic.Constants.*;
 
 import java.io.BufferedReader;
