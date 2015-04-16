@@ -24,25 +24,36 @@ public class Pico extends BaseStation<Pico> {
 
     private static class PicoEdgeComparator implements Comparator<Edge<Pico>> {
 
+        private boolean isAbs;
+
         private final int i;
 
-        public PicoEdgeComparator(int i) {
+        public PicoEdgeComparator(boolean isAbs, int i) {
+            this.isAbs = isAbs;
             this.i = i;
         }
 
         @Override
         public int compare(Edge<Pico> a, Edge<Pico> b) {
-            return (int) signum( //
-            a.mobile.absPicoLambdaR[i] - b.mobile.absPicoLambdaR[i] //
-            );
+            if (isAbs) {
+                return (int) signum( //
+                        b.mobile.absPicoLambdaR[i] - a.mobile.absPicoLambdaR[i] //
+                        );
+            } else {
+                return (int) signum( //
+                        b.mobile.nonPicoLambdaR[i] - a.mobile.nonPicoLambdaR[i] //
+                        );
+            }
         }
 
     }
 
-    private static final PicoEdgeComparator[] COMPARATORS = new PicoEdgeComparator[NUM_RB];
+    private static final PicoEdgeComparator[] ABS_COMPARATORS = new PicoEdgeComparator[NUM_RB];
+    private static final PicoEdgeComparator[] NON_COMPARATORS = new PicoEdgeComparator[NUM_RB];
     static {
-        for (int i = 0; i < COMPARATORS.length; i++) {
-            COMPARATORS[i] = new PicoEdgeComparator(i);
+        for (int i = 0; i < NUM_RB; i++) {
+            ABS_COMPARATORS[i] = new PicoEdgeComparator(true, i);
+            NON_COMPARATORS[i] = new PicoEdgeComparator(false, i);
         }
     }
 
@@ -74,8 +85,8 @@ public class Pico extends BaseStation<Pico> {
 
     public void sortMobiles() {
         for (int i = 0; i < NUM_RB; i++) {
-            sort(sortedAbsEdges[i], COMPARATORS[i]);
-            sort(sortedNonEdges[i], COMPARATORS[i]);
+            sort(sortedAbsEdges[i], ABS_COMPARATORS[i]);
+            sort(sortedNonEdges[i], NON_COMPARATORS[i]);
         }
     }
 

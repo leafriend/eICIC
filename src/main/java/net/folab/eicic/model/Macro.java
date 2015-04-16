@@ -21,7 +21,7 @@ public class Macro extends BaseStation<Macro> {
         @Override
         public int compare(Edge<Macro> a, Edge<Macro> b) {
             return (int) signum( //
-            a.mobile.macroLambdaR[i] - b.mobile.macroLambdaR[i] //
+            b.mobile.macroLambdaR[i] - a.mobile.macroLambdaR[i] //
             );
         }
 
