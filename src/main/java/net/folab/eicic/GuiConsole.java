@@ -55,6 +55,8 @@ public class GuiConsole implements Console {
 
     private Button executeButton;
 
+    private Table macroTable;
+
     private Table table;
 
     private Main executor;
@@ -141,14 +143,36 @@ public class GuiConsole implements Console {
 
         dashboard.setLayout(new FormLayout());
 
+        macroTable = new Table(parent, SWT.BORDER);
+        macroTable.setLinesVisible(true);
+        macroTable.setHeaderVisible(true);
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(dashboard, 0);
+        layoutData.left = new FormAttachment(0, 8);
+        layoutData.right = new FormAttachment(0, 320);
+        //layoutData.bottom = new FormAttachment(100, 0);
+        macroTable.setLayoutData(layoutData);
+        addColumn(macroTable, 32, "#");
+        addColumn(macroTable, 80, "X");
+        addColumn(macroTable, 80, "Y");
+        addColumn(macroTable, 56, "Tx Power");
+        addColumn(macroTable, 56, "State");
+
+        for (int i = 0; i < NUM_MACROS; i++) {
+            TableItem item = new TableItem(macroTable, SWT.NONE);
+            item.setText(0, valueOf(i));
+        }
+
+        // - - -
+
         table = new Table(parent, SWT.BORDER);
         table.setLinesVisible(true);
         table.setHeaderVisible(true);
         layoutData = new FormData();
         layoutData.top = new FormAttachment(dashboard, 0);
         layoutData.left = new FormAttachment(macroTable, 8);
-        layoutData.right = new FormAttachment(100, 0);
-        layoutData.bottom = new FormAttachment(100, 0);
+        layoutData.right = new FormAttachment(100, -8);
+        layoutData.bottom = new FormAttachment(100, -8);
         table.setLayoutData(layoutData);
 
         addColumn(table, 32, "#");
@@ -199,7 +223,7 @@ public class GuiConsole implements Console {
     }
 
     @Override
-    public long dump(final int t, List<Macro> macros, List<Pico> picos,
+    public long dump(final int t, final List<Macro> macros, List<Pico> picos,
             final List<Mobile> mobiles, final long elapsed, final long execute) {
         if (display.isDisposed())
             return -1;
@@ -223,6 +247,16 @@ public class GuiConsole implements Console {
                 //System.out.println(hour + ":" + min + ":" + (now / 1000) + "." + mil);
 
                 executeText.setText(format("%02d:%02d:%02d.%03d:", hour, min, sec, mil));
+
+
+                for (Macro macro : macros) {
+                    TableItem item = macroTable.getItem(macro.idx);
+                    item.setText(1, valueOf(format("%.3f", macro.x)));
+                    item.setText(2, valueOf(format("%.3f", macro.y)));
+                    item.setText(3, valueOf(format("%.2f", macro.txPower)));
+                    item.setText(4, valueOf(macro.state));
+                }
+
                 for (Mobile mobile : mobiles) {
                     TableItem item = table.getItem(mobile.idx);
                     String[] texts = new String[7 + NUM_RB];
