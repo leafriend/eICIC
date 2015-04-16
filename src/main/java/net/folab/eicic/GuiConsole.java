@@ -80,34 +80,38 @@ public class GuiConsole implements Console {
         timeLabel = new Label(dashboard, SWT.NONE);
         timeLabel.setText("Time:");
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(0, 0);
+        layoutData.top = new FormAttachment(0, 5);
+        layoutData.left = new FormAttachment(0, 8);
         timeLabel.setLayoutData(layoutData);
 
-        timeText = new Text(dashboard, SWT.READ_ONLY | SWT.RIGHT);
+        timeText = new Text(dashboard, SWT.READ_ONLY);
         timeText.setText("0");
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(timeLabel, 8);
+        layoutData.top = new FormAttachment(0, 5);
+        layoutData.left = new FormAttachment(timeLabel, 0);
         layoutData.right = new FormAttachment(timeLabel, 64, SWT.RIGHT);
         timeText.setLayoutData(layoutData);
+
+        // - - -
 
         executeLabel = new Label(dashboard, SWT.NONE);
         executeLabel.setText("Execute:");
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(timeText, 0);
+        layoutData.top = new FormAttachment(0, 5);
+        layoutData.left = new FormAttachment(timeText, 8);
         //executeLabel.pack();
         executeLabel.setLayoutData(layoutData);
 
         executeText = new Text(dashboard, SWT.READ_ONLY | SWT.RIGHT);
         executeText.setText("00:00:00.000");
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(executeLabel, 8);
+        layoutData.top = new FormAttachment(0, 5);
+        layoutData.left = new FormAttachment(executeLabel, 0);
         //layoutData.right = new FormAttachment(executeLabel, 64, SWT.RIGHT);
         executeLabel.pack();
         executeText.setLayoutData(layoutData);
+
+        // - - -
 
         executeButton = new Button(dashboard, SWT.PUSH);
         executeButton.setText("Pau&se");
