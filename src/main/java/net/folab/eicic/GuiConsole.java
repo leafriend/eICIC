@@ -99,14 +99,14 @@ public class GuiConsole implements Console {
         timeLabel = new Label(dashboard, SWT.NONE);
         timeLabel.setText("Time:");
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 5);
+        layoutData.top = new FormAttachment(0, 8+ 5);
         layoutData.left = new FormAttachment(0, 8);
         timeLabel.setLayoutData(layoutData);
 
         timeText = new Text(dashboard, SWT.READ_ONLY);
         timeText.setText("0");
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 5);
+        layoutData.top = new FormAttachment(0, 8+ 5);
         layoutData.left = new FormAttachment(timeLabel, 0);
         layoutData.right = new FormAttachment(timeLabel, 64, SWT.RIGHT);
         timeText.setLayoutData(layoutData);
@@ -116,7 +116,7 @@ public class GuiConsole implements Console {
         executeLabel = new Label(dashboard, SWT.NONE);
         executeLabel.setText("Execute:");
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 5);
+        layoutData.top = new FormAttachment(0, 8+ 5);
         layoutData.left = new FormAttachment(timeText, 8);
         //executeLabel.pack();
         executeLabel.setLayoutData(layoutData);
@@ -124,7 +124,7 @@ public class GuiConsole implements Console {
         executeText = new Text(dashboard, SWT.READ_ONLY | SWT.RIGHT);
         executeText.setText("00:00:00.000");
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 5);
+        layoutData.top = new FormAttachment(0, 8+ 5);
         layoutData.left = new FormAttachment(executeLabel, 0);
         //layoutData.right = new FormAttachment(executeLabel, 64, SWT.RIGHT);
         executeLabel.pack();
@@ -135,7 +135,7 @@ public class GuiConsole implements Console {
         utilityLabel = new Label(dashboard, SWT.NONE);
         utilityLabel.setText("Utility:");
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 5);
+        layoutData.top = new FormAttachment(0, 8+ 5);
         layoutData.left = new FormAttachment(executeText, 8);
         //utilityLabel.pack();
         utilityLabel.setLayoutData(layoutData);
@@ -143,7 +143,7 @@ public class GuiConsole implements Console {
         utilityText = new Text(dashboard, SWT.READ_ONLY | SWT.RIGHT);
         utilityText.setText("0.000");
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 5);
+        layoutData.top = new FormAttachment(0, 8+ 5);
         layoutData.left = new FormAttachment(utilityLabel, 0);
         //layoutData.right = new FormAttachment(utilityLabel, 64, SWT.RIGHT);
         utilityLabel.pack();
@@ -154,9 +154,9 @@ public class GuiConsole implements Console {
         executeButton = new Button(dashboard, SWT.PUSH);
         executeButton.setText("&Start");
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(100, 100, -8 -64 -64);
-        layoutData.right = new FormAttachment(100, 100, -8 -64);
+        layoutData.top = new FormAttachment(0, 8);
+        layoutData.left = new FormAttachment(100, 100, -8-64 -8 -64);
+        layoutData.right = new FormAttachment(100, 100, -8-64 -8);
         executeButton.setLayoutData(layoutData);
         executeButtonListener = new SelectionAdapter() {
             @Override
@@ -182,9 +182,9 @@ public class GuiConsole implements Console {
         nextButton = new Button(dashboard, SWT.PUSH);
         nextButton.setText("N&ext");
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(100, 100, -64);
-        layoutData.right = new FormAttachment(100, 0);
+        layoutData.top = new FormAttachment(0, 8);
+        layoutData.left = new FormAttachment(100, 100, -8-64);
+        layoutData.right = new FormAttachment(100, -8);
         nextButton.setLayoutData(layoutData);
         nextButton.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -203,7 +203,7 @@ public class GuiConsole implements Console {
         macroTable.setLinesVisible(true);
         macroTable.setHeaderVisible(true);
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(dashboard, 0);
+        layoutData.top = new FormAttachment(dashboard, 8);
         layoutData.left = new FormAttachment(0, 8);
         layoutData.right = new FormAttachment(0, 320);
         //layoutData.bottom = new FormAttachment(100, 0);
@@ -247,7 +247,7 @@ public class GuiConsole implements Console {
         table.setLinesVisible(true);
         table.setHeaderVisible(true);
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(dashboard, 0);
+        layoutData.top = new FormAttachment(dashboard, 8);
         layoutData.left = new FormAttachment(macroTable, 8);
         layoutData.right = new FormAttachment(100, -8);
         layoutData.bottom = new FormAttachment(100, -8);
@@ -323,6 +323,7 @@ public class GuiConsole implements Console {
     public void start(final Calculator calculator) {
         this.calculator = calculator;
 
+        shell.setSize(1024, 768);
         shell.open();
         shell.addShellListener(new ShellAdapter() {
             @Override
