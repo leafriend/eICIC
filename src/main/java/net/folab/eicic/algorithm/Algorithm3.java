@@ -50,37 +50,21 @@ public class Algorithm3 implements Algorithm {
                     // 위에서 정한 Cell Association에 따라 lambdaR 가산
                     // 각 서브 채널별 할당 대상 결정
 
-                    int[] macroMobiles = new int[NUM_RB];
-                    double[] macroLambdaRs = new double[NUM_RB];
-
                     for (Mobile mobile : macro.getMobiles()) {
 
+                        Edge<?>[] mobileEdges = edges[mobile.idx];
                         if (mobileConnectsMacro[mobile.idx]) {
 
-                            for (int i = 0; i < NUM_RB; i++) {
-                                double lambdaR = mobile.getMacroLambdaR()[i];
-                                if (macroLambdaRs[i] < lambdaR) {
-                                    macroLambdaRs[i] = lambdaR;
-                                    macroMobiles[i] = mobile.idx;
-                                }
-                            }
+                            lambdaRSum += calculateMacroLambdaRSum(mobile,
+                                    mobileEdges);
 
                         } else {
 
                             lambdaRSum += calculatePicoLambdaRSum(mobile,
-                                    edges[mobile.idx], mobileConnectsMacro);
+                                    mobileEdges, mobileConnectsMacro);
 
                         }
 
-                    }
-
-                    for (int ri = 0; ri < NUM_RB; ri++) {
-                        int mobileIdx = macroMobiles[ri];
-                        if (mobileIdx >= 0) {
-                            lambdaRSum += macroLambdaRs[ri];
-                            edges[mobileIdx][ri] = mobiles.get(mobileIdx)
-                                    .getMacroEdge();
-                        }
                     }
 
                 } else {
@@ -118,6 +102,30 @@ public class Algorithm3 implements Algorithm {
     }
 
     /**
+     * Mobile이 Macro에 연결했을 때 모든 Subchannel에서 수신할 수 있는 Lambda R 값의 합을 계산한다.
+     *
+     * @param mobile
+     *            Macro로 연결할 Mobile
+     * @param edges
+     *            Mobile의 Subchannel 연결 상태를 확인한 결과를 저장할 배열; 메소드 호출 후 배열의 내용이
+     *            바뀐다.
+     *
+     * @return 전달받은 Mobile의 Lambda R 합
+     */
+    public static double calculateMacroLambdaRSum(Mobile mobile, Edge<?>[] edges) {
+        double lambdaRSum = 0;
+        List<Edge<Macro>>[] sortedEdges = mobile.getMacro().getSortedEdges();
+        for (int i = 0; i < NUM_RB; i++) {
+            Edge<Macro> macroEdge = mobile.getMacroEdge();
+            if (sortedEdges[i] == macroEdge) {
+                lambdaRSum += mobile.getMacroLambdaR()[i];
+                edges[i] = macroEdge;
+            }
+        }
+        return lambdaRSum;
+    }
+
+    /**
      * Mobile이 Pico에 연결했을 때 모든 Subchannel에서 수신할 수 있는 Lambda R 값의 합을 계산한다.
      *
      * @param mobile
@@ -131,8 +139,8 @@ public class Algorithm3 implements Algorithm {
      *
      * @return 전달받은 Mobile의 Lambda R 합
      */
-    public static double calculatePicoLambdaRSum(Mobile mobile, Edge<?>[] edges,
-            boolean[] mobileConnectsMacro) {
+    public static double calculatePicoLambdaRSum(Mobile mobile,
+            Edge<?>[] edges, boolean[] mobileConnectsMacro) {
         // Mobile의 Lambda R 합
         double lambdaRSum = 0.0;
         Pico pico = mobile.getPico();
