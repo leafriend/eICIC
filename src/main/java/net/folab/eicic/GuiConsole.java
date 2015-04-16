@@ -67,6 +67,7 @@ public class GuiConsole implements Console {
 
         shell = new Shell(display);
         shell.setText("eICIC");
+        shell.setLayout(new FormLayout());
 
         Composite parent = shell;
 
@@ -143,6 +144,12 @@ public class GuiConsole implements Console {
         table = new Table(parent, SWT.BORDER);
         table.setLinesVisible(true);
         table.setHeaderVisible(true);
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(dashboard, 0);
+        layoutData.left = new FormAttachment(macroTable, 8);
+        layoutData.right = new FormAttachment(100, 0);
+        layoutData.bottom = new FormAttachment(100, 0);
+        table.setLayoutData(layoutData);
 
         addColumn(table, "#");
         addColumn(table, "User Rate");
@@ -159,16 +166,6 @@ public class GuiConsole implements Console {
             TableItem item = new TableItem(table, SWT.NONE);
             item.setText(0, valueOf(i));
         }
-
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(dashboard, 0);
-        layoutData.left = new FormAttachment(0, 0);
-        layoutData.right = new FormAttachment(100, 0);
-        layoutData.bottom = new FormAttachment(100, 0);
-        table.setLayoutData(layoutData);
-
-        FormLayout layout = new FormLayout();
-        parent.setLayout(layout);
 
     }
 
