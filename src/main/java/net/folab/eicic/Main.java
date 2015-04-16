@@ -121,10 +121,7 @@ public class Main {
             for (Mobile mobile : mobiles)
                 mobile.calculateDualVariables(_t);
 
-            if (t % 100 == 0) {
-                console.dump(t, macros, picos, mobiles, elapsed, execute);
-                elapsed =  System.currentTimeMillis();
-            }
+            elapsed = console.dump(t, macros, picos, mobiles, elapsed, execute);
 
         }
 

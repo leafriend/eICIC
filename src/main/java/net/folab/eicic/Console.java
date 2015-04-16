@@ -8,7 +8,7 @@ import net.folab.eicic.model.Pico;
 
 public interface Console {
 
-    void dump(int t, List<Macro> macros, List<Pico> picos,
+    long dump(int t, List<Macro> macros, List<Pico> picos,
             List<Mobile> mobiles, long elapsed, long execute);
 
 }
