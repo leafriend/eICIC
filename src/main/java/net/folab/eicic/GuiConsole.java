@@ -57,6 +57,8 @@ public class GuiConsole implements Console {
 
     private Table macroTable;
 
+    private Table picoTable;
+
     private Table table;
 
     private Main executor;
@@ -165,6 +167,28 @@ public class GuiConsole implements Console {
 
         // - - -
 
+        picoTable = new Table(parent, SWT.BORDER);
+        picoTable.setLinesVisible(true);
+        picoTable.setHeaderVisible(true);
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(macroTable, 8);
+        layoutData.left = new FormAttachment(0, 8);
+        layoutData.right = new FormAttachment(0, 320);
+        //layoutData.bottom = new FormAttachment(100, 0);
+        picoTable.setLayoutData(layoutData);
+        addColumn(picoTable, 32, "#");
+        addColumn(picoTable, 80, "X");
+        addColumn(picoTable, 80, "Y");
+        addColumn(picoTable, 56, "Tx Power");
+        addColumn(picoTable, 56, "State");
+
+        for (int i = 0; i < NUM_PICOS; i++) {
+            TableItem item = new TableItem(picoTable, SWT.NONE);
+            item.setText(0, valueOf(i));
+        }
+
+        // - - -
+
         table = new Table(parent, SWT.BORDER);
         table.setLinesVisible(true);
         table.setHeaderVisible(true);
@@ -223,7 +247,7 @@ public class GuiConsole implements Console {
     }
 
     @Override
-    public long dump(final int t, final List<Macro> macros, List<Pico> picos,
+    public long dump(final int t, final List<Macro> macros, final List<Pico> picos,
             final List<Mobile> mobiles, final long elapsed, final long execute) {
         if (display.isDisposed())
             return -1;
@@ -248,13 +272,20 @@ public class GuiConsole implements Console {
 
                 executeText.setText(format("%02d:%02d:%02d.%03d:", hour, min, sec, mil));
 
-
                 for (Macro macro : macros) {
                     TableItem item = macroTable.getItem(macro.idx);
                     item.setText(1, valueOf(format("%.3f", macro.x)));
                     item.setText(2, valueOf(format("%.3f", macro.y)));
                     item.setText(3, valueOf(format("%.2f", macro.txPower)));
-                    item.setText(4, valueOf(macro.state));
+                    item.setText(4, valueOf(macro.state ? "ON" : "OFF"));
+                }
+
+                for (Pico pico : picos) {
+                    TableItem item = picoTable.getItem(pico.idx);
+                    item.setText(1, valueOf(format("%.3f", pico.x)));
+                    item.setText(2, valueOf(format("%.3f", pico.y)));
+                    item.setText(3, valueOf(format("%.2f", pico.txPower)));
+                    item.setText(4, valueOf(pico.isAbs() ? "ABS" : "non"));
                 }
 
                 for (Mobile mobile : mobiles) {

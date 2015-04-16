@@ -53,7 +53,7 @@ public class Main {
                 new Generator<Pico>() {
                     @Override
                     public Pico generate(int idx, double[] values) {
-                        return new Pico(idx, values[0], values[1], MACRO_TX_POWER);
+                        return new Pico(idx, values[0], values[1], PICO_TX_POWER);
                     }
                 });
         mobiles = loadObject(
