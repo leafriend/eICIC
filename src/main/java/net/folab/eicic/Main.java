@@ -22,6 +22,10 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
+        new Main().execute();
+    }
+
+    public void execute() throws IOException {
 
         long execute = System.currentTimeMillis();
         long elapsed =  System.currentTimeMillis();
@@ -80,7 +84,9 @@ public class Main {
 
         Algorithm algorithm = new Algorithm3();
 
-        for (int t = 1; t <= SIMULATION_TIME; t++) {
+        int times = SIMULATION_TIME;
+
+        for (int t = 1; t <= times; t++) {
 
             for (Macro macro : macros)
                 macro.generateChannelGain();
