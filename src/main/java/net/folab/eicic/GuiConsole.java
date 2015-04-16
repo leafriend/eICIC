@@ -200,6 +200,12 @@ public class GuiConsole implements Console {
         table.setLayoutData(layoutData);
 
         addColumn(table, 32, "#");
+        addColumn(table, 80, "X");
+        addColumn(table, 80, "Y");
+        addColumn(table, 32, "M");
+        addColumn(table, 80, "M. Dist.");
+        addColumn(table, 32, "P");
+        addColumn(table, 80, "P. Dist.");
         addColumn(table, 96, "User Rate");
         addColumn(table, 96, "log(User Rate)");
         addColumn(table, 96, "Throughput");
@@ -249,7 +255,7 @@ public class GuiConsole implements Console {
     @Override
     public long dump(final int t, final List<Macro> macros, final List<Pico> picos,
             final List<Mobile> mobiles, final long elapsed, final long execute) {
-        if (t % 5 != 0)
+        if (t % 10 != 0)
             return elapsed;
         if (display.isDisposed())
             return -1;
@@ -292,13 +298,19 @@ public class GuiConsole implements Console {
 
                 for (Mobile mobile : mobiles) {
                     TableItem item = table.getItem(mobile.idx);
-                    String[] texts = new String[7 + NUM_RB];
-                    texts[1] = format("%.6f", mobile.getUserRate());
-                    texts[2] = format("%.6f", log(mobile.getUserRate()));
-                    texts[3] = format("%.6f", mobile.getThroughput() / t);
-                    texts[4] = format("%.6f", log(mobile.getThroughput() / t));
-                    texts[5] = format("%.6f", mobile.getLambda());
-                    texts[6] = format("%.6f", mobile.getMu());
+                    String[] texts = new String[11 + NUM_RB];
+                    texts[1] = format("%.3f", mobile.x);
+                    texts[2] = format("%.3f", mobile.y);
+                    texts[3] = valueOf(mobile.getMacro().idx);
+                    texts[4] = format("%.3f", mobile.getMacroEdge().distance);
+                    texts[5] = valueOf(mobile.getPico().idx);
+                    texts[6] = format("%.3f", mobile.getPicoEdge().distance);
+                    texts[7] = format("%.6f", mobile.getUserRate());
+                    texts[8] = format("%.6f", log(mobile.getUserRate()));
+                    texts[9] = format("%.6f", mobile.getThroughput() / t);
+                    texts[10] = format("%.6f", log(mobile.getThroughput() / t));
+                    texts[11] = format("%.6f", mobile.getLambda());
+                    texts[12] = format("%.6f", mobile.getMu());
                     Edge<? extends BaseStation<?>>[] activeEdges = mobile.getActiveEdges();
                     double[] macroLambdaR = mobile.getMacroLambdaR();
                     double[] absPicoLambdaR = mobile.getAbsPicoLambdaR();
@@ -319,7 +331,7 @@ public class GuiConsole implements Console {
                                             1000 * nonPicoLambdaR[i]) + " p";
                             }
                         }
-                        texts[7 + i] = text;
+                        texts[13 + i] = text;
                     }
                     item.setText(texts);
                 }
