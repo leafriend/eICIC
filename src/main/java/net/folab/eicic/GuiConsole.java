@@ -44,6 +44,10 @@ public class GuiConsole implements Console {
 
     private Text timeText;
 
+    private Label executeLabel;
+
+    private Text executeText;
+
     private Table table;
 
     public GuiConsole(Algorithm algorithm) {
@@ -80,6 +84,23 @@ public class GuiConsole implements Console {
         layoutData.left = new FormAttachment(timeLabel, 8);
         layoutData.right = new FormAttachment(timeLabel, 64, SWT.RIGHT);
         timeText.setLayoutData(layoutData);
+
+        executeLabel = new Label(dashboard, SWT.NONE);
+        executeLabel.setText("Execute:");
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.left = new FormAttachment(timeText, 0);
+        //executeLabel.pack();
+        executeLabel.setLayoutData(layoutData);
+
+        executeText = new Text(dashboard, SWT.READ_ONLY | SWT.RIGHT);
+        executeText.setText("00:00:00.000");
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.left = new FormAttachment(executeLabel, 8);
+        //layoutData.right = new FormAttachment(executeLabel, 64, SWT.RIGHT);
+        executeLabel.pack();
+        executeText.setLayoutData(layoutData);
 
         dashboard.setLayout(new FormLayout());
 
@@ -144,13 +165,29 @@ public class GuiConsole implements Console {
 
     @Override
     public long dump(final int t, List<Macro> macros, List<Pico> picos,
-            final List<Mobile> mobiles, long elapsed, long execute) {
+            final List<Mobile> mobiles, final long elapsed, final long execute) {
+        if (display.isDisposed())
+            return -1;
         display.asyncExec(new Runnable() {
             @Override
             public void run() {
                 if (shell.isDisposed())
                     return;
                 timeText.setText(valueOf(t));
+
+                long now = System.currentTimeMillis() - execute;
+
+                long sec = now / 1000;
+                long mil = now - sec * 1000;
+
+                long min = sec / 60;
+                sec -= min * 60;
+
+                long hour = min / 60;
+                min -= hour * 60;
+                //System.out.println(hour + ":" + min + ":" + (now / 1000) + "." + mil);
+
+                executeText.setText(format("%02d:%02d:%02d.%03d:", hour, min, sec, mil));
                 for (Mobile mobile : mobiles) {
                     TableItem item = table.getItem(mobile.idx);
                     item.setText(1, format("%12.6f", mobile.getUserRate()));
