@@ -141,9 +141,9 @@ public class Algorithm3 implements Algorithm {
         List<Edge<Pico>>[] sortedEdges;
         boolean isAbs = pico.isAbs();
         if (isAbs) {
-            sortedEdges = pico.getAbsEdges();
+            sortedEdges = pico.getSortedAbsEdges();
         } else {
-            sortedEdges = pico.getNonEdges();
+            sortedEdges = pico.getSortedNonEdges();
         }
 
         for (int i = 0; i < NUM_RB; i++) {

@@ -17,10 +17,10 @@ public class Pico extends BaseStation<Pico> {
     final List<Macro> macrosInterfering = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
-    private final List<Edge<Pico>>[] absEdges = new List[NUM_RB];
+    private final List<Edge<Pico>>[] sortedAbsEdges = new List[NUM_RB];
 
     @SuppressWarnings("unchecked")
-    private final List<Edge<Pico>>[] nonEdges = new List[NUM_RB];
+    private final List<Edge<Pico>>[] sortedNonEdges = new List[NUM_RB];
 
     private static class PicoEdgeComparator implements Comparator<Edge<Pico>> {
 
@@ -52,8 +52,8 @@ public class Pico extends BaseStation<Pico> {
 
     public void init() {
         for (int i = 0; i < NUM_RB; i++) {
-            absEdges[i] = new ArrayList<>(edges);
-            nonEdges[i] = new ArrayList<>(edges);
+            sortedAbsEdges[i] = new ArrayList<>(edges);
+            sortedNonEdges[i] = new ArrayList<>(edges);
         }
     }
 
@@ -74,25 +74,25 @@ public class Pico extends BaseStation<Pico> {
 
     public void sortMobiles() {
         for (int i = 0; i < NUM_RB; i++) {
-            sort(absEdges[i], COMPARATORS[i]);
-            sort(nonEdges[i], COMPARATORS[i]);
+            sort(sortedAbsEdges[i], COMPARATORS[i]);
+            sort(sortedNonEdges[i], COMPARATORS[i]);
         }
     }
 
     public int absIndexOf(int i, Mobile mobile) {
-        return absEdges[i].indexOf(mobile.picoEdge);
+        return sortedAbsEdges[i].indexOf(mobile.picoEdge);
     }
 
     public int nonIndexOf(int i, Mobile mobile) {
-        return nonEdges[i].indexOf(mobile.picoEdge);
+        return sortedNonEdges[i].indexOf(mobile.picoEdge);
     }
 
-    public List<Edge<Pico>>[] getAbsEdges() {
-        return absEdges;
+    public List<Edge<Pico>>[] getSortedAbsEdges() {
+        return sortedAbsEdges;
     }
 
-    public List<Edge<Pico>>[] getNonEdges() {
-        return nonEdges;
+    public List<Edge<Pico>>[] getSortedNonEdges() {
+        return sortedNonEdges;
     }
 
 }
