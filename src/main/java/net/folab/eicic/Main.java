@@ -34,7 +34,7 @@ public class Main {
 
     private List<Mobile> mobiles;
 
-    private int t = 1;
+    private int time = 1;
 
     private boolean running = false;
 
@@ -104,7 +104,7 @@ public class Main {
         long execute = System.currentTimeMillis();
         long elapsed = System.currentTimeMillis();
 
-        for (; running && t <= times; t++) {
+        for (; running && time <= times; time++) {
 
             for (Macro macro : macros)
                 macro.generateChannelGain();
@@ -141,15 +141,15 @@ public class Main {
                 mobile.calculateThroughput();
             for (Mobile mobile : mobiles)
                 mobile.calculateUserRate();
-            final int _t = t;
+            final int _t = time;
             for (Mobile mobile : mobiles)
                 mobile.calculateDualVariables(_t);
 
-            elapsed = console.dump(t, macros, picos, mobiles, elapsed, execute);
+            elapsed = console.dump(time, macros, picos, mobiles, elapsed, execute);
 
         }
 
-        elapsed = console.dump(t, macros, picos, mobiles, elapsed, execute);
+        elapsed = console.dump(time - 1, macros, picos, mobiles, elapsed, execute);
 
             };
         }.start();
@@ -183,7 +183,7 @@ public class Main {
     }
 
     public int getTime() {
-        return t;
+        return time;
     }
 
 }
