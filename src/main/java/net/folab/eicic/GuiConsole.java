@@ -263,10 +263,18 @@ public class GuiConsole implements Console {
             public void keyPressed(KeyEvent e) {
                 if ((e.stateMask & SWT.CTRL) == SWT.CTRL && e.keyCode == 'c') {
                     String text = "";
+                    int columnCount = table.getColumnCount();
+                    if ((e.stateMask & SWT.SHIFT) == SWT.SHIFT) {
+                        for (int c = 0; c < columnCount; c++) {
+                            if (c > 0)
+                                text += "\t";
+                            text += table.getColumn(c).getText();
+                        }
+                    }
                     for (TableItem item : table.getSelection()) {
                         if (text.length() > 0)
                             text += "\n";
-                        for (int c = 0; c < table.getColumnCount(); c++) {
+                        for (int c = 0; c < columnCount; c++) {
                             if (c > 0)
                                 text += "\t";
                             text += item.getText(c);
