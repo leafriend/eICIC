@@ -63,7 +63,7 @@ public class Main {
             pico.init();
 
         Algorithm algorithm = new Algorithm3();
-        Console console = new GuiConsole(algorithm);
+        Console console = new GuiConsole();
         Calculator calculator = new Calculator(macros, picos, mobiles, algorithm, console);
         console.start(calculator);
     }

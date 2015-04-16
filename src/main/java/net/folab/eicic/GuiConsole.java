@@ -6,7 +6,6 @@ import static net.folab.eicic.Constants.*;
 
 import java.util.List;
 
-import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.model.BaseStation;
 import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
@@ -42,8 +41,6 @@ public class GuiConsole implements Console {
 
     public static final String MU = "\u03bc";
 
-    private Algorithm algorithm;
-
     private Display display;
 
     private Clipboard clipboard;
@@ -78,9 +75,7 @@ public class GuiConsole implements Console {
 
     private Calculator calculator;
 
-    public GuiConsole(final Algorithm algorithm) {
-
-        this.algorithm = algorithm;
+    public GuiConsole() {
 
         display = new Display();
 
