@@ -16,12 +16,12 @@
         <log4j.version>1.2.17</log4j.version>
     </properties>
 
-        <repositories>
-            <repository>
-                <id>swt-repo</id>
-                <url>https://swt-repo.googlecode.com/svn/repo/</url>
-            </repository>
-        </repositories>
+    <repositories>
+        <repository>
+            <id>swt-repo</id>
+            <url>https://swt-repo.googlecode.com/svn/repo/</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
