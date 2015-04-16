@@ -22,9 +22,10 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        Console console = new TextConsole();
         Algorithm algorithm = new Algorithm3();
-        new Main().execute(console, algorithm, SIMULATION_TIME);
+        Console console = new GuiConsole(algorithm);
+        Main executor = new Main();
+        console.start(executor);
     }
 
     private List<Macro> macros;

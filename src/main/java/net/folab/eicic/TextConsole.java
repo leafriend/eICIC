@@ -7,11 +7,23 @@ import static net.folab.eicic.Constants.SIMULATION_TIME;
 
 import java.util.List;
 
+import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
 
 public class TextConsole implements Console {
+
+    private Algorithm algorithm;
+
+    public TextConsole(Algorithm algorithm) {
+        this.algorithm = algorithm;
+    }
+
+    @Override
+    public void start(Main executor) {
+        executor.execute(this, algorithm, SIMULATION_TIME);
+    }
 
     public long dump(int t, List<Macro> macros, List<Pico> picos,
             List<Mobile> mobiles, long elapsed, long execute) {
