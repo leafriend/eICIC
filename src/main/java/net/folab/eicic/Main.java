@@ -36,6 +36,8 @@ public class Main {
 
     private int t = 1;
 
+    private boolean running = false;
+
     public Main() throws IOException {
 
         macros = loadObject(
@@ -94,13 +96,15 @@ public class Main {
     public void execute(final Console console, final Algorithm algorithm,
             final int times) {
 
+        running = true;
+
         new Thread() {
             public void run() {
 
         long execute = System.currentTimeMillis();
         long elapsed = System.currentTimeMillis();
 
-        for (; t <= times; t++) {
+        for (; running && t <= times; t++) {
 
             for (Macro macro : macros)
                 macro.generateChannelGain();
@@ -150,6 +154,10 @@ public class Main {
             };
         }.start();
 
+    }
+
+    public void stop() {
+        running = false;
     }
 
     public static <T> List<T> loadObject(String file,

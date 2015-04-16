@@ -12,6 +12,8 @@ import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -121,10 +123,16 @@ public class GuiConsole implements Console {
     }
 
     @Override
-    public void start(Main executor) {
+    public void start(final Main executor) {
         executor.execute(this, algorithm, SIMULATION_TIME);
 
         shell.open();
+        shell.addShellListener(new ShellAdapter() {
+            @Override
+            public void shellClosed(ShellEvent e) {
+                executor.stop();
+            }
+        });
 
         while (!shell.isDisposed())
             if (!display.readAndDispatch())
@@ -140,6 +148,8 @@ public class GuiConsole implements Console {
         display.asyncExec(new Runnable() {
             @Override
             public void run() {
+                if (shell.isDisposed())
+                    return;
                 timeText.setText(valueOf(t));
                 for (Mobile mobile : mobiles) {
                     TableItem item = table.getItem(mobile.idx);
