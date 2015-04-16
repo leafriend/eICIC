@@ -19,15 +19,21 @@ public class Calculator {
 
     private boolean running = false;
 
-    public Calculator(List<Macro> macros, List<Pico> picos, List<Mobile> mobiles) {
+    private Algorithm algorithm;
+
+    private Console console;
+
+    public Calculator(List<Macro> macros, List<Pico> picos, List<Mobile> mobiles,
+            Algorithm algorithm, Console console) {
         super();
         this.macros = macros;
         this.picos = picos;
         this.mobiles = mobiles;
+        this.algorithm = algorithm;
+        this.console = console;
     }
 
-    public void calculate(final Console console, final Algorithm algorithm,
-            final int times) {
+    public void calculate(final int times) {
 
         running = true;
 

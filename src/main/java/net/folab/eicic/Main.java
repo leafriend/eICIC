@@ -64,7 +64,7 @@ public class Main {
 
         Algorithm algorithm = new Algorithm3();
         Console console = new GuiConsole(algorithm);
-        Calculator calculator = new Calculator(macros, picos, mobiles);
+        Calculator calculator = new Calculator(macros, picos, mobiles, algorithm, console);
         console.start(calculator);
     }
 

@@ -22,7 +22,7 @@ public class TextConsole implements Console {
 
     @Override
     public void start(Calculator calculator) {
-        calculator.calculate(this, algorithm, SIMULATION_TIME);
+        calculator.calculate(SIMULATION_TIME);
     }
 
     public long dump(int t, List<Macro> macros, List<Pico> picos,

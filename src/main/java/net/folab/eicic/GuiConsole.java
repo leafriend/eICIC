@@ -173,7 +173,7 @@ public class GuiConsole implements Console {
                         executeButton.setText("&Start");
                         nextButton.setEnabled(true);
                     } else if ("&Start".endsWith(text)) {
-                        calculator.calculate(GuiConsole.this, algorithm, SIMULATION_TIME);
+                        calculator.calculate(SIMULATION_TIME);
                         executeButton.setText("Pau&se");
                         nextButton.setEnabled(false);
                     }
@@ -195,7 +195,7 @@ public class GuiConsole implements Console {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 if (calculator != null) {
-                    calculator.calculate(GuiConsole.this, algorithm, calculator.getTime() + 1);
+                    calculator.calculate(calculator.getTime() + 1);
                 }
             }
         });
