@@ -17,10 +17,12 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 
 public class GuiConsole implements Console {
 
@@ -34,6 +36,12 @@ public class GuiConsole implements Console {
 
     private Shell shell;
 
+    private Composite dashboard;
+
+    private Label timeLabel;
+
+    private Text timeText;
+
     private Table table;
 
     public GuiConsole(Algorithm algorithm) {
@@ -46,6 +54,32 @@ public class GuiConsole implements Console {
         shell.setText("eICIC");
 
         Composite parent = shell;
+
+        dashboard = new Composite(parent, SWT.NONE);
+
+        FormData layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.left = new FormAttachment(0, 0);
+        layoutData.right = new FormAttachment(100, 0);
+        // layoutData.bottom = new FormAttachment(100, 0);
+        dashboard.setLayoutData(layoutData);
+
+        timeLabel = new Label(dashboard, SWT.NONE);
+        timeLabel.setText("Time:");
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.left = new FormAttachment(0, 0);
+        timeLabel.setLayoutData(layoutData);
+
+        timeText = new Text(dashboard, SWT.READ_ONLY | SWT.RIGHT);
+        timeText.setText("0");
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.left = new FormAttachment(timeLabel, 8);
+        layoutData.right = new FormAttachment(timeLabel, 64, SWT.RIGHT);
+        timeText.setLayoutData(layoutData);
+
+        dashboard.setLayout(new FormLayout());
 
         table = new Table(parent, SWT.BORDER);
         table.setLinesVisible(true);
@@ -64,8 +98,8 @@ public class GuiConsole implements Console {
             item.setText(0, valueOf(i));
         }
 
-        FormData layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(dashboard, 0);
         layoutData.left = new FormAttachment(0, 0);
         layoutData.right = new FormAttachment(100, 0);
         layoutData.bottom = new FormAttachment(100, 0);
@@ -106,6 +140,7 @@ public class GuiConsole implements Console {
         display.asyncExec(new Runnable() {
             @Override
             public void run() {
+                timeText.setText(valueOf(t));
                 for (Mobile mobile : mobiles) {
                     TableItem item = table.getItem(mobile.idx);
                     item.setText(1, format("%12.6f", mobile.getUserRate()));
