@@ -53,6 +53,10 @@ public class GuiConsole implements Console {
 
     private Text executeText;
 
+    private Label utilityLabel;
+
+    private Text utilityText;
+
     private Button executeButton;
 
     private Table macroTable;
@@ -117,6 +121,25 @@ public class GuiConsole implements Console {
         //layoutData.right = new FormAttachment(executeLabel, 64, SWT.RIGHT);
         executeLabel.pack();
         executeText.setLayoutData(layoutData);
+
+        // - - -
+
+        utilityLabel = new Label(dashboard, SWT.NONE);
+        utilityLabel.setText("Utility:");
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 5);
+        layoutData.left = new FormAttachment(executeText, 8);
+        //utilityLabel.pack();
+        utilityLabel.setLayoutData(layoutData);
+
+        utilityText = new Text(dashboard, SWT.READ_ONLY | SWT.RIGHT);
+        utilityText.setText("0.000");
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 5);
+        layoutData.left = new FormAttachment(utilityLabel, 0);
+        //layoutData.right = new FormAttachment(utilityLabel, 64, SWT.RIGHT);
+        utilityLabel.pack();
+        utilityText.setLayoutData(layoutData);
 
         // - - -
 
@@ -300,8 +323,9 @@ public class GuiConsole implements Console {
                     item.setText(4, valueOf(pico.isAbs() ? "ABS" : "non"));
                 }
 
-
+                double throughput = 0.0;
                 for (Mobile mobile : mobiles) {
+                    throughput += mobile.getThroughput() == 0.0 ? 0.0 : log(mobile.getThroughput() / t);
                     TableItem item = table.getItem(mobile.idx);
                     String[] texts = new String[17 + NUM_RB];
                     int i = 1;
@@ -347,6 +371,9 @@ public class GuiConsole implements Console {
                     }
                     item.setText(texts);
                 }
+
+                utilityText.setText(format("%.3f", throughput));
+
             }
         });
         return System.currentTimeMillis();
