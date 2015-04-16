@@ -7,6 +7,8 @@ import static net.folab.eicic.Constants.*;
 import java.util.List;
 
 import net.folab.eicic.algorithm.Algorithm;
+import net.folab.eicic.model.BaseStation;
+import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
@@ -150,6 +152,9 @@ public class GuiConsole implements Console {
         addColumn(table, LAMBDA);
         addColumn(table, MU);
 
+        for (int i = 0; i < NUM_RB; i++)
+            addColumn(table, valueOf(i));
+
         for (int i = 0; i < NUM_MOBILES; i++) {
             TableItem item = new TableItem(table, SWT.NONE);
             item.setText(0, valueOf(i));
@@ -174,7 +179,7 @@ public class GuiConsole implements Console {
         if ("#".equals(text))
             column.setWidth(32);
         else
-            column.setWidth(128);
+            column.setWidth(96);
     }
 
     @Override
@@ -226,12 +231,31 @@ public class GuiConsole implements Console {
                 executeText.setText(format("%02d:%02d:%02d.%03d:", hour, min, sec, mil));
                 for (Mobile mobile : mobiles) {
                     TableItem item = table.getItem(mobile.idx);
-                    item.setText(1, format("%12.6f", mobile.getUserRate()));
-                    item.setText(2, format("%12.6f", log(mobile.getUserRate())));
-                    item.setText(3, format("%12.6f", mobile.getThroughput() / t));
-                    item.setText(4, format("%12.6f", log(mobile.getThroughput() / t)));
-                    item.setText(5, format("%12.6f", mobile.getLambda()));
-                    item.setText(6, format("%12.6f", mobile.getMu()));
+                    item.setText(1, format("%.6f", mobile.getUserRate()));
+                    item.setText(2, format("%.6f", log(mobile.getUserRate())));
+                    item.setText(3, format("%.6f", mobile.getThroughput() / t));
+                    item.setText(4, format("%.6f", log(mobile.getThroughput() / t)));
+                    item.setText(5, format("%.6f", mobile.getLambda()));
+                    item.setText(6, format("%.6f", mobile.getMu()));
+                    Edge<? extends BaseStation<?>>[] activeEdges = mobile.getActiveEdges();
+                    double[] macroLambdaR = mobile.getMacroLambdaR();
+                    double[] absPicoLambdaR = mobile.getAbsPicoLambdaR();
+                    double[] nonPicoLambdaR = mobile.getNonPicoLambdaR();
+                    boolean isAbs = mobile.getPico().isAbs();
+                    for (int i = 0; i < NUM_RB; i++) {
+                        String text = "";
+                        if (activeEdges[i] != null) {
+                            if (activeEdges[i].baseStation instanceof Macro) {
+                                text = format("%.3f", 1000 * macroLambdaR[i]) + " M";
+                            } else if (activeEdges[i].baseStation instanceof Pico) {
+                                if (isAbs)
+                                    text = format("%.3f", 1000 * absPicoLambdaR[i]) + " P";
+                                else
+                                    text = format("%.3f", 1000 * nonPicoLambdaR[i]) + " p";
+                            }
+                        }
+                        item.setText(7 + i, text);
+                    }
                 }
             }
         });
