@@ -12,11 +12,14 @@ import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -48,9 +51,13 @@ public class GuiConsole implements Console {
 
     private Text executeText;
 
+    private Button executeButton;
+
     private Table table;
 
-    public GuiConsole(Algorithm algorithm) {
+    private Main executor;
+
+    public GuiConsole(final Algorithm algorithm) {
 
         this.algorithm = algorithm;
 
@@ -102,6 +109,29 @@ public class GuiConsole implements Console {
         executeLabel.pack();
         executeText.setLayoutData(layoutData);
 
+        executeButton = new Button(dashboard, SWT.PUSH);
+        executeButton.setText("Pau&se");
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.left = new FormAttachment(100, 100, -64);
+        layoutData.right = new FormAttachment(100, 0);
+        executeButton.setLayoutData(layoutData);
+        executeButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (executor != null) {
+                    String text = executeButton.getText();
+                    if ("Pau&se".endsWith(text)) {
+                        executor.stop();
+                        executeButton.setText("&Start");
+                    } else if ("&Start".endsWith(text)) {
+                        executor.execute(GuiConsole.this, algorithm, SIMULATION_TIME);
+                        executeButton.setText("Pau&se");
+                    }
+                }
+            }
+        });
+
         dashboard.setLayout(new FormLayout());
 
         table = new Table(parent, SWT.BORDER);
@@ -145,6 +175,7 @@ public class GuiConsole implements Console {
 
     @Override
     public void start(final Main executor) {
+        this.executor = executor;
         executor.execute(this, algorithm, SIMULATION_TIME);
 
         shell.open();
@@ -154,6 +185,7 @@ public class GuiConsole implements Console {
                 executor.stop();
             }
         });
+        executeButton.setFocus();
 
         while (!shell.isDisposed())
             if (!display.readAndDispatch())

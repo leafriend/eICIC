@@ -149,8 +149,6 @@ public class Main {
 
         }
 
-        console.dump(SIMULATION_TIME, macros, picos, mobiles, elapsed, execute);
-
             };
         }.start();
 
