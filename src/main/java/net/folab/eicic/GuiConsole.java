@@ -14,6 +14,11 @@ import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
@@ -40,6 +45,8 @@ public class GuiConsole implements Console {
     private Algorithm algorithm;
 
     private Display display;
+
+    private Clipboard clipboard;
 
     private Shell shell;
 
@@ -76,6 +83,8 @@ public class GuiConsole implements Console {
         this.algorithm = algorithm;
 
         display = new Display();
+
+        clipboard = new Clipboard(display);
 
         shell = new Shell(display);
         shell.setText("eICIC");
@@ -248,6 +257,29 @@ public class GuiConsole implements Console {
         layoutData.right = new FormAttachment(100, -8);
         layoutData.bottom = new FormAttachment(100, -8);
         table.setLayoutData(layoutData);
+
+        table.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if ((e.stateMask & SWT.CTRL) == SWT.CTRL && e.keyCode == 'c') {
+                    String text = "";
+                    for (TableItem item : table.getSelection()) {
+                        if (text.length() > 0)
+                            text += "\n";
+                        for (int c = 0; c < table.getColumnCount(); c++) {
+                            if (c > 0)
+                                text += "\t";
+                            text += item.getText(c);
+                        }
+                    }
+                    clipboard.setContents(new Object[] { text },
+                            new Transfer[] { TextTransfer.getInstance() });
+                }
+                if ((e.stateMask & SWT.CTRL) == SWT.CTRL && e.keyCode == 'a') {
+                    table.setSelection(0, table.getItemCount() - 1);
+                }
+            }
+        });
 
         addColumn(table, 32, "#");
         addColumn(table, 80, "X");
