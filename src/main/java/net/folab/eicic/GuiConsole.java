@@ -190,7 +190,7 @@ public class GuiConsole implements Console {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 if (calculator != null) {
-                    calculator.calculate(calculator.getTime() + 1);
+                    calculator.calculate();
                 }
             }
         });
