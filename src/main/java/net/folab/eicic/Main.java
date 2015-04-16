@@ -35,14 +35,7 @@ public class Main {
 
     private Algorithm algorithm;
 
-    public Main() {
-
-    }
-
-    public void execute() throws IOException {
-
-        long execute = System.currentTimeMillis();
-        long elapsed = System.currentTimeMillis();
+    public Main() throws IOException {
 
         console = new TextConsole();
 
@@ -98,6 +91,13 @@ public class Main {
 //        }
 
         algorithm = new Algorithm3();
+
+    }
+
+    public void execute() {
+
+        long execute = System.currentTimeMillis();
+        long elapsed = System.currentTimeMillis();
 
         int times = SIMULATION_TIME;
 
