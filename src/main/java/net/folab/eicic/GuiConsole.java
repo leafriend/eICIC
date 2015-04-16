@@ -204,8 +204,12 @@ public class GuiConsole implements Console {
         addColumn(table, 80, "Y");
         addColumn(table, 32, "M");
         addColumn(table, 80, "M. Dist.");
+        addColumn(table, 80, "M. " + LAMBDA + "R");
+        addColumn(table, 80, "M. M. " + LAMBDA + "R");
         addColumn(table, 32, "P");
         addColumn(table, 80, "P. Dist.");
+        addColumn(table, 80, "P. " + LAMBDA + "R");
+        addColumn(table, 80, "P. M. " + LAMBDA + "R");
         addColumn(table, 96, "User Rate");
         addColumn(table, 96, "log(User Rate)");
         addColumn(table, 96, "Throughput");
@@ -296,42 +300,50 @@ public class GuiConsole implements Console {
                     item.setText(4, valueOf(pico.isAbs() ? "ABS" : "non"));
                 }
 
+
                 for (Mobile mobile : mobiles) {
                     TableItem item = table.getItem(mobile.idx);
-                    String[] texts = new String[11 + NUM_RB];
-                    texts[1] = format("%.3f", mobile.x);
-                    texts[2] = format("%.3f", mobile.y);
-                    texts[3] = valueOf(mobile.getMacro().idx);
-                    texts[4] = format("%.3f", mobile.getMacroEdge().distance);
-                    texts[5] = valueOf(mobile.getPico().idx);
-                    texts[6] = format("%.3f", mobile.getPicoEdge().distance);
-                    texts[7] = format("%.6f", mobile.getUserRate());
-                    texts[8] = format("%.6f", log(mobile.getUserRate()));
-                    texts[9] = format("%.6f", mobile.getThroughput() / t);
-                    texts[10] = format("%.6f", log(mobile.getThroughput() / t));
-                    texts[11] = format("%.6f", mobile.getLambda());
-                    texts[12] = format("%.6f", mobile.getMu());
+                    String[] texts = new String[17 + NUM_RB];
+                    int i = 1;
+                    texts[i++] = format("%.3f", mobile.x);
+                    texts[i++] = format("%.3f", mobile.y);
+                    texts[i++] = valueOf(mobile.getMacro().idx);
+                    texts[i++] = format("%.3f", mobile.getMacroEdge().distance);
+                    texts[i++] = format("%.3f", mobile.getMacro().pa3LambdaR);
+                    texts[i++] = format("%.3f", mobile.getMacro().pa3MobileLambdaR[mobile.idx]);
+
+                    texts[i++] = valueOf(mobile.getPico().idx);
+                    texts[i++] = format("%.3f", mobile.getPicoEdge().distance);
+                    texts[i++] = format("%.3f", mobile.getPico().pa3LambdaR);
+                    texts[i++] = format("%.3f", mobile.getPico().pa3MobileLambdaR[mobile.idx]);
+
+                    texts[i++] = format("%.6f", mobile.getUserRate());
+                    texts[i++] = format("%.6f", log(mobile.getUserRate()));
+                    texts[i++] = format("%.6f", mobile.getThroughput() / t);
+                    texts[i++] = format("%.6f", log(mobile.getThroughput() / t));
+                    texts[i++] = format("%.6f", mobile.getLambda());
+                    texts[i++] = format("%.6f", mobile.getMu());
                     Edge<? extends BaseStation<?>>[] activeEdges = mobile.getActiveEdges();
                     double[] macroLambdaR = mobile.getMacroLambdaR();
                     double[] absPicoLambdaR = mobile.getAbsPicoLambdaR();
                     double[] nonPicoLambdaR = mobile.getNonPicoLambdaR();
                     boolean isAbs = mobile.getPico().isAbs();
-                    for (int i = 0; i < NUM_RB; i++) {
+                    for (int j = 0; j < NUM_RB; j++) {
                         String text = "";
-                        if (activeEdges[i] != null) {
-                            if (activeEdges[i].baseStation instanceof Macro) {
-                                text = format("%.3f", 1000 * macroLambdaR[i])
+                        if (activeEdges[j] != null) {
+                            if (activeEdges[j].baseStation instanceof Macro) {
+                                text = format("%.3f", 1000 * macroLambdaR[j])
                                         + " M";
-                            } else if (activeEdges[i].baseStation instanceof Pico) {
+                            } else if (activeEdges[j].baseStation instanceof Pico) {
                                 if (isAbs)
                                     text = format("%.3f",
-                                            1000 * absPicoLambdaR[i]) + " P";
+                                            1000 * absPicoLambdaR[j]) + " P";
                                 else
                                     text = format("%.3f",
-                                            1000 * nonPicoLambdaR[i]) + " p";
+                                            1000 * nonPicoLambdaR[j]) + " p";
                             }
                         }
-                        texts[13 + i] = text;
+                        texts[i + j] = text;
                     }
                     item.setText(texts);
                 }
