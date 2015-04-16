@@ -16,7 +16,7 @@ public class TextConsole implements Console {
     public long dump(int t, List<Macro> macros, List<Pico> picos,
             List<Mobile> mobiles, long elapsed, long execute) {
 
-        if (t % 100 == 0) {
+        if (t % 10 == 0) {
 
             double throughput = 0.0;
             for (Mobile mobile : mobiles) {
