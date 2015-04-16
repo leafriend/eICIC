@@ -25,7 +25,7 @@ public class Main {
         new Main().execute();
     }
 
-    private TextConsole console;
+    private Console console;
 
     private List<Macro> macros;
 
@@ -33,7 +33,7 @@ public class Main {
 
     private List<Mobile> mobiles;
 
-    private Algorithm3 algorithm;
+    private Algorithm algorithm;
 
     public Main() {
 
