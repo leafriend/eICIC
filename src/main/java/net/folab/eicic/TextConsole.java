@@ -21,8 +21,8 @@ public class TextConsole implements Console {
     }
 
     @Override
-    public void start(Main executor) {
-        executor.execute(this, algorithm, SIMULATION_TIME);
+    public void start(Calculator calculator) {
+        calculator.calculate(this, algorithm, SIMULATION_TIME);
     }
 
     public long dump(int t, List<Macro> macros, List<Pico> picos,

@@ -11,6 +11,6 @@ public interface Console {
     long dump(int t, List<Macro> macros, List<Pico> picos,
             List<Mobile> mobiles, long elapsed, long execute);
 
-    void start(Main executor);
+    void start(Calculator calculator);
 
 }

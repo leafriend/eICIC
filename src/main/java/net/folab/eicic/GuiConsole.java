@@ -76,7 +76,7 @@ public class GuiConsole implements Console {
 
     private Table table;
 
-    private Main executor;
+    private Calculator calculator;
 
     public GuiConsole(final Algorithm algorithm) {
 
@@ -166,14 +166,14 @@ public class GuiConsole implements Console {
         executeButtonListener = new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                if (executor != null) {
+                if (calculator != null) {
                     String text = executeButton.getText();
                     if ("Pau&se".endsWith(text)) {
-                        executor.stop();
+                        calculator.stop();
                         executeButton.setText("&Start");
                         nextButton.setEnabled(true);
                     } else if ("&Start".endsWith(text)) {
-                        executor.execute(GuiConsole.this, algorithm, SIMULATION_TIME);
+                        calculator.calculate(GuiConsole.this, algorithm, SIMULATION_TIME);
                         executeButton.setText("Pau&se");
                         nextButton.setEnabled(false);
                     }
@@ -194,8 +194,8 @@ public class GuiConsole implements Console {
         nextButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                if (executor != null) {
-                    executor.execute(GuiConsole.this, algorithm, executor.getTime() + 1);
+                if (calculator != null) {
+                    calculator.calculate(GuiConsole.this, algorithm, calculator.getTime() + 1);
                 }
             }
         });
@@ -325,8 +325,8 @@ public class GuiConsole implements Console {
     }
 
     @Override
-    public void start(final Main executor) {
-        this.executor = executor;
+    public void start(final Calculator calculator) {
+        this.calculator = calculator;
         SelectionEvent e = null;
         executeButtonListener.widgetSelected(e);
 
@@ -334,7 +334,7 @@ public class GuiConsole implements Console {
         shell.addShellListener(new ShellAdapter() {
             @Override
             public void shellClosed(ShellEvent e) {
-                executor.stop();
+                calculator.stop();
             }
         });
         executeButton.setFocus();
@@ -350,7 +350,7 @@ public class GuiConsole implements Console {
     @Override
     public long dump(final int t, final List<Macro> macros, final List<Pico> picos,
             final List<Mobile> mobiles, final long elapsed, final long execute) {
-        if (executor.isRunning() &&  t % 10 != 0)
+        if (calculator.isRunning() &&  t % 10 != 0)
             return elapsed;
         if (display.isDisposed())
             return -1;
