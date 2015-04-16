@@ -251,13 +251,15 @@ public class Algorithm3 implements Algorithm {
             double[] macroLambdaRs = mobile.getMacroLambdaR();
             for (int i = 0; i < NUM_RB; i++)
                 macroLambdaRSum += macroLambdaRs[i];
-            double macroRatio = macroLambdaRSum / mobile.getMacro().pa3LambdaR;
+//            double macroRatio = macroLambdaRSum / mobile.getMacro().pa3LambdaR;
+            double macroRatio = macroLambdaRSum / mobile.getMacro().pa3MobileLambdaR[mobile.idx];
 
             double picoLambdaRSum = 0.0;
             double[] nonPicoLambdaRs = mobile.getNonPicoLambdaR();
             for (int i = 0; i < NUM_RB; i++)
                 picoLambdaRSum += nonPicoLambdaRs[i];
-            double picoRatio = picoLambdaRSum / mobile.getPico().pa3LambdaR;
+//            double picoRatio = picoLambdaRSum / mobile.getPico().pa3LambdaR;
+            double picoRatio = picoLambdaRSum / mobile.getPico().pa3MobileLambdaR[mobile.idx];
 
             mobileConnectsMacro[mobile.idx] = macroRatio > picoRatio;
 
