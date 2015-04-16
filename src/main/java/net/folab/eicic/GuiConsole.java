@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-public class Gui {
+public class GuiConsole {
 
     public static final String LAMBDA = "\u03bb";
 
