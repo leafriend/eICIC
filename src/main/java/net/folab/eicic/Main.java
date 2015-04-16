@@ -149,6 +149,8 @@ public class Main {
 
         }
 
+        elapsed = console.dump(t, macros, picos, mobiles, elapsed, execute);
+
             };
         }.start();
 
@@ -174,6 +176,10 @@ public class Main {
         }
         reader.close();
         return list;
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 
 }

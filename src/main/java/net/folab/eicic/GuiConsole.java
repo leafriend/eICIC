@@ -317,7 +317,7 @@ public class GuiConsole implements Console {
     @Override
     public long dump(final int t, final List<Macro> macros, final List<Pico> picos,
             final List<Mobile> mobiles, final long elapsed, final long execute) {
-        if (t % 10 != 0)
+        if (executor.isRunning() &&  t % 10 != 0)
             return elapsed;
         if (display.isDisposed())
             return -1;
