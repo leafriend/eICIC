@@ -8,8 +8,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 
 public class Gui {
+
+    public static final String LAMBDA = "\u03bb";
+
+    public static final String MU = "\u03bc";
 
     public static void main(String[] args) {
 
@@ -23,6 +28,14 @@ public class Gui {
         Table table = new Table(parent, SWT.BORDER);
         table.setLinesVisible (true);
         table.setHeaderVisible (true);
+
+        addColumn(table, "#");
+        addColumn(table, "User Rate");
+        addColumn(table, "log(User Rate)");
+        addColumn(table, "Throughput");
+        addColumn(table, "log(Throughput)");
+        addColumn(table, LAMBDA);
+        addColumn(table, MU);
 
         FormData layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 0);
@@ -41,6 +54,12 @@ public class Gui {
         }
         display.dispose ();
 
+    }
+
+    public static void addColumn(Table table, String text) {
+        TableColumn column = new TableColumn(table, SWT.NONE);
+        column.setText(text);
+        column.pack();
     }
 
 }
