@@ -75,6 +75,7 @@ public class Pico extends BaseStation<Pico> {
     public void sortMobiles() {
         for (int i = 0; i < NUM_RB; i++) {
             sort(absEdges[i], COMPARATORS[i]);
+            sort(nonEdges[i], COMPARATORS[i]);
         }
     }
 
