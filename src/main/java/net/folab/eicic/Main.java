@@ -92,6 +92,8 @@ public class Main {
             for (Mobile mobile : mobiles)
                 mobile.calculateDataRate();
 
+            for (Macro macro : macros)
+                macro.sortMobiles();
             for (Pico pico : picos)
                 pico.sortMobiles();
 
