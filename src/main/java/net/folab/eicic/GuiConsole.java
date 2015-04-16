@@ -303,9 +303,8 @@ public class GuiConsole implements Console {
 
                 long hour = min / 60;
                 min -= hour * 60;
-                //System.out.println(hour + ":" + min + ":" + (now / 1000) + "." + mil);
 
-                executeText.setText(format("%02d:%02d:%02d.%03d:", hour, min, sec, mil));
+                executeText.setText(format("%02d:%02d:%02d.%03d", hour, min, sec, mil));
 
                 for (Macro macro : macros) {
                     TableItem item = macroTable.getItem(macro.idx);
