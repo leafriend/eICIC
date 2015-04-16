@@ -239,7 +239,7 @@ public class GuiConsole implements Console {
 
         // - - -
 
-        table = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION);
+        table = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
         table.setLinesVisible(true);
         table.setHeaderVisible(true);
         layoutData = new FormData();
