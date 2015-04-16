@@ -25,13 +25,28 @@ public class Main {
         new Main().execute();
     }
 
+    private TextConsole console;
+
+    private List<Macro> macros;
+
+    private List<Pico> picos;
+
+    private List<Mobile> mobiles;
+
+    private Algorithm3 algorithm;
+
+    public Main() {
+
+    }
+
     public void execute() throws IOException {
 
         long execute = System.currentTimeMillis();
-        long elapsed =  System.currentTimeMillis();
-        Console console = new TextConsole();
+        long elapsed = System.currentTimeMillis();
 
-        List<Macro> macros = loadObject(
+        console = new TextConsole();
+
+        macros = loadObject(
                 "res/macro.txt",
                 new Generator<Macro>() {
                     @Override
@@ -39,7 +54,7 @@ public class Main {
                         return new Macro(idx, values[0], values[1], MACRO_TX_POWER);
                     }
                 });
-        List<Pico> picos = loadObject(
+        picos = loadObject(
                 "res/pico.txt",
                 new Generator<Pico>() {
                     @Override
@@ -47,7 +62,7 @@ public class Main {
                         return new Pico(idx, values[0], values[1], MACRO_TX_POWER);
                     }
                 });
-        List<Mobile> mobiles = loadObject(
+        mobiles = loadObject(
                 "res/mobile.txt",
                 new Generator<Mobile>() {
                     @Override
@@ -82,7 +97,7 @@ public class Main {
 //            System.out.println();
 //        }
 
-        Algorithm algorithm = new Algorithm3();
+        algorithm = new Algorithm3();
 
         int times = SIMULATION_TIME;
 
