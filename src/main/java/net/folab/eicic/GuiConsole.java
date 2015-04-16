@@ -186,14 +186,7 @@ public class GuiConsole implements Console {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 if (executor != null) {
-                    String text = nextButton.getText();
-                    if ("Pau&se".endsWith(text)) {
-                        executor.stop();
-                        nextButton.setText("&Start");
-                    } else if ("&Start".endsWith(text)) {
-                        executor.execute(GuiConsole.this, algorithm, SIMULATION_TIME);
-                        nextButton.setText("Pau&se");
-                    }
+                    executor.execute(GuiConsole.this, algorithm, executor.getTime() + 1);
                 }
             }
         });

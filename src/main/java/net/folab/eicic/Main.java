@@ -182,4 +182,8 @@ public class Main {
         return running;
     }
 
+    public int getTime() {
+        return t;
+    }
+
 }
