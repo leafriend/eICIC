@@ -63,6 +63,8 @@ public class Main {
         for (Pico pico : picos)
             for (Mobile mobile : mobiles)
                 new Edge<>(pico, mobile);
+        for (Macro macro : macros)
+            macro.init();
         for (Pico pico : picos)
             pico.init();
 
