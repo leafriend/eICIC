@@ -28,12 +28,17 @@ public abstract class BaseStation<T extends BaseStation<T>> {
 
     public double pa3LambdaR = 1.0;
 
+    public final double[] pa3MobileLambdaR = new double[NUM_MOBILES];
+
     public BaseStation(int idx, double x, double y, double txPower) {
         super();
         this.idx = idx;
         this.x = x;
         this.y = y;
         this.txPower = txPower;
+
+        for (int i = 0; i < NUM_MOBILES; i++)
+            pa3MobileLambdaR[i] = 1.0;
     }
 
     public void generateChannelGain() {
