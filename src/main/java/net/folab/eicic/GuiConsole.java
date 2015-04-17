@@ -47,7 +47,7 @@ public class GuiConsole implements Console {
 
     private Shell shell;
 
-    private Composite dashboard;
+    private Composite statusBar;
 
     private Label seqLabel;
 
@@ -56,6 +56,8 @@ public class GuiConsole implements Console {
     private Label elapsedLabel;
 
     private Text elapsedText;
+
+    private Composite buttonPanel;
 
     private SelectionAdapter executeButtonListener;
 
@@ -66,6 +68,8 @@ public class GuiConsole implements Console {
     private Button executeButton;
 
     private Button nextButton;
+
+    private Composite tablePanel;
 
     private Table macroTable;
 
@@ -83,81 +87,56 @@ public class GuiConsole implements Console {
 
         shell = new Shell(display);
         shell.setText("eICIC");
-        shell.setLayout(new FormLayout());
+        buildShell(shell);
 
-        Composite parent = shell;
+    }
 
-        dashboard = new Composite(parent, SWT.NONE);
+    public void buildShell(Composite parent) {
 
-        FormData layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(0, 0);
-        layoutData.right = new FormAttachment(100, 0);
-        // layoutData.bottom = new FormAttachment(100, 0);
-        dashboard.setLayoutData(layoutData);
+        buttonPanel = new Composite(parent, SWT.NONE);
+        buildButtonPannel(buttonPanel);
 
-        seqLabel = new Label(dashboard, SWT.NONE);
-        seqLabel.setText("Seq:");
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 8+ 5);
-        layoutData.left = new FormAttachment(0, 8);
-        seqLabel.setLayoutData(layoutData);
+        tablePanel = new Composite(parent, SWT.NONE);
+        buildTablePanel(tablePanel);
 
-        seqText = new Text(dashboard, SWT.READ_ONLY);
-        seqText.setText("0");
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 8+ 5);
-        layoutData.left = new FormAttachment(seqLabel, 0);
-        layoutData.right = new FormAttachment(seqLabel, 64, SWT.RIGHT);
-        seqText.setLayoutData(layoutData);
+        statusBar = new Composite(parent, SWT.NONE);
+        buildStatusBar(statusBar);
 
         // - - -
 
-        elapsedLabel = new Label(dashboard, SWT.NONE);
-        elapsedLabel.setText("Execute:");
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 8+ 5);
-        layoutData.left = new FormAttachment(seqText, 8);
-        //elapsedLabel.pack();
-        elapsedLabel.setLayoutData(layoutData);
+        parent.setLayout(new FormLayout());
+        FormData layoutData;
 
-        elapsedText = new Text(dashboard, SWT.READ_ONLY | SWT.RIGHT);
-        elapsedText.setText("00:00:00.000");
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 8+ 5);
-        layoutData.left = new FormAttachment(elapsedLabel, 0);
-        //layoutData.right = new FormAttachment(elapsedLabel, 64, SWT.RIGHT);
-        elapsedLabel.pack();
-        elapsedText.setLayoutData(layoutData);
-
-        // - - -
-
-        utilityLabel = new Label(dashboard, SWT.NONE);
-        utilityLabel.setText("Utility:");
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 8+ 5);
-        layoutData.left = new FormAttachment(elapsedText, 8);
-        //utilityLabel.pack();
-        utilityLabel.setLayoutData(layoutData);
-
-        utilityText = new Text(dashboard, SWT.READ_ONLY | SWT.RIGHT);
-        utilityText.setText("0.000");
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 8+ 5);
-        layoutData.left = new FormAttachment(utilityLabel, 0);
-        //layoutData.right = new FormAttachment(utilityLabel, 64, SWT.RIGHT);
-        utilityLabel.pack();
-        utilityText.setLayoutData(layoutData);
-
-        // - - -
-
-        executeButton = new Button(dashboard, SWT.PUSH);
-        executeButton.setText("&Start");
+        // buttonPanel
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 8);
-        layoutData.left = new FormAttachment(100, 100, -8-64 -8 -64);
-        layoutData.right = new FormAttachment(100, 100, -8-64 -8);
-        executeButton.setLayoutData(layoutData);
+        layoutData.left = new FormAttachment(0, 8);
+        layoutData.right = new FormAttachment(100, -8);
+        // layoutData.bottom = new FormAttachment(statusBar, 8);
+        buttonPanel.setLayoutData(layoutData);
+
+        // tablePanel
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(buttonPanel, 8);
+        layoutData.left = new FormAttachment(0, 8);
+        layoutData.right = new FormAttachment(100, -8);
+        layoutData.bottom = new FormAttachment(statusBar, -8);
+        tablePanel.setLayoutData(layoutData);
+
+        // statusBar
+        layoutData = new FormData();
+        // layoutData.top = new FormAttachment(0, 0);
+        layoutData.left = new FormAttachment(0, 8);
+        layoutData.right = new FormAttachment(100, -8);
+        layoutData.bottom = new FormAttachment(100, -8);
+        statusBar.setLayoutData(layoutData);
+
+    }
+
+    public void buildButtonPannel(Composite parent) {
+
+        executeButton = new Button(parent, SWT.PUSH);
+        executeButton.setText("&Start");
         executeButtonListener = new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -179,13 +158,8 @@ public class GuiConsole implements Console {
 
         // - - -
 
-        nextButton = new Button(dashboard, SWT.PUSH);
+        nextButton = new Button(parent, SWT.PUSH);
         nextButton.setText("N&ext");
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 8);
-        layoutData.left = new FormAttachment(100, 100, -8-64);
-        layoutData.right = new FormAttachment(100, -8);
-        nextButton.setLayoutData(layoutData);
         nextButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -197,17 +171,32 @@ public class GuiConsole implements Console {
 
         // - - -
 
-        dashboard.setLayout(new FormLayout());
+        parent.setLayout(new FormLayout());
+        FormData layoutData;
+
+        // executeButton
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.left = new FormAttachment(100, 100, -64 - 8 - 64);
+        layoutData.right = new FormAttachment(100, 100, -64 - 8);
+        // layoutData.top = new FormAttachment(100, 0);
+        executeButton.setLayoutData(layoutData);
+
+        // nextButton
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.left = new FormAttachment(100, 100, -64);
+        layoutData.right = new FormAttachment(100, 0);
+        // layoutData.top = new FormAttachment(100, 0);
+        nextButton.setLayoutData(layoutData);
+
+    }
+
+    public void buildTablePanel(Composite parent) {
 
         macroTable = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION);
         macroTable.setLinesVisible(true);
         macroTable.setHeaderVisible(true);
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(dashboard, 8);
-        layoutData.left = new FormAttachment(0, 8);
-        layoutData.right = new FormAttachment(0, 320);
-        //layoutData.bottom = new FormAttachment(100, 0);
-        macroTable.setLayoutData(layoutData);
         addColumn(macroTable, 32, "#");
         addColumn(macroTable, 80, "X");
         addColumn(macroTable, 80, "Y");
@@ -224,12 +213,6 @@ public class GuiConsole implements Console {
         picoTable = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION);
         picoTable.setLinesVisible(true);
         picoTable.setHeaderVisible(true);
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(macroTable, 8);
-        layoutData.left = new FormAttachment(0, 8);
-        layoutData.right = new FormAttachment(0, 320);
-        //layoutData.bottom = new FormAttachment(100, 0);
-        picoTable.setLayoutData(layoutData);
         addColumn(picoTable, 32, "#");
         addColumn(picoTable, 80, "X");
         addColumn(picoTable, 80, "Y");
@@ -246,12 +229,6 @@ public class GuiConsole implements Console {
         table = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
         table.setLinesVisible(true);
         table.setHeaderVisible(true);
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(dashboard, 8);
-        layoutData.left = new FormAttachment(macroTable, 8);
-        layoutData.right = new FormAttachment(100, -8);
-        layoutData.bottom = new FormAttachment(100, -8);
-        table.setLayoutData(layoutData);
 
         table.addKeyListener(new KeyAdapter() {
             @Override
@@ -310,6 +287,109 @@ public class GuiConsole implements Console {
             item.setText(0, valueOf(i));
         }
 
+        // - - -
+
+        parent.setLayout(new FormLayout());
+        FormData layoutData;
+
+        // macroTable
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(statusBar, 0);
+        layoutData.left = new FormAttachment(0, 0);
+        layoutData.right = new FormAttachment(0, 320);
+        // layoutData.bottom = new FormAttachment(100, 0);
+        macroTable.setLayoutData(layoutData);
+
+        // picoTable
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(macroTable, 8);
+        layoutData.left = new FormAttachment(0, 0);
+        layoutData.right = new FormAttachment(0, 320);
+        // layoutData.bottom = new FormAttachment(100, 0);
+        picoTable.setLayoutData(layoutData);
+
+        // table
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(statusBar, 0);
+        layoutData.left = new FormAttachment(macroTable, 8);
+        layoutData.right = new FormAttachment(100, 0);
+        layoutData.bottom = new FormAttachment(100, 0);
+        table.setLayoutData(layoutData);
+
+    }
+
+    public void buildStatusBar(Composite parent) {
+
+        seqLabel = new Label(parent, SWT.NONE);
+        seqLabel.setText("Seq:");
+
+        seqText = new Text(parent, SWT.READ_ONLY);
+        seqText.setText("0");
+
+        // - - -
+
+        elapsedLabel = new Label(parent, SWT.NONE);
+        elapsedLabel.setText("Execute:");
+
+        elapsedText = new Text(parent, SWT.READ_ONLY | SWT.RIGHT);
+        elapsedText.setText("00:00:00.000");
+
+        // - - -
+
+        utilityLabel = new Label(parent, SWT.NONE);
+        utilityLabel.setText("Utility:");
+
+        utilityText = new Text(parent, SWT.READ_ONLY | SWT.RIGHT);
+        utilityText.setText("0.000");
+
+        // - - -
+
+        parent.setLayout(new FormLayout());
+        FormData layoutData;
+
+        //
+
+        // seqLabel
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.left = new FormAttachment(0, 0);
+        seqLabel.setLayoutData(layoutData);
+
+        // seqText
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.left = new FormAttachment(seqLabel, 0);
+        layoutData.right = new FormAttachment(seqLabel, 64, SWT.TRAIL);
+        seqText.setLayoutData(layoutData);
+
+        //
+
+        // elapsedLabel
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.left = new FormAttachment(seqText, 8);
+        elapsedLabel.setLayoutData(layoutData);
+
+        // elapsedText
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.left = new FormAttachment(elapsedLabel, 0);
+        elapsedText.setLayoutData(layoutData);
+
+        //
+
+        // utilityLabel
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.left = new FormAttachment(elapsedText, 8);
+        utilityLabel.setLayoutData(layoutData);
+
+        // utilityText
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.left = new FormAttachment(utilityLabel, 0);
+        utilityText.setLayoutData(layoutData);
+
     }
 
     public static void addColumn(Table table, int width, String text) {
@@ -365,7 +445,8 @@ public class GuiConsole implements Console {
             texts[i++] = format("%.6f", mobile.getMu());
 
             TableItem item = table.getItem(mobile.idx);
-            item.setText(texts);;
+            item.setText(texts);
+            ;
         }
         // - - -
 
@@ -390,10 +471,11 @@ public class GuiConsole implements Console {
     private boolean dumped = true;
 
     @Override
-    public long dump(final int t, final List<Macro> macros, final List<Pico> picos,
-            final List<Mobile> mobiles, final long elapsed, final long execute) {
-//        if (calculator.isRunning() &&  t % 5 != 0)
-//            return elapsed;
+    public long dump(final int t, final List<Macro> macros,
+            final List<Pico> picos, final List<Mobile> mobiles,
+            final long elapsed, final long execute) {
+        // if (calculator.isRunning() && t % 5 != 0)
+        // return elapsed;
         if (!dumped)
             return -1;
         dumped = false;
@@ -415,9 +497,10 @@ public class GuiConsole implements Console {
                 long hour = min / 60;
                 min -= hour * 60;
 
-                elapsedText.setText(format("%02d:%02d:%02d.%03d", hour, min, sec, mil));
+                elapsedText.setText(format("%02d:%02d:%02d.%03d", hour, min,
+                        sec, mil));
 
-                //*
+                // *
 
                 for (Macro macro : macros) {
                     TableItem item = macroTable.getItem(macro.idx);
@@ -429,12 +512,12 @@ public class GuiConsole implements Console {
                     item.setText(4, valueOf(pico.isAbs() ? "ABS" : "non"));
                 }
 
-                //*/
+                // */
 
                 double throughput = 0.0;
                 for (Mobile mobile : mobiles) {
                     throughput += log(mobile.getThroughput() / t);
-                    //*
+                    // *
                     TableItem item = table.getItem(mobile.idx);
                     String[] texts = new String[17 + NUM_RB];
                     int i = 1;
@@ -443,12 +526,14 @@ public class GuiConsole implements Console {
                     texts[i++] = null;
                     texts[i++] = null;
                     texts[i++] = format("%.3f", mobile.getMacro().pa3LambdaR);
-                    texts[i++] = format("%.3f", mobile.getMacro().pa3MobileLambdaR[mobile.idx]);
+                    texts[i++] = format("%.3f",
+                            mobile.getMacro().pa3MobileLambdaR[mobile.idx]);
 
                     texts[i++] = null;
                     texts[i++] = null;
                     texts[i++] = format("%.3f", mobile.getPico().pa3LambdaR);
-                    texts[i++] = format("%.3f", mobile.getPico().pa3MobileLambdaR[mobile.idx]);
+                    texts[i++] = format("%.3f",
+                            mobile.getPico().pa3MobileLambdaR[mobile.idx]);
 
                     texts[i++] = format("%.6f", mobile.getUserRate());
                     texts[i++] = format("%.6f", log(mobile.getUserRate()));
@@ -456,7 +541,8 @@ public class GuiConsole implements Console {
                     texts[i++] = format("%.6f", log(mobile.getThroughput() / t));
                     texts[i++] = format("%.6f", mobile.getLambda());
                     texts[i++] = format("%.6f", mobile.getMu());
-                    Edge<? extends BaseStation<?>>[] activeEdges = mobile.getActiveEdges();
+                    Edge<? extends BaseStation<?>>[] activeEdges = mobile
+                            .getActiveEdges();
                     double[] macroLambdaR = mobile.getMacroLambdaR();
                     double[] absPicoLambdaR = mobile.getAbsPicoLambdaR();
                     double[] nonPicoLambdaR = mobile.getNonPicoLambdaR();
@@ -479,7 +565,7 @@ public class GuiConsole implements Console {
                         texts[i + j] = text;
                     }
                     item.setText(texts);
-                    //*/
+                    // */
                 }
 
                 utilityText.setText(format("%.3f", throughput));
