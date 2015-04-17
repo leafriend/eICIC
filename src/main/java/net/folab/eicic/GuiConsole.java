@@ -49,19 +49,13 @@ public class GuiConsole implements Console {
 
     private Composite statusBar;
 
-    private Label seqLabel;
-
     private Text seqText;
-
-    private Label elapsedLabel;
 
     private Text elapsedText;
 
     private Composite buttonPanel;
 
     private SelectionAdapter executeButtonListener;
-
-    private Label utilityLabel;
 
     private Text utilityText;
 
@@ -320,7 +314,7 @@ public class GuiConsole implements Console {
 
     public void buildStatusBar(Composite parent) {
 
-        seqLabel = new Label(parent, SWT.NONE);
+        Label seqLabel = new Label(parent, SWT.NONE);
         seqLabel.setText("Seq:");
 
         seqText = new Text(parent, SWT.READ_ONLY);
@@ -328,7 +322,7 @@ public class GuiConsole implements Console {
 
         // - - -
 
-        elapsedLabel = new Label(parent, SWT.NONE);
+        Label elapsedLabel = new Label(parent, SWT.NONE);
         elapsedLabel.setText("Execute:");
 
         elapsedText = new Text(parent, SWT.READ_ONLY | SWT.RIGHT);
@@ -336,7 +330,7 @@ public class GuiConsole implements Console {
 
         // - - -
 
-        utilityLabel = new Label(parent, SWT.NONE);
+        Label utilityLabel = new Label(parent, SWT.NONE);
         utilityLabel.setText("Utility:");
 
         utilityText = new Text(parent, SWT.READ_ONLY | SWT.RIGHT);
