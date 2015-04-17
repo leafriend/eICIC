@@ -7,6 +7,9 @@ import static org.eclipse.swt.SWT.*;
 
 import java.util.List;
 
+import net.folab.eicic.algorithm.Algorithm1;
+import net.folab.eicic.algorithm.Algorithm2;
+import net.folab.eicic.algorithm.Algorithm3;
 import net.folab.eicic.model.BaseStation;
 import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
@@ -39,6 +42,12 @@ import org.eclipse.swt.widgets.Text;
 
 public class GuiConsole implements Console {
 
+    private static final String ALGORITHM_1 = "Algorithm 1";
+
+    private static final String ALGORITHM_2 = "Algorithm 2";
+
+    private static final String ALGORITHM_3 = "Algorithm 3";
+
     public static final String LAMBDA = "\u03bb";
 
     public static final String MU = "\u03bc";
@@ -60,6 +69,8 @@ public class GuiConsole implements Console {
     private SelectionAdapter executeButtonListener;
 
     private Text utilityText;
+
+    private Combo algorithmeCombo;
 
     private Button showActiveButton;
 
@@ -143,6 +154,29 @@ public class GuiConsole implements Console {
 
     public void buildButtonPannel(Composite parent) {
 
+        algorithmeCombo = new Combo(parent, READ_ONLY);
+        algorithmeCombo.setItems(new String[] { ALGORITHM_1, ALGORITHM_2, ALGORITHM_3 });
+        algorithmeCombo.select(2);
+        algorithmeCombo.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                int index = algorithmeCombo.getSelectionIndex();
+                switch (algorithmeCombo.getItem(index)) {
+                case ALGORITHM_1:
+                    calculator.setAlgorithm(new Algorithm1());
+                    break;
+                case ALGORITHM_2:
+                    calculator.setAlgorithm(new Algorithm2());
+                    break;
+                case ALGORITHM_3:
+                    calculator.setAlgorithm(new Algorithm3());
+                    break;
+                default:
+                    break;
+                }
+            }
+        });
+
         showActiveButton = new Button(parent, CHECK);
         showActiveButton.setText("Show ac&tive only");
         showActiveButton.setSelection(true);
@@ -180,10 +214,12 @@ public class GuiConsole implements Console {
                         calculator.stop();
                         executeButton.setText("&Start");
                         nextButton.setEnabled(true);
+                        algorithmeCombo.setEnabled(true);
                     } else if ("&Start".endsWith(text)) {
                         calculator.calculate(SIMULATION_TIME);
                         executeButton.setText("Pau&se");
                         nextButton.setEnabled(false);
+                        algorithmeCombo.setEnabled(false);
                     }
                 }
             }
@@ -207,6 +243,14 @@ public class GuiConsole implements Console {
 
         parent.setLayout(new FormLayout());
         FormData layoutData;
+
+        // algorithmeCombo
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 1);
+        layoutData.left = new FormAttachment(0);
+        // layoutData.right = new FormAttachment(updateSeq, -8, LEAD);
+        // layoutData.top = new FormAttachment(100, 0);
+        algorithmeCombo.setLayoutData(layoutData);
 
         // showActiveButton
         layoutData = new FormData();
@@ -720,9 +764,12 @@ public class GuiConsole implements Console {
                                                 .indexOf(activeEdges[j]);
                                     }
                                 }
-                                item.setBackground(index + j * 3 + 0, colorActiveBg);
-                                item.setBackground(index + j * 3 + 1, colorActiveBg);
-                                item.setBackground(index + j * 3 + 2, colorActiveBg);
+                                item.setBackground(index + j * 3 + 0,
+                                        colorActiveBg);
+                                item.setBackground(index + j * 3 + 1,
+                                        colorActiveBg);
+                                item.setBackground(index + j * 3 + 2,
+                                        colorActiveBg);
                             }
                             texts[index + j * 3] = bs == null ? "" : format(
                                     "%.3f", 1000 * lambdaR);

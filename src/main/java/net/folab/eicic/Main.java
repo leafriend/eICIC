@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.folab.eicic.algorithm.Algorithm;
-import net.folab.eicic.algorithm.Algorithm3;
 import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
@@ -62,9 +60,8 @@ public class Main {
         for (Pico pico : picos)
             pico.init();
 
-        Algorithm algorithm = new Algorithm3();
         Console console = new GuiConsole();
-        Calculator calculator = new Calculator(macros, picos, mobiles, algorithm, console);
+        Calculator calculator = new Calculator(macros, picos, mobiles, console);
         console.start(calculator);
     }
 

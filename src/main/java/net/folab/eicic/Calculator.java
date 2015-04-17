@@ -26,12 +26,11 @@ public class Calculator {
     private Console console;
 
     public Calculator(List<Macro> macros, List<Pico> picos,
-            List<Mobile> mobiles, Algorithm algorithm, Console console) {
+            List<Mobile> mobiles, Console console) {
         super();
         this.macros = macros;
         this.picos = picos;
         this.mobiles = mobiles;
-        this.algorithm = algorithm;
         this.console = console;
     }
 
@@ -137,6 +136,14 @@ public class Calculator {
 
     public List<Mobile> getMobiles() {
         return mobiles;
+    }
+
+    public Algorithm getAlgorithm() {
+        return algorithm;
+    }
+
+    public void setAlgorithm(Algorithm algorithm) {
+        this.algorithm = algorithm;
     }
 
 }
