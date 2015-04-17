@@ -35,66 +35,58 @@ public class Algorithm2 implements Algorithm {
             double lambdaRSum = 0.0;
             for (Macro macro : macros) {
 
-                // 가능한 모든 Macro 상태(2 ^ NUM_MACRO = 1 << NUM_MACRO)에 대한 반복문
                 List<Mobile> mobilesTS = macro.getMobiles();
-                int mobileStatesCount = 1 << mobilesTS.size();
-
-                int[] mobileIndexes = new int[NUM_MOBILES];
-                for (int i = 0; i < mobilesTS.size(); i++)
-                    mobileIndexes[mobilesTS.get(i).idx] = i;
 
                 double mostMobileLambdaRSum = 0;
 
-                for (int mobileMask = 0; mobileMask < macroStatesCount; mobileMask++) {
+                // 가능한 모든 Macro 상태(2 ^ NUM_MACRO = 1 << NUM_MACRO)에 대한 반복문
+                int mobileStatesCount = 1 << mobilesTS.size();
+                for (int mobileMask = 1; mobileMask < mobileStatesCount; mobileMask++) {
 
                     double mobileLambdaRSum = 0;
 
-                    boolean[] mobileConnectsMacro = new boolean[mobileStatesCount];
-                    Edge<?>[][] edges = new Edge[mobilesTS.size()][NUM_RB];
-                    for (int u = 0; u < mobileStatesCount; u++)
-                        mobileConnectsMacro[u] = 1 == (((1 << u) & mobileMask) >> u);
+                    boolean[] mobileConnectsMacro = new boolean[NUM_MOBILES];
+                    Edge<?>[][] edges = new Edge[NUM_MOBILES][NUM_RB];
+                    for (int u = 0; u < mobilesTS.size(); u++)
+                        mobileConnectsMacro[mobilesTS.get(u).idx] = 1 == (((1 << u) & mobileMask) >> u);
 
-                    if (macroStates[macro.idx]) {
-                        // Mobile의 Macro가 켜졌다면
-                        // 위에서 정한 Cell Association에 따라 lambdaR 가산
-                        // 각 서브 채널별 할당 대상 결정
+                    for (Mobile mobile : mobilesTS) {
 
-                        for (Mobile mobile : mobilesTS) {
+                        if (macroStates[macro.idx]) {
+                            // Mobile의 Macro가 켜졌다면
+                            // 위에서 정한 Cell Association에 따라 lambdaR 가산
+                            // 각 서브 채널별 할당 대상 결정
 
-                            Edge<?>[] mobileEdges = edges[mobileIndexes[mobile.idx]];
-                            if (mobileConnectsMacro[mobileIndexes[mobile.idx]]) {
+                            Edge<?>[] mobileEdges = edges[mobile.idx];
+                            if (mobileConnectsMacro[mobile.idx]) {
 
-                                mobileLambdaRSum += calculateMacroLambdaRSum(mobile,
-                                        mobileEdges, mobileConnectsMacro,
-                                        mobileIndexes);
+                                mobileLambdaRSum += calculateMacroLambdaRSum(
+                                        mobile, mobileEdges,
+                                        mobileConnectsMacro);
 
                             } else {
 
-                                mobileLambdaRSum += calculatePicoLambdaRSum(mobile,
-                                        mobileEdges, mobileConnectsMacro,
-                                        mobileIndexes);
+                                mobileLambdaRSum += calculatePicoLambdaRSum(
+                                        mobile, mobileEdges,
+                                        mobileConnectsMacro);
 
                             }
 
-                        }
+                        } else {
+                            // Mobile의 Macro가 꺼졌다면
+                            // Mobile의 Pico의 ABS 여부에 따라 lambdaR 가산
 
-                    } else {
-                        // Mobile의 Macro가 꺼졌다면
-                        // Mobile의 Pico의 ABS 여부에 따라 lambdaR 가산
-
-                        for (Mobile mobile : mobilesTS)
                             mobileLambdaRSum += calculatePicoLambdaRSum(mobile,
-                                    edges[mobileIndexes[mobile.idx]], mobileConnectsMacro,
-                                    mobileIndexes);
+                                    edges[mobile.idx], mobileConnectsMacro);
 
+                        }
                     }
 
                     if (mostMobileLambdaRSum < mobileLambdaRSum) {
-                        System.out.println("mobileLambdaRSum: " + mobileLambdaRSum);
                         mostMobileLambdaRSum = mobileLambdaRSum;
-                        for (int u = 0; u < mobilesTS.size(); u++)
+                        for (Mobile mobile : mobilesTS)
                             for (int i = 0; i < NUM_RB; i++)
-                                _edges[mobilesTS.get(u).idx][i] = edges[u][i];
+                                _edges[mobile.idx][i] = edges[mobile.idx][i];
                     }
 
                 }
@@ -173,19 +165,17 @@ public class Algorithm2 implements Algorithm {
      * @param edges
      *            Mobile의 Subchannel 연결 상태를 확인한 결과를 저장할 배열; 메소드 호출 후 배열의 내용이
      *            바뀐다.
-     * @param mobileIndexes
      * @param mobileConnectsMacro
-     *
      * @return 전달받은 Mobile의 Lambda R 합
      */
     public double calculateMacroLambdaRSum(Mobile mobile, Edge<?>[] edges,
-            boolean[] mobileConnectsMacro, int[] mobileIndexes) {
+            boolean[] mobileConnectsMacro) {
         double lambdaRSum = 0;
         List<Edge<Macro>>[] sortedEdges = mobile.getMacro().getSortedEdges();
         for (int i = 0; i < NUM_RB; i++) {
             Edge<Macro> firstEdge = null;
             for (Edge<Macro> edge : sortedEdges[i]) {
-                if (!mobileConnectsMacro[mobileIndexes[edge.mobile.idx]])
+                if (!mobileConnectsMacro[edge.mobile.idx])
                     continue;
                 firstEdge = edge;
                 break;
@@ -207,13 +197,11 @@ public class Algorithm2 implements Algorithm {
      * @param edges
      *            Mobile의 Subchannel 연결 상태를 확인한 결과를 저장할 배열; 메소드 호출 후 배열의 내용이
      *            바뀐다.
-     * @param mobileIndexes
      * @param mobileConnectsMacro
-     *
      * @return 전달받은 Mobile의 Lambda R 합
      */
     public double calculatePicoLambdaRSum(Mobile mobile, Edge<?>[] edges,
-            boolean[] mobileConnectsMacro, int[] mobileIndexes) {
+            boolean[] mobileConnectsMacro) {
         // Mobile의 Lambda R 합
         double lambdaRSum = 0.0;
         Pico pico = mobile.getPico();
@@ -232,7 +220,7 @@ public class Algorithm2 implements Algorithm {
             // 각 Subchannel에서 내가 Macro에 연결한 다른 Mobile을 제외하고 첫 번째 순위인지 확인
             Edge<Pico> firstEdge = null;
             for (Edge<Pico> edge : sortedEdges[i]) {
-                if (mobileConnectsMacro[mobileIndexes[edge.mobile.idx]])
+                if (mobileConnectsMacro[edge.mobile.idx])
                     continue;
                 firstEdge = edge;
                 break;
