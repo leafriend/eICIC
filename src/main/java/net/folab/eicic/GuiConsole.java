@@ -441,11 +441,8 @@ public class GuiConsole implements Console {
 
     public void buildStatusBar(Composite parent) {
 
-        Label seqLabel = new Label(parent, NONE);
-        seqLabel.setText("Seq:");
-
-        seqText = new Text(parent, READ_ONLY);
-        seqText.setText("0");
+        seqText = new Text(parent, READ_ONLY | RIGHT);
+        seqText.setText(SIMULATION_TIME + " / " + SIMULATION_TIME);
 
         // - - -
 
@@ -467,25 +464,10 @@ public class GuiConsole implements Console {
 
         //
 
-        // seqLabel
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(0, 0);
-        seqLabel.setLayoutData(layoutData);
-
-        // seqText
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(seqLabel, 0);
-        layoutData.right = new FormAttachment(seqLabel, 64, TRAIL);
-        seqText.setLayoutData(layoutData);
-
-        //
-
         // utilityLabel
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(seqText, 8);
+        layoutData.left = new FormAttachment(0, 0);
         utilityLabel.setLayoutData(layoutData);
 
         // utilityText
@@ -494,6 +476,14 @@ public class GuiConsole implements Console {
         layoutData.left = new FormAttachment(utilityLabel, 0);
         layoutData.right = new FormAttachment(utilityLabel, 64, TRAIL);
         utilityText.setLayoutData(layoutData);
+
+        //
+
+        // seqText
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.right = new FormAttachment(executeTimeText, -8);
+        seqText.setLayoutData(layoutData);
 
         //
 
@@ -607,7 +597,8 @@ public class GuiConsole implements Console {
             public void run() {
                 if (shell.isDisposed())
                     return;
-                seqText.setText(valueOf(seq));
+
+                seqText.setText(seq + " / " + SIMULATION_TIME);
 
                 String elapsedTime = milisToTImeString(elapsed);
 
