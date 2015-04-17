@@ -15,16 +15,6 @@ public class Algorithm3 implements Algorithm {
     public void calculate(List<Macro> macros, List<Pico> picos,
             List<Mobile> mobiles) {
 
-        for (Macro macro : macros)
-            for (Edge<Macro> edge : macro.edges)
-                for (int i = 0; i < NUM_RB; i++)
-                    edge.setActivated(i, false);
-
-        for (Pico pico : picos)
-            for (Edge<Pico> edge : pico.edges)
-                for (int i = 0; i < NUM_RB; i++)
-                    edge.setActivated(i, false);
-
         boolean[] bestMacroStates = new boolean[NUM_MACROS];
         Edge<?>[][] bestEdges = new Edge[NUM_MOBILES][NUM_RB];
 

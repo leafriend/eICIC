@@ -83,9 +83,9 @@ public class Calculator {
 
     private void calculateInternal() {
         for (Macro macro : macros)
-            macro.generateChannelGain();
+            macro.initializeEdges();
         for (Pico pico : picos)
-            pico.generateChannelGain();
+            pico.initializeEdges();
 
         for (Mobile mobile : mobiles)
             mobile.calculateDataRate();

@@ -41,9 +41,9 @@ public abstract class BaseStation<T extends BaseStation<T>> {
             pa3MobileLambdaR[i] = 1.0;
     }
 
-    public void generateChannelGain() {
+    public void initializeEdges() {
         for (Edge<T> edge : edgesInterfered) {
-            edge.generateChannelGain();
+            edge.initialize();
         }
     }
 

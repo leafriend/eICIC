@@ -65,12 +65,18 @@ public class Edge<T extends BaseStation<T>> {
 
     }
 
-    public void generateChannelGain() {
+    public void initialize() {
         for (int i = 0; i < NUM_RB; i++) {
+
+            // generateChannelGain
             double rayleigh = sqrt(pow(RANDOM.nextGaussian() / 1.2533, 2)
                     + pow(RANDOM.nextGaussian() / 1.2533, 2));
             double logNormal = pow(10, RANDOM.nextGaussian() * LN_SHAD * 0.1);
             channelGain[i] = channelGainFactor * rayleigh * logNormal;
+
+            // setActivated
+            setActivated(i, false);
+
         }
     }
 
