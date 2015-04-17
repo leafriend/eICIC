@@ -464,30 +464,8 @@ public class GuiConsole implements Console {
 
         List<Mobile> mobiles = calculator.getMobiles();
         for (Mobile mobile : mobiles) {
-            String[] texts = new String[17 + NUM_RB];
-            int i = 1;
-            texts[i++] = format("%.3f", mobile.x);
-            texts[i++] = format("%.3f", mobile.y);
-            texts[i++] = valueOf(mobile.getMacro().idx);
-            texts[i++] = format("%.3f", mobile.getMacroEdge().distance);
-            texts[i++] = format("%.3f", mobile.getMacro().pa3LambdaR);
-            texts[i++] = null;
-
-            texts[i++] = valueOf(mobile.getPico().idx);
-            texts[i++] = format("%.3f", mobile.getPicoEdge().distance);
-            texts[i++] = format("%.3f", mobile.getPico().pa3LambdaR);
-            texts[i++] = null;
-
-            texts[i++] = format("%.6f", mobile.getUserRate());
-            texts[i++] = format("%.6f", log(mobile.getUserRate()));
-            texts[i++] = format("%.6f", 0.0);
-            texts[i++] = format("%.6f", Double.NEGATIVE_INFINITY);
-            texts[i++] = format("%.6f", mobile.getLambda());
-            texts[i++] = format("%.6f", mobile.getMu());
-
             TableItem item = mobileTable.getItem(mobile.idx);
-            item.setText(texts);
-            ;
+            showMobile(mobile, item);
         }
         // - - -
 
@@ -507,6 +485,31 @@ public class GuiConsole implements Console {
 
         display.dispose();
 
+    }
+
+    public void showMobile(Mobile mobile, TableItem item) {
+        String[] texts = new String[17 + NUM_RB];
+        int i = 1;
+        texts[i++] = format("%.3f", mobile.x);
+        texts[i++] = format("%.3f", mobile.y);
+        texts[i++] = valueOf(mobile.getMacro().idx);
+        texts[i++] = format("%.3f", mobile.getMacroEdge().distance);
+        texts[i++] = format("%.3f", mobile.getMacro().pa3LambdaR);
+        texts[i++] = null;
+
+        texts[i++] = valueOf(mobile.getPico().idx);
+        texts[i++] = format("%.3f", mobile.getPicoEdge().distance);
+        texts[i++] = format("%.3f", mobile.getPico().pa3LambdaR);
+        texts[i++] = null;
+
+        texts[i++] = format("%.6f", mobile.getUserRate());
+        texts[i++] = format("%.6f", log(mobile.getUserRate()));
+        texts[i++] = format("%.6f", 0.0);
+        texts[i++] = format("%.6f", Double.NEGATIVE_INFINITY);
+        texts[i++] = format("%.6f", mobile.getLambda());
+        texts[i++] = format("%.6f", mobile.getMu());
+
+        item.setText(texts);
     }
 
     private boolean dumped = true;
