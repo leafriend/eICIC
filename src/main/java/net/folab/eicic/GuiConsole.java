@@ -74,7 +74,7 @@ public class GuiConsole implements Console {
 
     private Table picoTable;
 
-    private Table table;
+    private Table mobileTable;
 
     private Calculator calculator;
 
@@ -152,7 +152,7 @@ public class GuiConsole implements Console {
                 boolean enabled = selectedIndex != 0;
                 macroTable.setEnabled(enabled);
                 picoTable.setEnabled(enabled);
-                table.setEnabled(enabled);
+                mobileTable.setEnabled(enabled);
             }
         });
 
@@ -259,25 +259,25 @@ public class GuiConsole implements Console {
 
         // - - -
 
-        table = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
-        table.setLinesVisible(true);
-        table.setHeaderVisible(true);
-        table.setEnabled(false);
+        mobileTable = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+        mobileTable.setLinesVisible(true);
+        mobileTable.setHeaderVisible(true);
+        mobileTable.setEnabled(false);
 
-        table.addKeyListener(new KeyAdapter() {
+        mobileTable.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if ((e.stateMask & SWT.CTRL) == SWT.CTRL && e.keyCode == 'c') {
                     String text = "";
-                    int columnCount = table.getColumnCount();
+                    int columnCount = mobileTable.getColumnCount();
                     if ((e.stateMask & SWT.SHIFT) == SWT.SHIFT) {
                         for (int c = 0; c < columnCount; c++) {
                             if (c > 0)
                                 text += "\t";
-                            text += table.getColumn(c).getText();
+                            text += mobileTable.getColumn(c).getText();
                         }
                     }
-                    for (TableItem item : table.getSelection()) {
+                    for (TableItem item : mobileTable.getSelection()) {
                         if (text.length() > 0)
                             text += "\n";
                         for (int c = 0; c < columnCount; c++) {
@@ -290,36 +290,36 @@ public class GuiConsole implements Console {
                             new Transfer[] { TextTransfer.getInstance() });
                 }
                 if ((e.stateMask & SWT.CTRL) == SWT.CTRL && e.keyCode == 'a') {
-                    table.setSelection(0, table.getItemCount() - 1);
+                    mobileTable.setSelection(0, mobileTable.getItemCount() - 1);
                 }
             }
         });
 
-        addColumn(table, 32, "#");
-        addColumn(table, 80, "X");
-        addColumn(table, 80, "Y");
-        addColumn(table, 32, "M");
-        addColumn(table, 80, "M. Dist.");
-        addColumn(table, 80, "M. " + LAMBDA + "R");
-        addColumn(table, 80, "M. M. " + LAMBDA + "R");
-        addColumn(table, 32, "P");
-        addColumn(table, 80, "P. Dist.");
-        addColumn(table, 80, "P. " + LAMBDA + "R");
-        addColumn(table, 80, "P. M. " + LAMBDA + "R");
-        addColumn(table, 96, "User Rate");
-        addColumn(table, 96, "log(User Rate)");
-        addColumn(table, 96, "Throughput");
-        addColumn(table, 96, "log(Throughput)");
-        addColumn(table, 96, LAMBDA);
-        addColumn(table, 96, MU);
+        addColumn(mobileTable, 32, "#");
+        addColumn(mobileTable, 80, "X");
+        addColumn(mobileTable, 80, "Y");
+        addColumn(mobileTable, 32, "M");
+        addColumn(mobileTable, 80, "M. Dist.");
+        addColumn(mobileTable, 80, "M. " + LAMBDA + "R");
+        addColumn(mobileTable, 80, "M. M. " + LAMBDA + "R");
+        addColumn(mobileTable, 32, "P");
+        addColumn(mobileTable, 80, "P. Dist.");
+        addColumn(mobileTable, 80, "P. " + LAMBDA + "R");
+        addColumn(mobileTable, 80, "P. M. " + LAMBDA + "R");
+        addColumn(mobileTable, 96, "User Rate");
+        addColumn(mobileTable, 96, "log(User Rate)");
+        addColumn(mobileTable, 96, "Throughput");
+        addColumn(mobileTable, 96, "log(Throughput)");
+        addColumn(mobileTable, 96, LAMBDA);
+        addColumn(mobileTable, 96, MU);
 
         for (int i = 0; i < NUM_RB; i++) {
-            addColumn(table, 80, LAMBDA + "R " + i);
-            addColumn(table, 48, "BS " + i, SWT.LEFT);
+            addColumn(mobileTable, 80, LAMBDA + "R " + i);
+            addColumn(mobileTable, 48, "BS " + i, SWT.LEFT);
         }
 
         for (int i = 0; i < NUM_MOBILES; i++) {
-            TableItem item = new TableItem(table, SWT.NONE);
+            TableItem item = new TableItem(mobileTable, SWT.NONE);
             item.setText(0, valueOf(i));
         }
 
@@ -350,7 +350,7 @@ public class GuiConsole implements Console {
         layoutData.left = new FormAttachment(macroTable, 8);
         layoutData.right = new FormAttachment(100, 0);
         layoutData.bottom = new FormAttachment(100, 0);
-        table.setLayoutData(layoutData);
+        mobileTable.setLayoutData(layoutData);
 
     }
 
@@ -485,7 +485,7 @@ public class GuiConsole implements Console {
             texts[i++] = format("%.6f", mobile.getLambda());
             texts[i++] = format("%.6f", mobile.getMu());
 
-            TableItem item = table.getItem(mobile.idx);
+            TableItem item = mobileTable.getItem(mobile.idx);
             item.setText(texts);
             ;
         }
@@ -594,7 +594,7 @@ public class GuiConsole implements Console {
 
                     if (frequncy > 0 && seq % frequncy == 0) {
 
-                        TableItem item = table.getItem(mobile.idx);
+                        TableItem item = mobileTable.getItem(mobile.idx);
                         String[] texts = new String[17 + NUM_RB * 2];
                         int i = 1;
                         texts[i++] = null;
