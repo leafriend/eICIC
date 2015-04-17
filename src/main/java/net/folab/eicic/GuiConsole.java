@@ -348,6 +348,7 @@ public class GuiConsole implements Console {
         for (int i = 0; i < NUM_RB; i++) {
             addColumn(mobileTable, 80, LAMBDA + "R " + i);
             addColumn(mobileTable, 48, "BS " + i, SWT.LEFT);
+            addColumn(mobileTable, 24, "Rank  " + i);
         }
 
         for (int i = 0; i < NUM_MOBILES; i++) {
@@ -636,7 +637,7 @@ public class GuiConsole implements Console {
                             continue;
 
                         TableItem item = mobileTable.getItem(itemIndex);
-                        String[] texts = new String[17 + NUM_RB * 2];
+                        String[] texts = new String[17 + NUM_RB * 3];
                         int index = 1;
                         texts[index++] = null;
                         texts[index++] = null;
@@ -649,16 +650,18 @@ public class GuiConsole implements Console {
 
                         texts[index++] = null;
                         texts[index++] = null;
-                        texts[index++] = format("%.3f", mobile.getPico().pa3LambdaR);
+                        texts[index++] = format("%.3f",
+                                mobile.getPico().pa3LambdaR);
                         texts[index++] = format("%.3f",
                                 mobile.getPico().pa3MobileLambdaR[mobile.idx]);
 
                         texts[index++] = format("%.6f", mobile.getUserRate());
-                        texts[index++] = format("%.6f", log(mobile.getUserRate()));
+                        texts[index++] = format("%.6f",
+                                log(mobile.getUserRate()));
                         texts[index++] = format("%.6f", mobile.getThroughput()
                                 / seq);
-                        texts[index++] = format("%.6f", log(mobile.getThroughput()
-                                / seq));
+                        texts[index++] = format("%.6f",
+                                log(mobile.getThroughput() / seq));
                         texts[index++] = format("%.6f", mobile.getLambda());
                         texts[index++] = format("%.6f", mobile.getMu());
 
@@ -671,23 +674,34 @@ public class GuiConsole implements Console {
                         for (int j = 0; j < NUM_RB; j++) {
                             String bs = null;
                             double lambdaR = 0;
+                            int rank = 0;
                             if (activeEdges[j] != null) {
                                 if (activeEdges[j].baseStation instanceof Macro) {
+                                    Macro macro = (Macro) activeEdges[j].baseStation;
                                     bs = "MAC";
                                     lambdaR = macroLambdaR[j];
+                                    rank = macro.getSortedEdges()[j]
+                                            .indexOf(activeEdges[j]);
                                 } else if (activeEdges[j].baseStation instanceof Pico) {
+                                    Pico pico = (Pico) activeEdges[j].baseStation;
                                     if (isAbs) {
                                         bs = "abs";
                                         lambdaR = absPicoLambdaR[j];
+                                        rank = pico.getSortedAbsEdges()[j]
+                                                .indexOf(activeEdges[j]);
                                     } else {
                                         bs = "non";
                                         lambdaR = nonPicoLambdaR[j];
+                                        rank = pico.getSortedNonEdges()[j]
+                                                .indexOf(activeEdges[j]);
                                     }
                                 }
                             }
-                            texts[index + j * 2] = bs == null ? "" : format("%.3f",
-                                    1000 * lambdaR);
-                            texts[index + j * 2 + 1] = bs == null ? "" : bs;
+                            texts[index + j * 3] = bs == null ? "" : format(
+                                    "%.3f", 1000 * lambdaR);
+                            texts[index + j * 3 + 1] = bs == null ? "" : bs;
+                            texts[index + j * 3 + 2] = bs == null ? ""
+                                    : valueOf(rank);
                         }
                         item.setText(texts);
                     }
