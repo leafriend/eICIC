@@ -197,7 +197,7 @@ public class GuiConsole implements Console {
 
         // updateSeq
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
+        layoutData.top = new FormAttachment(0, 1);
         // layoutData.left = new FormAttachment(100, 100, -64 - 8 - 64);
         layoutData.right = new FormAttachment(executeButton, -8, SWT.LEAD);
         // layoutData.top = new FormAttachment(100, 0);
