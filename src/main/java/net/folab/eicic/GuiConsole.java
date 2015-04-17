@@ -467,7 +467,8 @@ public class GuiConsole implements Console {
         addColumn(table, width, text, RIGHT);
     }
 
-    public static void addColumn(Table table, int width, String text, int alignment) {
+    public static void addColumn(Table table, int width, String text,
+            int alignment) {
         TableColumn column = new TableColumn(table, NONE);
         column.setText(text);
         column.setAlignment(alignment);
