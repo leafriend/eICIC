@@ -26,6 +26,7 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -58,6 +59,10 @@ public class GuiConsole implements Console {
     private SelectionAdapter executeButtonListener;
 
     private Text utilityText;
+
+    private Combo updateSeq;
+
+    private int selectedIndex;
 
     private Button executeButton;
 
@@ -129,6 +134,28 @@ public class GuiConsole implements Console {
 
     public void buildButtonPannel(Composite parent) {
 
+        updateSeq = new Combo(parent, SWT.READ_ONLY);
+        String[] items = new String[] { //
+        "No Update", //
+                "Update for each 1 seq", //
+                "Update for each 10 seq", //
+                "Update for each 100 seq", //
+                "Update for each 1000 seq", //
+                "Update for each 10000 seq" //
+        };
+        updateSeq.setItems(items);
+        updateSeq.select(0);
+        updateSeq.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                selectedIndex = updateSeq.getSelectionIndex();
+                boolean enabled = selectedIndex != 0;
+                macroTable.setEnabled(enabled);
+                picoTable.setEnabled(enabled);
+                table.setEnabled(enabled);
+            }
+        });
+
         executeButton = new Button(parent, SWT.PUSH);
         executeButton.setText("&Start");
         executeButtonListener = new SelectionAdapter() {
@@ -168,11 +195,19 @@ public class GuiConsole implements Console {
         parent.setLayout(new FormLayout());
         FormData layoutData;
 
+        // updateSeq
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        // layoutData.left = new FormAttachment(100, 100, -64 - 8 - 64);
+        layoutData.right = new FormAttachment(executeButton, -8, SWT.LEAD);
+        // layoutData.top = new FormAttachment(100, 0);
+        updateSeq.setLayoutData(layoutData);
+
         // executeButton
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(100, 100, -64 - 8 - 64);
-        layoutData.right = new FormAttachment(100, 100, -64 - 8);
+        layoutData.left = new FormAttachment(nextButton, -8 - 64, SWT.LEAD);
+        layoutData.right = new FormAttachment(nextButton, -8);
         // layoutData.top = new FormAttachment(100, 0);
         executeButton.setLayoutData(layoutData);
 
@@ -191,6 +226,8 @@ public class GuiConsole implements Console {
         macroTable = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION);
         macroTable.setLinesVisible(true);
         macroTable.setHeaderVisible(true);
+        macroTable.setEnabled(false);
+
         addColumn(macroTable, 32, "#");
         addColumn(macroTable, 80, "X");
         addColumn(macroTable, 80, "Y");
@@ -207,6 +244,8 @@ public class GuiConsole implements Console {
         picoTable = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION);
         picoTable.setLinesVisible(true);
         picoTable.setHeaderVisible(true);
+        picoTable.setEnabled(false);
+
         addColumn(picoTable, 32, "#");
         addColumn(picoTable, 80, "X");
         addColumn(picoTable, 80, "Y");
@@ -223,6 +262,7 @@ public class GuiConsole implements Console {
         table = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
         table.setLinesVisible(true);
         table.setHeaderVisible(true);
+        table.setEnabled(false);
 
         table.addKeyListener(new KeyAdapter() {
             @Override
@@ -466,7 +506,7 @@ public class GuiConsole implements Console {
     private boolean dumped = true;
 
     @Override
-    public long dump(final int t, final List<Macro> macros,
+    public long dump(final int seq, final List<Macro> macros,
             final List<Pico> picos, final List<Mobile> mobiles,
             final long elapsed, final long execute) {
         // if (calculator.isRunning() && t % 5 != 0)
@@ -481,7 +521,7 @@ public class GuiConsole implements Console {
             public void run() {
                 if (shell.isDisposed())
                     return;
-                seqText.setText(valueOf(t));
+                seqText.setText(valueOf(seq));
 
                 long sec = elapsed / 1000;
                 long mil = elapsed - sec * 1000;
@@ -495,72 +535,111 @@ public class GuiConsole implements Console {
                 elapsedText.setText(format("%02d:%02d:%02d.%03d", hour, min,
                         sec, mil));
 
-                // *
-
-                for (Macro macro : macros) {
-                    TableItem item = macroTable.getItem(macro.idx);
-                    item.setText(4, valueOf(macro.state ? "ON" : "OFF"));
+                int frequncy;
+                switch (selectedIndex) {
+                case 0:
+                    frequncy = 0;
+                    // No Update
+                    break;
+                case 1:
+                    frequncy = 1;
+                    // Update for each 1 seq
+                    break;
+                case 2:
+                    frequncy = 10;
+                    // Update for each 10 seq
+                    break;
+                case 3:
+                    frequncy = 100;
+                    // Update for each 100 seq
+                    break;
+                case 4:
+                    frequncy = 1000;
+                    // Update for each 1000 seq
+                    break;
+                case 5:
+                    frequncy = 10000;
+                    // Update for each 10000 seq
+                    break;
+                default:
+                    throw new RuntimeException("Unsupported frequency: "
+                            + updateSeq.getItem(updateSeq.getSelectionIndex()));
                 }
 
-                for (Pico pico : picos) {
-                    TableItem item = picoTable.getItem(pico.idx);
-                    item.setText(4, valueOf(pico.isAbs() ? "ABS" : "non"));
-                }
+                if (frequncy > 0 && seq % frequncy == 0) {
 
-                // */
+                    for (Macro macro : macros) {
+                        TableItem item = macroTable.getItem(macro.idx);
+                        item.setText(4, valueOf(macro.state ? "ON" : "OFF"));
+                    }
+
+                    for (Pico pico : picos) {
+                        TableItem item = picoTable.getItem(pico.idx);
+                        item.setText(4, valueOf(pico.isAbs() ? "ABS" : "non"));
+                    }
+
+                }
 
                 double throughput = 0.0;
                 for (Mobile mobile : mobiles) {
-                    throughput += log(mobile.getThroughput() / t);
-                    // *
-                    TableItem item = table.getItem(mobile.idx);
-                    String[] texts = new String[17 + NUM_RB];
-                    int i = 1;
-                    texts[i++] = null;
-                    texts[i++] = null;
-                    texts[i++] = null;
-                    texts[i++] = null;
-                    texts[i++] = format("%.3f", mobile.getMacro().pa3LambdaR);
-                    texts[i++] = format("%.3f",
-                            mobile.getMacro().pa3MobileLambdaR[mobile.idx]);
+                    throughput += log(mobile.getThroughput() / seq);
 
-                    texts[i++] = null;
-                    texts[i++] = null;
-                    texts[i++] = format("%.3f", mobile.getPico().pa3LambdaR);
-                    texts[i++] = format("%.3f",
-                            mobile.getPico().pa3MobileLambdaR[mobile.idx]);
+                    if (frequncy > 0 && seq % frequncy == 0) {
 
-                    texts[i++] = format("%.6f", mobile.getUserRate());
-                    texts[i++] = format("%.6f", log(mobile.getUserRate()));
-                    texts[i++] = format("%.6f", mobile.getThroughput() / t);
-                    texts[i++] = format("%.6f", log(mobile.getThroughput() / t));
-                    texts[i++] = format("%.6f", mobile.getLambda());
-                    texts[i++] = format("%.6f", mobile.getMu());
-                    Edge<? extends BaseStation<?>>[] activeEdges = mobile
-                            .getActiveEdges();
-                    double[] macroLambdaR = mobile.getMacroLambdaR();
-                    double[] absPicoLambdaR = mobile.getAbsPicoLambdaR();
-                    double[] nonPicoLambdaR = mobile.getNonPicoLambdaR();
-                    boolean isAbs = mobile.getPico().isAbs();
-                    for (int j = 0; j < NUM_RB; j++) {
-                        String text = "";
-                        if (activeEdges[j] != null) {
-                            if (activeEdges[j].baseStation instanceof Macro) {
-                                text = format("%.3f", 1000 * macroLambdaR[j])
-                                        + " M";
-                            } else if (activeEdges[j].baseStation instanceof Pico) {
-                                if (isAbs)
+                        TableItem item = table.getItem(mobile.idx);
+                        String[] texts = new String[17 + NUM_RB];
+                        int i = 1;
+                        texts[i++] = null;
+                        texts[i++] = null;
+                        texts[i++] = null;
+                        texts[i++] = null;
+                        texts[i++] = format("%.3f",
+                                mobile.getMacro().pa3LambdaR);
+                        texts[i++] = format("%.3f",
+                                mobile.getMacro().pa3MobileLambdaR[mobile.idx]);
+
+                        texts[i++] = null;
+                        texts[i++] = null;
+                        texts[i++] = format("%.3f", mobile.getPico().pa3LambdaR);
+                        texts[i++] = format("%.3f",
+                                mobile.getPico().pa3MobileLambdaR[mobile.idx]);
+
+                        texts[i++] = format("%.6f", mobile.getUserRate());
+                        texts[i++] = format("%.6f", log(mobile.getUserRate()));
+                        texts[i++] = format("%.6f", mobile.getThroughput()
+                                / seq);
+                        texts[i++] = format("%.6f", log(mobile.getThroughput()
+                                / seq));
+                        texts[i++] = format("%.6f", mobile.getLambda());
+                        texts[i++] = format("%.6f", mobile.getMu());
+                        Edge<? extends BaseStation<?>>[] activeEdges = mobile
+                                .getActiveEdges();
+                        double[] macroLambdaR = mobile.getMacroLambdaR();
+                        double[] absPicoLambdaR = mobile.getAbsPicoLambdaR();
+                        double[] nonPicoLambdaR = mobile.getNonPicoLambdaR();
+                        boolean isAbs = mobile.getPico().isAbs();
+                        for (int j = 0; j < NUM_RB; j++) {
+                            String text = "";
+                            if (activeEdges[j] != null) {
+                                if (activeEdges[j].baseStation instanceof Macro) {
                                     text = format("%.3f",
-                                            1000 * absPicoLambdaR[j]) + " P";
-                                else
-                                    text = format("%.3f",
-                                            1000 * nonPicoLambdaR[j]) + " p";
+                                            1000 * macroLambdaR[j]) + " M";
+                                } else if (activeEdges[j].baseStation instanceof Pico) {
+                                    if (isAbs)
+                                        text = format("%.3f",
+                                                1000 * absPicoLambdaR[j])
+                                                + " P";
+                                    else
+                                        text = format("%.3f",
+                                                1000 * nonPicoLambdaR[j])
+                                                + " p";
+                                }
                             }
+                            texts[i + j] = text;
                         }
-                        texts[i + j] = text;
+                        item.setText(texts);
                     }
-                    item.setText(texts);
-                    // */
+
                 }
 
                 utilityText.setText(format("%.3f", throughput));
