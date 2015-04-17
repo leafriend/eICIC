@@ -76,6 +76,8 @@ public class GuiConsole implements Console {
 
     private Table mobileTable;
 
+    private int[] mobileIdxToItems = new int[NUM_MOBILES];
+
     private Calculator calculator;
 
     public GuiConsole() {
@@ -321,6 +323,7 @@ public class GuiConsole implements Console {
         for (int i = 0; i < NUM_MOBILES; i++) {
             TableItem item = new TableItem(mobileTable, SWT.NONE);
             item.setText(0, valueOf(i));
+            mobileIdxToItems[i] = i;
         }
 
         // - - -
@@ -598,7 +601,11 @@ public class GuiConsole implements Console {
 
                     if (frequncy > 0 && seq % frequncy == 0) {
 
-                        TableItem item = mobileTable.getItem(mobile.idx);
+                        int itemIndex = mobileIdxToItems[mobile.idx];
+                        if (itemIndex < 0)
+                            continue;
+
+                        TableItem item = mobileTable.getItem(itemIndex);
                         String[] texts = new String[17 + NUM_RB * 2];
                         int index = 1;
                         texts[index++] = null;
