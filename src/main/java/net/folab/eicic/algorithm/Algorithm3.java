@@ -136,6 +136,42 @@ public class Algorithm3 implements Algorithm {
     }
 
     /**
+     * 각 Mobile 별 Macro가 켜졌을때 Cell Association 결정 여기서는 다른 곳과 달리 Pico의
+     * ABS여부(isAbs())를 확인하지 않고 무조건 non-ABS 값만 취한다
+     *
+     * @param mobiles
+     *            Cell Association을 결정할 Mobile 목록
+     *
+     * @return Mobile.idx를 인덱스로 가지는 연결 여부 배열
+     */
+    public void chooseMobileConnection(List<Mobile> mobiles) {
+
+        for (Mobile mobile : mobiles) {
+
+            double macroLambdaRSum = 0.0;
+            double[] macroLambdaRs = mobile.getMacroLambdaR();
+            for (int i = 0; i < NUM_RB; i++)
+                macroLambdaRSum += macroLambdaRs[i];
+            // double macroRatio = macroLambdaRSum /
+            // mobile.getMacro().pa3LambdaR;
+            double macroRatio = macroLambdaRSum
+                    / mobile.getMacro().pa3MobileLambdaR[mobile.idx];
+
+            double picoLambdaRSum = 0.0;
+            double[] nonPicoLambdaRs = mobile.getNonPicoLambdaR();
+            for (int i = 0; i < NUM_RB; i++)
+                picoLambdaRSum += nonPicoLambdaRs[i];
+            // double picoRatio = picoLambdaRSum / mobile.getPico().pa3LambdaR;
+            double picoRatio = picoLambdaRSum
+                    / mobile.getPico().pa3MobileLambdaR[mobile.idx];
+
+            mobileConnectsMacro[mobile.idx] = macroRatio > picoRatio;
+
+        }
+
+    }
+
+    /**
      * Mobile이 Macro에 연결했을 때 모든 Subchannel에서 수신할 수 있는 Lambda R 값의 합을 계산한다.
      *
      * @param mobile
@@ -215,42 +251,6 @@ public class Algorithm3 implements Algorithm {
         }
 
         return lambdaRSum;
-    }
-
-    /**
-     * 각 Mobile 별 Macro가 켜졌을때 Cell Association 결정 여기서는 다른 곳과 달리 Pico의
-     * ABS여부(isAbs())를 확인하지 않고 무조건 non-ABS 값만 취한다
-     *
-     * @param mobiles
-     *            Cell Association을 결정할 Mobile 목록
-     *
-     * @return Mobile.idx를 인덱스로 가지는 연결 여부 배열
-     */
-    public void chooseMobileConnection(List<Mobile> mobiles) {
-
-        for (Mobile mobile : mobiles) {
-
-            double macroLambdaRSum = 0.0;
-            double[] macroLambdaRs = mobile.getMacroLambdaR();
-            for (int i = 0; i < NUM_RB; i++)
-                macroLambdaRSum += macroLambdaRs[i];
-            // double macroRatio = macroLambdaRSum /
-            // mobile.getMacro().pa3LambdaR;
-            double macroRatio = macroLambdaRSum
-                    / mobile.getMacro().pa3MobileLambdaR[mobile.idx];
-
-            double picoLambdaRSum = 0.0;
-            double[] nonPicoLambdaRs = mobile.getNonPicoLambdaR();
-            for (int i = 0; i < NUM_RB; i++)
-                picoLambdaRSum += nonPicoLambdaRs[i];
-            // double picoRatio = picoLambdaRSum / mobile.getPico().pa3LambdaR;
-            double picoRatio = picoLambdaRSum
-                    / mobile.getPico().pa3MobileLambdaR[mobile.idx];
-
-            mobileConnectsMacro[mobile.idx] = macroRatio > picoRatio;
-
-        }
-
     }
 
 }
