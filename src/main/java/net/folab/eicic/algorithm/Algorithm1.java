@@ -47,6 +47,13 @@ public class Algorithm1 implements Algorithm {
                     for (Mobile mobile : macro.getMobiles()) {
 
                         Edge<?>[] mobileEdges = edges[mobile.idx];
+                        boolean isAbs = mobile.getPico().isAbs();
+                        List<Edge<Pico>>[] sortedEdges;
+                        if (isAbs)
+                            sortedEdges = mobile.getPico().getSortedAbsEdges();
+                        else
+                            sortedEdges = mobile.getPico().getSortedNonEdges();
+
                         for (int i = 0; i < NUM_RB; i++) {
                             if (macroFirstMobiles[mobile.getMacro().idx][i] == mobile) {
                                 // Macro로 연결
@@ -54,12 +61,7 @@ public class Algorithm1 implements Algorithm {
                                 mobileEdges[i] = mobile.getMacroEdge();
                             } else {
                                 // Pico로 연결
-                                if (mobile.getPico().isAbs()) {
-                                    lambdaRSum += mobile.getAbsPicoLambdaR()[i];
-                                } else {
-                                    lambdaRSum += mobile.getNonPicoLambdaR()[i];
-                                }
-                                mobileEdges[i] = mobile.getPicoEdge();
+                                lambdaRSum += calculatePicoLambdaR(mobile, mobileEdges, sortedEdges, isAbs, i);
                             }
                         }
 
@@ -177,28 +179,36 @@ public class Algorithm1 implements Algorithm {
 
         for (int i = 0; i < NUM_RB; i++) {
 
-            // 각 Subchannel에서 내가 Macro에 연결한 다른 Mobile을 제외하고 첫 번째 순위인지 확인
-            Edge<Pico> firstEdge = null;
-            for (Edge<Pico> edge : sortedEdges[i]) {
-                if (macroFirstMobiles[edge.mobile.getMacro().idx][i] == edge.mobile)
-                    continue;
-                firstEdge = edge;
-                break;
-            }
-
-            // Pico의 현재 Subchannel의 첫 번째 Mobile이 전달받은 Mobile이라면
-            Edge<Pico> picoEdge = mobile.getPicoEdge();
-            if (firstEdge == picoEdge) {
-                if (isAbs)
-                    lambdaRSum += mobile.getAbsPicoLambdaR()[i];
-                else
-                    lambdaRSum += mobile.getNonPicoLambdaR()[i];
-                edges[i] = picoEdge;
-            }
+            lambdaRSum += calculatePicoLambdaR(mobile, edges, sortedEdges,
+                    isAbs, i);
 
         }
 
         return lambdaRSum;
+    }
+
+    public double calculatePicoLambdaR(Mobile mobile, Edge<?>[] edges,
+            List<Edge<Pico>>[] sortedEdges, boolean isAbs, int i) {
+        // 각 Subchannel에서 내가 Macro에 연결한 다른 Mobile을 제외하고 첫 번째 순위인지 확인
+        Edge<Pico> firstEdge = null;
+        for (Edge<Pico> edge : sortedEdges[i]) {
+            if (macroFirstMobiles[edge.mobile.getMacro().idx][i] == edge.mobile)
+                continue;
+            firstEdge = edge;
+            break;
+        }
+
+        // Pico의 현재 Subchannel의 첫 번째 Mobile이 전달받은 Mobile이라면
+        Edge<Pico> picoEdge = mobile.getPicoEdge();
+        double lambdaR = 0;
+        if (firstEdge == picoEdge) {
+            if (isAbs)
+                lambdaR = mobile.getAbsPicoLambdaR()[i];
+            else
+                lambdaR += mobile.getNonPicoLambdaR()[i];
+            edges[i] = picoEdge;
+        }
+        return lambdaR;
     }
 
 }
