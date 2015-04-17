@@ -156,7 +156,7 @@ public class GuiConsole implements Console {
 
         algorithmeCombo = new Combo(parent, READ_ONLY);
         algorithmeCombo.setItems(new String[] { ALGORITHM_1, ALGORITHM_2, ALGORITHM_3 });
-        algorithmeCombo.select(2);
+        algorithmeCombo.select(1);
         algorithmeCombo.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {

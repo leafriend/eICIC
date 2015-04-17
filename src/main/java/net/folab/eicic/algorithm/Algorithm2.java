@@ -30,7 +30,7 @@ public class Algorithm2 implements Algorithm {
             for (int m = 0; m < NUM_MACROS; m++)
                 macroStates[m] = 1 == (((1 << m) & mask) >> m);
 
-            Edge<?>[][] edges = new Edge[NUM_MOBILES][NUM_RB];
+            Edge<?>[][] _edges = new Edge[NUM_MOBILES][NUM_RB];
 
             double lambdaRSum = 0.0;
             for (Macro macro : macros) {
@@ -43,9 +43,14 @@ public class Algorithm2 implements Algorithm {
                 for (int i = 0; i < mobilesTS.size(); i++)
                     mobileIndexes[mobilesTS.get(i).idx] = i;
 
+                double mostMobileLambdaRSum = 0;
+
                 for (int mobileMask = 0; mobileMask < macroStatesCount; mobileMask++) {
 
+                    double mobileLambdaRSum = 0;
+
                     boolean[] mobileConnectsMacro = new boolean[mobileStatesCount];
+                    Edge<?>[][] edges = new Edge[mobilesTS.size()][NUM_RB];
                     for (int u = 0; u < mobileStatesCount; u++)
                         mobileConnectsMacro[u] = 1 == (((1 << u) & mobileMask) >> u);
 
@@ -56,16 +61,16 @@ public class Algorithm2 implements Algorithm {
 
                         for (Mobile mobile : mobilesTS) {
 
-                            Edge<?>[] mobileEdges = edges[mobile.idx];
+                            Edge<?>[] mobileEdges = edges[mobileIndexes[mobile.idx]];
                             if (mobileConnectsMacro[mobileIndexes[mobile.idx]]) {
 
-                                lambdaRSum += calculateMacroLambdaRSum(mobile,
+                                mobileLambdaRSum += calculateMacroLambdaRSum(mobile,
                                         mobileEdges, mobileConnectsMacro,
                                         mobileIndexes);
 
                             } else {
 
-                                lambdaRSum += calculatePicoLambdaRSum(mobile,
+                                mobileLambdaRSum += calculatePicoLambdaRSum(mobile,
                                         mobileEdges, mobileConnectsMacro,
                                         mobileIndexes);
 
@@ -78,10 +83,18 @@ public class Algorithm2 implements Algorithm {
                         // Mobile의 Pico의 ABS 여부에 따라 lambdaR 가산
 
                         for (Mobile mobile : mobilesTS)
-                            lambdaRSum += calculatePicoLambdaRSum(mobile,
-                                    edges[mobile.idx], mobileConnectsMacro,
+                            mobileLambdaRSum += calculatePicoLambdaRSum(mobile,
+                                    edges[mobileIndexes[mobile.idx]], mobileConnectsMacro,
                                     mobileIndexes);
 
+                    }
+
+                    if (mostMobileLambdaRSum < mobileLambdaRSum) {
+                        System.out.println("mobileLambdaRSum: " + mobileLambdaRSum);
+                        mostMobileLambdaRSum = mobileLambdaRSum;
+                        for (int u = 0; u < mobilesTS.size(); u++)
+                            for (int i = 0; i < NUM_RB; i++)
+                                _edges[mobilesTS.get(u).idx][i] = edges[u][i];
                     }
 
                 }
@@ -94,7 +107,7 @@ public class Algorithm2 implements Algorithm {
                     bestMacroStates[m] = macroStates[m];
                 for (int u = 0; u < NUM_MOBILES; u++)
                     for (int i = 0; i < NUM_RB; i++)
-                        bestEdges[u][i] = edges[u][i];
+                        bestEdges[u][i] = _edges[u][i];
             }
 
         }
