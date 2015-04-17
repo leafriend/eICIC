@@ -313,8 +313,10 @@ public class GuiConsole implements Console {
         addColumn(table, 96, LAMBDA);
         addColumn(table, 96, MU);
 
-        for (int i = 0; i < NUM_RB; i++)
-            addColumn(table, 96, valueOf(i));
+        for (int i = 0; i < NUM_RB; i++) {
+            addColumn(table, 80, LAMBDA + "R " + i);
+            addColumn(table, 48, "BS " + i, SWT.LEFT);
+        }
 
         for (int i = 0; i < NUM_MOBILES; i++) {
             TableItem item = new TableItem(table, SWT.NONE);
@@ -428,9 +430,13 @@ public class GuiConsole implements Console {
     }
 
     public static void addColumn(Table table, int width, String text) {
+        addColumn(table, width, text, SWT.RIGHT);
+    }
+
+    public static void addColumn(Table table, int width, String text, int alignment) {
         TableColumn column = new TableColumn(table, SWT.NONE);
         column.setText(text);
-        column.setAlignment(SWT.RIGHT);
+        column.setAlignment(alignment);
         column.setWidth(width);
     }
 
@@ -589,7 +595,7 @@ public class GuiConsole implements Console {
                     if (frequncy > 0 && seq % frequncy == 0) {
 
                         TableItem item = table.getItem(mobile.idx);
-                        String[] texts = new String[17 + NUM_RB];
+                        String[] texts = new String[17 + NUM_RB * 2];
                         int i = 1;
                         texts[i++] = null;
                         texts[i++] = null;
@@ -614,6 +620,7 @@ public class GuiConsole implements Console {
                                 / seq));
                         texts[i++] = format("%.6f", mobile.getLambda());
                         texts[i++] = format("%.6f", mobile.getMu());
+
                         Edge<? extends BaseStation<?>>[] activeEdges = mobile
                                 .getActiveEdges();
                         double[] macroLambdaR = mobile.getMacroLambdaR();
@@ -621,23 +628,25 @@ public class GuiConsole implements Console {
                         double[] nonPicoLambdaR = mobile.getNonPicoLambdaR();
                         boolean isAbs = mobile.getPico().isAbs();
                         for (int j = 0; j < NUM_RB; j++) {
-                            String text = "";
+                            String bs = null;
+                            double lambdaR = 0;
                             if (activeEdges[j] != null) {
                                 if (activeEdges[j].baseStation instanceof Macro) {
-                                    text = format("%.3f",
-                                            1000 * macroLambdaR[j]) + " M";
+                                    bs = "MAC";
+                                    lambdaR = macroLambdaR[j];
                                 } else if (activeEdges[j].baseStation instanceof Pico) {
-                                    if (isAbs)
-                                        text = format("%.3f",
-                                                1000 * absPicoLambdaR[j])
-                                                + " P";
-                                    else
-                                        text = format("%.3f",
-                                                1000 * nonPicoLambdaR[j])
-                                                + " p";
+                                    if (isAbs) {
+                                        bs = "abs";
+                                        lambdaR = absPicoLambdaR[j];
+                                    } else {
+                                        bs = "non";
+                                        lambdaR = nonPicoLambdaR[j];
+                                    }
                                 }
                             }
-                            texts[i + j] = text;
+                            texts[i + j * 2] = bs == null ? "" : format("%.3f",
+                                    1000 * lambdaR);
+                            texts[i + j * 2 + 1] = bs == null ? "" : bs;
                         }
                         item.setText(texts);
                     }
