@@ -49,9 +49,9 @@ public class GuiConsole implements Console {
 
     private Composite dashboard;
 
-    private Label timeLabel;
+    private Label seqLabel;
 
-    private Text timeText;
+    private Text seqText;
 
     private Label executeLabel;
 
@@ -96,20 +96,20 @@ public class GuiConsole implements Console {
         // layoutData.bottom = new FormAttachment(100, 0);
         dashboard.setLayoutData(layoutData);
 
-        timeLabel = new Label(dashboard, SWT.NONE);
-        timeLabel.setText("Time:");
+        seqLabel = new Label(dashboard, SWT.NONE);
+        seqLabel.setText("Seq:");
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 8+ 5);
         layoutData.left = new FormAttachment(0, 8);
-        timeLabel.setLayoutData(layoutData);
+        seqLabel.setLayoutData(layoutData);
 
-        timeText = new Text(dashboard, SWT.READ_ONLY);
-        timeText.setText("0");
+        seqText = new Text(dashboard, SWT.READ_ONLY);
+        seqText.setText("0");
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 8+ 5);
-        layoutData.left = new FormAttachment(timeLabel, 0);
-        layoutData.right = new FormAttachment(timeLabel, 64, SWT.RIGHT);
-        timeText.setLayoutData(layoutData);
+        layoutData.left = new FormAttachment(seqLabel, 0);
+        layoutData.right = new FormAttachment(seqLabel, 64, SWT.RIGHT);
+        seqText.setLayoutData(layoutData);
 
         // - - -
 
@@ -117,7 +117,7 @@ public class GuiConsole implements Console {
         executeLabel.setText("Execute:");
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 8+ 5);
-        layoutData.left = new FormAttachment(timeText, 8);
+        layoutData.left = new FormAttachment(seqText, 8);
         //executeLabel.pack();
         executeLabel.setLayoutData(layoutData);
 
@@ -404,7 +404,7 @@ public class GuiConsole implements Console {
             public void run() {
                 if (shell.isDisposed())
                     return;
-                timeText.setText(valueOf(t));
+                seqText.setText(valueOf(t));
 
                 long sec = execute / 1000;
                 long mil = execute - sec * 1000;

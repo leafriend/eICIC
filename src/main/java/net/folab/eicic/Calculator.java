@@ -15,7 +15,7 @@ public class Calculator {
 
     private final List<Mobile> mobiles;
 
-    private int time = 1;
+    private int seq = 1;
 
     private long accumuMillis = 0;
 
@@ -47,7 +47,7 @@ public class Calculator {
 
                 long elapsed = System.currentTimeMillis();
 
-                while (running && time <= times) {
+                while (running && seq <= times) {
 
                     calculateInternal();
                     accumuMillis = baseAccumuMillis + System.currentTimeMillis() - started;
@@ -102,15 +102,15 @@ public class Calculator {
             mobile.calculateThroughput();
         for (Mobile mobile : mobiles)
             mobile.calculateUserRate();
-        final int _t = time;
+        final int _t = seq;
         for (Mobile mobile : mobiles)
             mobile.calculateDualVariables(_t);
 
-        time++;
+        seq++;
     }
 
     private long dump(long elapsed) {
-        elapsed = console.dump(time - 1, macros, picos, mobiles, elapsed,
+        elapsed = console.dump(seq - 1, macros, picos, mobiles, elapsed,
                 accumuMillis);
         return elapsed;
     }
@@ -123,8 +123,8 @@ public class Calculator {
         return running;
     }
 
-    public int getTime() {
-        return time;
+    public int getSeq() {
+        return seq;
     }
 
     public List<Macro> getMacros() {
