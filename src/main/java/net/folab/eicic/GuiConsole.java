@@ -241,6 +241,36 @@ public class GuiConsole implements Console {
             item.setText(0, valueOf(i));
         }
 
+        macroTable.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                List<Mobile> mobiles = calculator.getMobiles();
+                TableItem macroItem = (TableItem) e.item;
+                int macroIdx = Integer.parseInt(macroItem.getText(0));
+                boolean enabled = !picoTable.getEnabled();
+                picoTable.setEnabled(enabled);
+                int i = 0;
+                mobileTable.removeAll();
+                for (Mobile mobile : mobiles) {
+                    if (enabled || mobile.getMacro().idx == macroIdx) {
+                        TableItem item = new TableItem(mobileTable, SWT.NONE);
+                        item.setText(0, valueOf(mobile.idx));
+                        showMobile(mobile, item);
+                        mobileIdxToItems[mobile.idx] = i;
+                        i++;
+                    } else {
+                        mobileIdxToItems[mobile.idx] = -1;
+                    }
+                }
+                int seq = calculator.getSeq();
+                List<Macro> macros = calculator.getMacros();
+                List<Pico> picos = calculator.getPicos();
+                long elapsed = 0;
+                long execute = 0;
+                dump(seq, macros, picos, mobiles, elapsed, execute);
+            }
+        });
+
         // - - -
 
         picoTable = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION);
