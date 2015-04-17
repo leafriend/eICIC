@@ -323,6 +323,52 @@ public class GuiConsole implements Console {
     public void start(final Calculator calculator) {
         this.calculator = calculator;
 
+        // - - -
+
+        List<Macro> macros = calculator.getMacros();
+        for (Macro macro : macros) {
+            TableItem item = macroTable.getItem(macro.idx);
+            item.setText(1, valueOf(format("%.3f", macro.x)));
+            item.setText(2, valueOf(format("%.3f", macro.y)));
+            item.setText(3, valueOf(format("%.2f", macro.txPower)));
+        }
+
+        List<Pico> picos = calculator.getPicos();
+        for (Pico pico : picos) {
+            TableItem item = picoTable.getItem(pico.idx);
+            item.setText(1, valueOf(format("%.3f", pico.x)));
+            item.setText(2, valueOf(format("%.3f", pico.y)));
+            item.setText(3, valueOf(format("%.2f", pico.txPower)));
+        }
+
+        List<Mobile> mobiles = calculator.getMobiles();
+        for (Mobile mobile : mobiles) {
+            String[] texts = new String[17 + NUM_RB];
+            int i = 1;
+            texts[i++] = format("%.3f", mobile.x);
+            texts[i++] = format("%.3f", mobile.y);
+            texts[i++] = valueOf(mobile.getMacro().idx);
+            texts[i++] = format("%.3f", mobile.getMacroEdge().distance);
+            texts[i++] = format("%.3f", mobile.getMacro().pa3LambdaR);
+            texts[i++] = null;
+
+            texts[i++] = valueOf(mobile.getPico().idx);
+            texts[i++] = format("%.3f", mobile.getPicoEdge().distance);
+            texts[i++] = format("%.3f", mobile.getPico().pa3LambdaR);
+            texts[i++] = null;
+
+            texts[i++] = format("%.6f", mobile.getUserRate());
+            texts[i++] = format("%.6f", log(mobile.getUserRate()));
+            texts[i++] = format("%.6f", 0.0);
+            texts[i++] = format("%.6f", Double.NaN);
+            texts[i++] = format("%.6f", mobile.getLambda());
+            texts[i++] = format("%.6f", mobile.getMu());
+
+            TableItem item = table.getItem(mobile.idx);
+            item.setText(texts);;
+        }
+        // - - -
+
         shell.setSize(1024, 768);
         shell.open();
         shell.addShellListener(new ShellAdapter() {
@@ -341,11 +387,16 @@ public class GuiConsole implements Console {
 
     }
 
+    private boolean dumped = true;
+
     @Override
     public long dump(final int t, final List<Macro> macros, final List<Pico> picos,
             final List<Mobile> mobiles, final long elapsed, final long execute) {
-        if (calculator.isRunning() &&  t % 10 != 0)
-            return elapsed;
+//        if (calculator.isRunning() &&  t % 5 != 0)
+//            return elapsed;
+        if (!dumped)
+            return -1;
+        dumped = false;
         if (display.isDisposed())
             return -1;
         display.asyncExec(new Runnable() {
@@ -366,37 +417,36 @@ public class GuiConsole implements Console {
 
                 executeText.setText(format("%02d:%02d:%02d.%03d", hour, min, sec, mil));
 
+                //*
+
                 for (Macro macro : macros) {
                     TableItem item = macroTable.getItem(macro.idx);
-                    item.setText(1, valueOf(format("%.3f", macro.x)));
-                    item.setText(2, valueOf(format("%.3f", macro.y)));
-                    item.setText(3, valueOf(format("%.2f", macro.txPower)));
                     item.setText(4, valueOf(macro.state ? "ON" : "OFF"));
                 }
 
                 for (Pico pico : picos) {
                     TableItem item = picoTable.getItem(pico.idx);
-                    item.setText(1, valueOf(format("%.3f", pico.x)));
-                    item.setText(2, valueOf(format("%.3f", pico.y)));
-                    item.setText(3, valueOf(format("%.2f", pico.txPower)));
                     item.setText(4, valueOf(pico.isAbs() ? "ABS" : "non"));
                 }
 
+                //*/
+
                 double throughput = 0.0;
                 for (Mobile mobile : mobiles) {
-                    throughput += mobile.getThroughput() == 0.0 ? 0.0 : log(mobile.getThroughput() / t);
+                    throughput += log(mobile.getThroughput() / t);
+                    //*
                     TableItem item = table.getItem(mobile.idx);
                     String[] texts = new String[17 + NUM_RB];
                     int i = 1;
-                    texts[i++] = format("%.3f", mobile.x);
-                    texts[i++] = format("%.3f", mobile.y);
-                    texts[i++] = valueOf(mobile.getMacro().idx);
-                    texts[i++] = format("%.3f", mobile.getMacroEdge().distance);
+                    texts[i++] = null;
+                    texts[i++] = null;
+                    texts[i++] = null;
+                    texts[i++] = null;
                     texts[i++] = format("%.3f", mobile.getMacro().pa3LambdaR);
                     texts[i++] = format("%.3f", mobile.getMacro().pa3MobileLambdaR[mobile.idx]);
 
-                    texts[i++] = valueOf(mobile.getPico().idx);
-                    texts[i++] = format("%.3f", mobile.getPicoEdge().distance);
+                    texts[i++] = null;
+                    texts[i++] = null;
                     texts[i++] = format("%.3f", mobile.getPico().pa3LambdaR);
                     texts[i++] = format("%.3f", mobile.getPico().pa3MobileLambdaR[mobile.idx]);
 
@@ -429,10 +479,12 @@ public class GuiConsole implements Console {
                         texts[i + j] = text;
                     }
                     item.setText(texts);
+                    //*/
                 }
 
                 utilityText.setText(format("%.3f", throughput));
 
+                dumped = true;
             }
         });
         return System.currentTimeMillis();
