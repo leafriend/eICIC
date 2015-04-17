@@ -9,11 +9,11 @@ import net.folab.eicic.model.Pico;
 
 public class Calculator {
 
-    private List<Macro> macros;
+    private final List<Macro> macros;
 
-    private List<Pico> picos;
+    private final List<Pico> picos;
 
-    private List<Mobile> mobiles;
+    private final List<Mobile> mobiles;
 
     private int time = 1;
 
@@ -125,6 +125,18 @@ public class Calculator {
 
     public int getTime() {
         return time;
+    }
+
+    public List<Macro> getMacros() {
+        return macros;
+    }
+
+    public List<Pico> getPicos() {
+        return picos;
+    }
+
+    public List<Mobile> getMobiles() {
+        return mobiles;
     }
 
 }
