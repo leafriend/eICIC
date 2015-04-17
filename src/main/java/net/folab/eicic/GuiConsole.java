@@ -22,6 +22,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -82,9 +83,13 @@ public class GuiConsole implements Console {
 
     private Calculator calculator;
 
+    private Color colorActiveBg;
+
     public GuiConsole() {
 
         display = new Display();
+
+        colorActiveBg = new Color(display, 225, 255, 225);
 
         clipboard = new Clipboard(display);
 
@@ -690,7 +695,11 @@ public class GuiConsole implements Console {
                             String bs = null;
                             double lambdaR = 0;
                             int rank = 0;
-                            if (activeEdges[j] != null) {
+                            if (activeEdges[j] == null) {
+                                item.setBackground(index + j * 3 + 0, null);
+                                item.setBackground(index + j * 3 + 1, null);
+                                item.setBackground(index + j * 3 + 2, null);
+                            } else {
                                 if (activeEdges[j].baseStation instanceof Macro) {
                                     Macro macro = (Macro) activeEdges[j].baseStation;
                                     bs = "MAC";
@@ -711,6 +720,9 @@ public class GuiConsole implements Console {
                                                 .indexOf(activeEdges[j]);
                                     }
                                 }
+                                item.setBackground(index + j * 3 + 0, colorActiveBg);
+                                item.setBackground(index + j * 3 + 1, colorActiveBg);
+                                item.setBackground(index + j * 3 + 2, colorActiveBg);
                             }
                             texts[index + j * 3] = bs == null ? "" : format(
                                     "%.3f", 1000 * lambdaR);
