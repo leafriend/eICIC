@@ -60,6 +60,8 @@ public class GuiConsole implements Console {
 
     private Text utilityText;
 
+    private Button showActiveButton;
+
     private Combo updateSeq;
 
     private int selectedIndex;
@@ -136,6 +138,10 @@ public class GuiConsole implements Console {
 
     public void buildButtonPannel(Composite parent) {
 
+        showActiveButton = new Button(parent, CHECK);
+        showActiveButton.setText("Show ac&tive only");
+        showActiveButton.setSelection(true);
+
         updateSeq = new Combo(parent, READ_ONLY);
         String[] items = new String[] { //
         "No Update", //
@@ -196,6 +202,14 @@ public class GuiConsole implements Console {
 
         parent.setLayout(new FormLayout());
         FormData layoutData;
+
+        // showActiveButton
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 5);
+        // layoutData.left = new FormAttachment(100, 100, -64 - 8 - 64);
+        layoutData.right = new FormAttachment(updateSeq, -8, LEAD);
+        // layoutData.top = new FormAttachment(100, 0);
+        showActiveButton.setLayoutData(layoutData);
 
         // updateSeq
         layoutData = new FormData();
