@@ -25,7 +25,7 @@ public class Algorithm3 implements Algorithm {
         double mostLambdaRSum = Double.NEGATIVE_INFINITY;
         // 가능한 모든 Macro 상태(2 ^ NUM_MACRO = 1 << NUM_MACRO)에 대한 반복문
         int macroStatesCount = 1 << NUM_MACROS;
-        for (int mask = 1; mask < macroStatesCount; mask++) {
+        for (int mask = 0; mask < macroStatesCount; mask++) {
 
             boolean[] macroStates = new boolean[NUM_MACROS];
             // Macro 상태(ON/OFF) 지정
