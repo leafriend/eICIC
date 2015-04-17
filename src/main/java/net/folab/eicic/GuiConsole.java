@@ -53,9 +53,9 @@ public class GuiConsole implements Console {
 
     private Text seqText;
 
-    private Label executeLabel;
+    private Label elapsedLabel;
 
-    private Text executeText;
+    private Text elapsedText;
 
     private SelectionAdapter executeButtonListener;
 
@@ -113,22 +113,22 @@ public class GuiConsole implements Console {
 
         // - - -
 
-        executeLabel = new Label(dashboard, SWT.NONE);
-        executeLabel.setText("Execute:");
+        elapsedLabel = new Label(dashboard, SWT.NONE);
+        elapsedLabel.setText("Execute:");
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 8+ 5);
         layoutData.left = new FormAttachment(seqText, 8);
-        //executeLabel.pack();
-        executeLabel.setLayoutData(layoutData);
+        //elapsedLabel.pack();
+        elapsedLabel.setLayoutData(layoutData);
 
-        executeText = new Text(dashboard, SWT.READ_ONLY | SWT.RIGHT);
-        executeText.setText("00:00:00.000");
+        elapsedText = new Text(dashboard, SWT.READ_ONLY | SWT.RIGHT);
+        elapsedText.setText("00:00:00.000");
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 8+ 5);
-        layoutData.left = new FormAttachment(executeLabel, 0);
-        //layoutData.right = new FormAttachment(executeLabel, 64, SWT.RIGHT);
-        executeLabel.pack();
-        executeText.setLayoutData(layoutData);
+        layoutData.left = new FormAttachment(elapsedLabel, 0);
+        //layoutData.right = new FormAttachment(elapsedLabel, 64, SWT.RIGHT);
+        elapsedLabel.pack();
+        elapsedText.setLayoutData(layoutData);
 
         // - - -
 
@@ -136,7 +136,7 @@ public class GuiConsole implements Console {
         utilityLabel.setText("Utility:");
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 8+ 5);
-        layoutData.left = new FormAttachment(executeText, 8);
+        layoutData.left = new FormAttachment(elapsedText, 8);
         //utilityLabel.pack();
         utilityLabel.setLayoutData(layoutData);
 
@@ -406,8 +406,8 @@ public class GuiConsole implements Console {
                     return;
                 seqText.setText(valueOf(t));
 
-                long sec = execute / 1000;
-                long mil = execute - sec * 1000;
+                long sec = elapsed / 1000;
+                long mil = elapsed - sec * 1000;
 
                 long min = sec / 60;
                 sec -= min * 60;
@@ -415,7 +415,7 @@ public class GuiConsole implements Console {
                 long hour = min / 60;
                 min -= hour * 60;
 
-                executeText.setText(format("%02d:%02d:%02d.%03d", hour, min, sec, mil));
+                elapsedText.setText(format("%02d:%02d:%02d.%03d", hour, min, sec, mil));
 
                 //*
 

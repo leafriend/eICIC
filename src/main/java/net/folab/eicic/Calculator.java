@@ -110,8 +110,8 @@ public class Calculator {
     }
 
     private long dump(long elapsed) {
-        elapsed = console.dump(seq - 1, macros, picos, mobiles, elapsed,
-                accumuMillis);
+        elapsed = console.dump(seq - 1, macros, picos, mobiles, accumuMillis,
+                elapsed);
         return elapsed;
     }
 
