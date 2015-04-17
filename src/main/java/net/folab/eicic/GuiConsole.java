@@ -382,6 +382,7 @@ public class GuiConsole implements Console {
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 0);
         layoutData.left = new FormAttachment(utilityLabel, 0);
+        layoutData.right = new FormAttachment(utilityLabel, 64, SWT.TRAIL);
         utilityText.setLayoutData(layoutData);
 
     }
