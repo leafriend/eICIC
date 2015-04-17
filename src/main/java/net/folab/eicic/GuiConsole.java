@@ -62,7 +62,7 @@ public class GuiConsole implements Console {
 
     private Text seqText;
 
-    private Text elapsedText;
+    private Text executeTimeText;
 
     private Composite buttonPanel;
 
@@ -160,20 +160,7 @@ public class GuiConsole implements Console {
         algorithmeCombo.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                int index = algorithmeCombo.getSelectionIndex();
-                switch (algorithmeCombo.getItem(index)) {
-                case ALGORITHM_1:
-                    calculator.setAlgorithm(new Algorithm1());
-                    break;
-                case ALGORITHM_2:
-                    calculator.setAlgorithm(new Algorithm2());
-                    break;
-                case ALGORITHM_3:
-                    calculator.setAlgorithm(new Algorithm3());
-                    break;
-                default:
-                    break;
-                }
+                setAlgorithm();
             }
         });
 
@@ -216,6 +203,7 @@ public class GuiConsole implements Console {
                         nextButton.setEnabled(true);
                         algorithmeCombo.setEnabled(true);
                     } else if ("&Start".endsWith(text)) {
+                        setAlgorithm();
                         calculator.calculate(SIMULATION_TIME);
                         executeButton.setText("Pau&se");
                         nextButton.setEnabled(false);
@@ -461,11 +449,8 @@ public class GuiConsole implements Console {
 
         // - - -
 
-        Label elapsedLabel = new Label(parent, NONE);
-        elapsedLabel.setText("Execute:");
-
-        elapsedText = new Text(parent, READ_ONLY | RIGHT);
-        elapsedText.setText("00:00:00.000");
+        executeTimeText = new Text(parent, READ_ONLY | RIGHT);
+        executeTimeText.setText("00:00:00 / 00:00:00");
 
         // - - -
 
@@ -497,24 +482,10 @@ public class GuiConsole implements Console {
 
         //
 
-        // elapsedLabel
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(seqText, 8);
-        elapsedLabel.setLayoutData(layoutData);
-
-        // elapsedText
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(elapsedLabel, 0);
-        elapsedText.setLayoutData(layoutData);
-
-        //
-
         // utilityLabel
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(elapsedText, 8);
+        layoutData.left = new FormAttachment(seqText, 8);
         utilityLabel.setLayoutData(layoutData);
 
         // utilityText
@@ -523,6 +494,14 @@ public class GuiConsole implements Console {
         layoutData.left = new FormAttachment(utilityLabel, 0);
         layoutData.right = new FormAttachment(utilityLabel, 64, TRAIL);
         utilityText.setLayoutData(layoutData);
+
+        //
+
+        // elapsedText
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.right = new FormAttachment(1, 1, 0);
+        executeTimeText.setLayoutData(layoutData);
 
     }
 
@@ -630,17 +609,12 @@ public class GuiConsole implements Console {
                     return;
                 seqText.setText(valueOf(seq));
 
-                long sec = elapsed / 1000;
-                long mil = elapsed - sec * 1000;
+                String elapsedTime = milisToTImeString(elapsed);
 
-                long min = sec / 60;
-                sec -= min * 60;
+                long estimated = elapsed * SIMULATION_TIME / seq;
+                String estimatedTime = milisToTImeString(estimated);
 
-                long hour = min / 60;
-                min -= hour * 60;
-
-                elapsedText.setText(format("%02d:%02d:%02d.%03d", hour, min,
-                        sec, mil));
+                executeTimeText.setText(elapsedTime + " / " + estimatedTime);
 
                 int frequncy;
                 switch (selectedIndex) {
@@ -788,6 +762,39 @@ public class GuiConsole implements Console {
             }
         });
         return System.currentTimeMillis();
+    }
+
+
+    public void setAlgorithm() {
+        int index = algorithmeCombo.getSelectionIndex();
+        switch (algorithmeCombo.getItem(index)) {
+        case ALGORITHM_1:
+            calculator.setAlgorithm(new Algorithm1());
+            break;
+        case ALGORITHM_2:
+            calculator.setAlgorithm(new Algorithm2());
+            break;
+        case ALGORITHM_3:
+            calculator.setAlgorithm(new Algorithm3());
+            break;
+        default:
+            break;
+        }
+    }
+
+    public static String milisToTImeString(final long elapsed) {
+        long sec = elapsed / 1000;
+        //long mil = elapsed - sec * 1000;
+
+        long min = sec / 60;
+        sec -= min * 60;
+
+        long hour = min / 60;
+        min -= hour * 60;
+
+        String format = format("%02d:%02d:%02d", hour, min,
+                sec);
+        return format;
     }
 
 }
