@@ -3,6 +3,7 @@ package net.folab.eicic;
 import static java.lang.Math.*;
 import static java.lang.String.*;
 import static net.folab.eicic.Constants.*;
+import static org.eclipse.swt.SWT.*;
 
 import java.util.List;
 
@@ -12,7 +13,6 @@ import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
@@ -94,13 +94,13 @@ public class GuiConsole implements Console {
 
     public void buildShell(Composite parent) {
 
-        buttonPanel = new Composite(parent, SWT.NONE);
+        buttonPanel = new Composite(parent, NONE);
         buildButtonPannel(buttonPanel);
 
-        tablePanel = new Composite(parent, SWT.NONE);
+        tablePanel = new Composite(parent, NONE);
         buildTablePanel(tablePanel);
 
-        statusBar = new Composite(parent, SWT.NONE);
+        statusBar = new Composite(parent, NONE);
         buildStatusBar(statusBar);
 
         // - - -
@@ -136,7 +136,7 @@ public class GuiConsole implements Console {
 
     public void buildButtonPannel(Composite parent) {
 
-        updateSeq = new Combo(parent, SWT.READ_ONLY);
+        updateSeq = new Combo(parent, READ_ONLY);
         String[] items = new String[] { //
         "No Update", //
                 "Update for each 1 seq", //
@@ -158,7 +158,7 @@ public class GuiConsole implements Console {
             }
         });
 
-        executeButton = new Button(parent, SWT.PUSH);
+        executeButton = new Button(parent, PUSH);
         executeButton.setText("&Start");
         executeButtonListener = new SelectionAdapter() {
             @Override
@@ -181,7 +181,7 @@ public class GuiConsole implements Console {
 
         // - - -
 
-        nextButton = new Button(parent, SWT.PUSH);
+        nextButton = new Button(parent, PUSH);
         nextButton.setText("N&ext");
         nextButton.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -201,14 +201,14 @@ public class GuiConsole implements Console {
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 1);
         // layoutData.left = new FormAttachment(100, 100, -64 - 8 - 64);
-        layoutData.right = new FormAttachment(executeButton, -8, SWT.LEAD);
+        layoutData.right = new FormAttachment(executeButton, -8, LEAD);
         // layoutData.top = new FormAttachment(100, 0);
         updateSeq.setLayoutData(layoutData);
 
         // executeButton
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(nextButton, -8 - 64, SWT.LEAD);
+        layoutData.left = new FormAttachment(nextButton, -8 - 64, LEAD);
         layoutData.right = new FormAttachment(nextButton, -8);
         // layoutData.top = new FormAttachment(100, 0);
         executeButton.setLayoutData(layoutData);
@@ -225,7 +225,7 @@ public class GuiConsole implements Console {
 
     public void buildTablePanel(Composite parent) {
 
-        macroTable = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION);
+        macroTable = new Table(parent, BORDER | FULL_SELECTION);
         macroTable.setLinesVisible(true);
         macroTable.setHeaderVisible(true);
         macroTable.setEnabled(false);
@@ -237,7 +237,7 @@ public class GuiConsole implements Console {
         addColumn(macroTable, 56, "State");
 
         for (int i = 0; i < NUM_MACROS; i++) {
-            TableItem item = new TableItem(macroTable, SWT.NONE);
+            TableItem item = new TableItem(macroTable, NONE);
             item.setText(0, valueOf(i));
         }
 
@@ -253,7 +253,7 @@ public class GuiConsole implements Console {
                 mobileTable.removeAll();
                 for (Mobile mobile : mobiles) {
                     if (enabled || mobile.getMacro().idx == macroIdx) {
-                        TableItem item = new TableItem(mobileTable, SWT.NONE);
+                        TableItem item = new TableItem(mobileTable, NONE);
                         item.setText(0, valueOf(mobile.idx));
                         showMobile(mobile, item);
                         mobileIdxToItems[mobile.idx] = i;
@@ -273,7 +273,7 @@ public class GuiConsole implements Console {
 
         // - - -
 
-        picoTable = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION);
+        picoTable = new Table(parent, BORDER | FULL_SELECTION);
         picoTable.setLinesVisible(true);
         picoTable.setHeaderVisible(true);
         picoTable.setEnabled(false);
@@ -285,13 +285,13 @@ public class GuiConsole implements Console {
         addColumn(picoTable, 56, "State");
 
         for (int i = 0; i < NUM_PICOS; i++) {
-            TableItem item = new TableItem(picoTable, SWT.NONE);
+            TableItem item = new TableItem(picoTable, NONE);
             item.setText(0, valueOf(i));
         }
 
         // - - -
 
-        mobileTable = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+        mobileTable = new Table(parent, BORDER | FULL_SELECTION | MULTI);
         mobileTable.setLinesVisible(true);
         mobileTable.setHeaderVisible(true);
         mobileTable.setEnabled(false);
@@ -299,10 +299,10 @@ public class GuiConsole implements Console {
         mobileTable.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if ((e.stateMask & SWT.CTRL) == SWT.CTRL && e.keyCode == 'c') {
+                if ((e.stateMask & CTRL) == CTRL && e.keyCode == 'c') {
                     String text = "";
                     int columnCount = mobileTable.getColumnCount();
-                    if ((e.stateMask & SWT.SHIFT) == SWT.SHIFT) {
+                    if ((e.stateMask & SHIFT) == SHIFT) {
                         for (int c = 0; c < columnCount; c++) {
                             if (c > 0)
                                 text += "\t";
@@ -321,7 +321,7 @@ public class GuiConsole implements Console {
                     clipboard.setContents(new Object[] { text },
                             new Transfer[] { TextTransfer.getInstance() });
                 }
-                if ((e.stateMask & SWT.CTRL) == SWT.CTRL && e.keyCode == 'a') {
+                if ((e.stateMask & CTRL) == CTRL && e.keyCode == 'a') {
                     mobileTable.setSelection(0, mobileTable.getItemCount() - 1);
                 }
             }
@@ -347,12 +347,12 @@ public class GuiConsole implements Console {
 
         for (int i = 0; i < NUM_RB; i++) {
             addColumn(mobileTable, 80, LAMBDA + "R " + i);
-            addColumn(mobileTable, 48, "BS " + i, SWT.LEFT);
+            addColumn(mobileTable, 48, "BS " + i, LEFT);
             addColumn(mobileTable, 24, "Rank  " + i);
         }
 
         for (int i = 0; i < NUM_MOBILES; i++) {
-            TableItem item = new TableItem(mobileTable, SWT.NONE);
+            TableItem item = new TableItem(mobileTable, NONE);
             item.setText(0, valueOf(i));
             mobileIdxToItems[i] = i;
         }
@@ -390,26 +390,26 @@ public class GuiConsole implements Console {
 
     public void buildStatusBar(Composite parent) {
 
-        Label seqLabel = new Label(parent, SWT.NONE);
+        Label seqLabel = new Label(parent, NONE);
         seqLabel.setText("Seq:");
 
-        seqText = new Text(parent, SWT.READ_ONLY);
+        seqText = new Text(parent, READ_ONLY);
         seqText.setText("0");
 
         // - - -
 
-        Label elapsedLabel = new Label(parent, SWT.NONE);
+        Label elapsedLabel = new Label(parent, NONE);
         elapsedLabel.setText("Execute:");
 
-        elapsedText = new Text(parent, SWT.READ_ONLY | SWT.RIGHT);
+        elapsedText = new Text(parent, READ_ONLY | RIGHT);
         elapsedText.setText("00:00:00.000");
 
         // - - -
 
-        Label utilityLabel = new Label(parent, SWT.NONE);
+        Label utilityLabel = new Label(parent, NONE);
         utilityLabel.setText("Utility:");
 
-        utilityText = new Text(parent, SWT.READ_ONLY | SWT.RIGHT);
+        utilityText = new Text(parent, READ_ONLY | RIGHT);
         utilityText.setText("0.000");
 
         // - - -
@@ -429,7 +429,7 @@ public class GuiConsole implements Console {
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 0);
         layoutData.left = new FormAttachment(seqLabel, 0);
-        layoutData.right = new FormAttachment(seqLabel, 64, SWT.TRAIL);
+        layoutData.right = new FormAttachment(seqLabel, 64, TRAIL);
         seqText.setLayoutData(layoutData);
 
         //
@@ -458,17 +458,17 @@ public class GuiConsole implements Console {
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 0);
         layoutData.left = new FormAttachment(utilityLabel, 0);
-        layoutData.right = new FormAttachment(utilityLabel, 64, SWT.TRAIL);
+        layoutData.right = new FormAttachment(utilityLabel, 64, TRAIL);
         utilityText.setLayoutData(layoutData);
 
     }
 
     public static void addColumn(Table table, int width, String text) {
-        addColumn(table, width, text, SWT.RIGHT);
+        addColumn(table, width, text, RIGHT);
     }
 
     public static void addColumn(Table table, int width, String text, int alignment) {
-        TableColumn column = new TableColumn(table, SWT.NONE);
+        TableColumn column = new TableColumn(table, NONE);
         column.setText(text);
         column.setAlignment(alignment);
         column.setWidth(width);
