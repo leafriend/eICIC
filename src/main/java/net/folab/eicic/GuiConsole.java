@@ -475,7 +475,7 @@ public class GuiConsole implements Console {
             texts[i++] = format("%.6f", mobile.getUserRate());
             texts[i++] = format("%.6f", log(mobile.getUserRate()));
             texts[i++] = format("%.6f", 0.0);
-            texts[i++] = format("%.6f", Double.NaN);
+            texts[i++] = format("%.6f", Double.NEGATIVE_INFINITY);
             texts[i++] = format("%.6f", mobile.getLambda());
             texts[i++] = format("%.6f", mobile.getMu());
 
@@ -565,6 +565,8 @@ public class GuiConsole implements Console {
                     throw new RuntimeException("Unsupported frequency: "
                             + updateSeq.getItem(updateSeq.getSelectionIndex()));
                 }
+                if (seq == SIMULATION_TIME)
+                    frequncy = 1;
 
                 if (frequncy > 0 && seq % frequncy == 0) {
 
