@@ -590,36 +590,37 @@ public class GuiConsole implements Console {
 
                 double throughput = 0.0;
                 for (Mobile mobile : mobiles) {
+
                     throughput += log(mobile.getThroughput() / seq);
 
                     if (frequncy > 0 && seq % frequncy == 0) {
 
                         TableItem item = mobileTable.getItem(mobile.idx);
                         String[] texts = new String[17 + NUM_RB * 2];
-                        int i = 1;
-                        texts[i++] = null;
-                        texts[i++] = null;
-                        texts[i++] = null;
-                        texts[i++] = null;
-                        texts[i++] = format("%.3f",
+                        int index = 1;
+                        texts[index++] = null;
+                        texts[index++] = null;
+                        texts[index++] = null;
+                        texts[index++] = null;
+                        texts[index++] = format("%.3f",
                                 mobile.getMacro().pa3LambdaR);
-                        texts[i++] = format("%.3f",
+                        texts[index++] = format("%.3f",
                                 mobile.getMacro().pa3MobileLambdaR[mobile.idx]);
 
-                        texts[i++] = null;
-                        texts[i++] = null;
-                        texts[i++] = format("%.3f", mobile.getPico().pa3LambdaR);
-                        texts[i++] = format("%.3f",
+                        texts[index++] = null;
+                        texts[index++] = null;
+                        texts[index++] = format("%.3f", mobile.getPico().pa3LambdaR);
+                        texts[index++] = format("%.3f",
                                 mobile.getPico().pa3MobileLambdaR[mobile.idx]);
 
-                        texts[i++] = format("%.6f", mobile.getUserRate());
-                        texts[i++] = format("%.6f", log(mobile.getUserRate()));
-                        texts[i++] = format("%.6f", mobile.getThroughput()
+                        texts[index++] = format("%.6f", mobile.getUserRate());
+                        texts[index++] = format("%.6f", log(mobile.getUserRate()));
+                        texts[index++] = format("%.6f", mobile.getThroughput()
                                 / seq);
-                        texts[i++] = format("%.6f", log(mobile.getThroughput()
+                        texts[index++] = format("%.6f", log(mobile.getThroughput()
                                 / seq));
-                        texts[i++] = format("%.6f", mobile.getLambda());
-                        texts[i++] = format("%.6f", mobile.getMu());
+                        texts[index++] = format("%.6f", mobile.getLambda());
+                        texts[index++] = format("%.6f", mobile.getMu());
 
                         Edge<? extends BaseStation<?>>[] activeEdges = mobile
                                 .getActiveEdges();
@@ -644,9 +645,9 @@ public class GuiConsole implements Console {
                                     }
                                 }
                             }
-                            texts[i + j * 2] = bs == null ? "" : format("%.3f",
+                            texts[index + j * 2] = bs == null ? "" : format("%.3f",
                                     1000 * lambdaR);
-                            texts[i + j * 2 + 1] = bs == null ? "" : bs;
+                            texts[index + j * 2 + 1] = bs == null ? "" : bs;
                         }
                         item.setText(texts);
                     }
