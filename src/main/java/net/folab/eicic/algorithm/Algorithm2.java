@@ -184,6 +184,8 @@ public class Algorithm2 implements Algorithm {
             if (firstEdge == macroEdge) {
                 lambdaRSum += mobile.getMacroLambdaR()[i];
                 edges[i] = macroEdge;
+            } else {
+                edges[i] = null;
             }
         }
         return lambdaRSum;
@@ -234,6 +236,8 @@ public class Algorithm2 implements Algorithm {
                 else
                     lambdaRSum += mobile.getNonPicoLambdaR()[i];
                 edges[i] = picoEdge;
+            } else {
+                edges[i] = null;
             }
 
         }
