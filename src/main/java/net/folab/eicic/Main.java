@@ -161,10 +161,10 @@ public class Main {
             }
         }
 
-        if (!"net.folab.ecici.GuiConsole".equals(consoleClassName) && algorithm == null)
+        if (!"net.folab.eicic.GuiConsole".equals(consoleClassName) && algorithm == null)
             return false;
 
-        if (seq < 1)
+        if (!"net.folab.eicic.GuiConsole".equals(consoleClassName) && seq < 1)
             return false;
 
         return true;
@@ -228,6 +228,9 @@ public class Main {
         print("Options:");
 
         print(" -s <arg>                               Set sequence count to simulate.");
+        print("                                        It's optional when consle class");
+        print("                                        (`-c`) is net.folab.eicic.GuiConsole,");
+        print("                                        otherwise mandatory.");
 
         print(" -a <arg>                               Set algorithm number.");
         print("                                        It should be one of 1/2/3.");
