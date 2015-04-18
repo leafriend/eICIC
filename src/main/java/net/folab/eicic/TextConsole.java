@@ -3,7 +3,6 @@ package net.folab.eicic;
 import static java.lang.Math.log;
 import static java.lang.String.format;
 import static java.lang.System.out;
-import static net.folab.eicic.Constants.SIMULATION_TIME;
 
 import java.util.List;
 
@@ -13,12 +12,14 @@ import net.folab.eicic.model.Pico;
 
 public class TextConsole implements Console {
 
+    private int seq;
+
     public TextConsole() {
     }
 
     @Override
     public void start(Calculator calculator) {
-        calculator.calculate(SIMULATION_TIME);
+        calculator.calculate(this.seq);
     }
 
     public long dump(int t, List<Macro> macros, List<Pico> picos,
@@ -44,7 +45,7 @@ public class TextConsole implements Console {
                 out.print(format("%12.6f", mobile.getMu()) + "\n");
             }
 
-            out.print("Time: " + format("%7d/%7d", t, SIMULATION_TIME) + "\t");
+            out.print("Time: " + format("%7d/%7d", t, this.seq) + "\t");
             out.print("Util: " + format("%8.4f", throughput) + "\t");
             out.print("Elap: " + format("%8.4f", secondFrom(elapsed)) + "\t");
             out.print("Exec: " + format("%8.4f", secondFrom(execute)) + "\n");
@@ -65,8 +66,11 @@ public class TextConsole implements Console {
 
     @Override
     public void end() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    @Override
+    public void setSeq(int seq) {
+        this.seq = seq;
     }
 
 }

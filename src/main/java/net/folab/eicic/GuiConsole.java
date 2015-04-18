@@ -236,7 +236,7 @@ public class GuiConsole implements Console {
                         saveButton.setEnabled(true);
                     } else if ("Sta&rt".endsWith(text)) {
                         setAlgorithm();
-                        calculator.calculate(SIMULATION_TIME);
+                        calculator.calculate(GuiConsole.this.seq);
                         executeButton.setText("P&ause");
                         nextButton.setEnabled(false);
                         algorithmeCombo.setEnabled(false);
@@ -542,7 +542,7 @@ public class GuiConsole implements Console {
     public void buildStatusBar(Composite parent) {
 
         seqText = new Text(parent, READ_ONLY | RIGHT);
-        seqText.setText(SIMULATION_TIME + " / " + SIMULATION_TIME);
+        seqText.setText(this.seq + " / " + this.seq);
 
         // - - -
 
@@ -680,6 +680,8 @@ public class GuiConsole implements Console {
 
     private boolean dumped = true;
 
+    private int seq;
+
     @Override
     public long dump(final int seq, final List<Macro> macros,
             final List<Pico> picos, final List<Mobile> mobiles,
@@ -697,11 +699,11 @@ public class GuiConsole implements Console {
                 if (shell.isDisposed())
                     return;
 
-                seqText.setText(seq + " / " + SIMULATION_TIME);
+                seqText.setText(seq + " / " + GuiConsole.this.seq);
 
                 String elapsedTime = milisToTImeString(elapsed);
 
-                long estimated = elapsed * SIMULATION_TIME / seq;
+                long estimated = elapsed * GuiConsole.this.seq / seq;
                 String estimatedTime = milisToTImeString(estimated);
 
                 executeTimeText.setText(elapsedTime + " / " + estimatedTime);
@@ -736,7 +738,7 @@ public class GuiConsole implements Console {
                     throw new RuntimeException("Unsupported frequency: "
                             + updateSeq.getItem(updateSeq.getSelectionIndex()));
                 }
-                if (seq == SIMULATION_TIME)
+                if (seq == GuiConsole.this.seq)
                     frequncy = 1;
 
                 if (frequncy > 0 && seq % frequncy == 0) {
@@ -896,6 +898,11 @@ public class GuiConsole implements Console {
                 saveButton.setEnabled(true);
             }
         });
+    }
+
+    @Override
+    public void setSeq(int seq) {
+        this.seq = seq;
     }
 
 }
