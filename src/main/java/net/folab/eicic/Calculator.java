@@ -59,6 +59,7 @@ public class Calculator {
                 elapsed = dump(elapsed);
 
                 accumuMillis = baseAccumuMillis + System.currentTimeMillis() - started;
+                console.end();
 
             }
         }.start();

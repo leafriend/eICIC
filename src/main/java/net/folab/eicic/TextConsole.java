@@ -63,4 +63,10 @@ public class TextConsole implements Console {
         return ((double) System.currentTimeMillis() - start) / 1000;
     }
 
+    @Override
+    public void end() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
 }

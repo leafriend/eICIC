@@ -13,4 +13,6 @@ public interface Console {
 
     void start(Calculator calculator);
 
+    void end();
+
 }

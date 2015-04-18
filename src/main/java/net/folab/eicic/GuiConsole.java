@@ -8,7 +8,6 @@ import static org.eclipse.swt.SWT.*;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
@@ -186,7 +185,8 @@ public class GuiConsole implements Console {
                 String[] filterExt = { "*.csv", "*.txt", "*.*" };
                 dialog.setFilterExtensions(filterExt);
                 int pa = algorithmeCombo.getSelectionIndex() + 1;
-                String fileName = format("PA%d-%d.csv", pa, calculator.getSeq() - 1);
+                String fileName = format("PA%d-%d.csv", pa,
+                        calculator.getSeq() - 1);
                 dialog.setFileName(fileName);
                 String selected = dialog.open();
                 if (selected != null) {
@@ -320,9 +320,11 @@ public class GuiConsole implements Console {
 
             String delim = selected.toLowerCase().endsWith(".csv") ? "," : "\t";
 
-            Charset charset = Charset.forName(System.getProperty("file.encoding"));
+            Charset charset = Charset.forName(System
+                    .getProperty("file.encoding"));
 
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(selected)), charset));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(new File(selected)), charset));
 
             writer.write("#Utitlity");
             writer.write(delim);
@@ -881,6 +883,19 @@ public class GuiConsole implements Console {
 
         String format = format("%02d:%02d:%02d", hour, min, sec);
         return format;
+    }
+
+    @Override
+    public void end() {
+        display.asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                executeButton.setText("Sta&rt");
+                nextButton.setEnabled(true);
+                algorithmeCombo.setEnabled(true);
+                saveButton.setEnabled(true);
+            }
+        });
     }
 
 }
