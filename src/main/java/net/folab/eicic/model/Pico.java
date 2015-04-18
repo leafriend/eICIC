@@ -75,15 +75,22 @@ public class Pico extends BaseStation<Pico> {
             macrosInterfering.add(macro);
     }
 
+    private Boolean isAbs;
+
     public boolean isAbs() {
-        for (Macro macro : macrosInterfering) {
-            if (macro.state)
-                return false;
+        if (isAbs == null) {
+            for (Macro macro : macrosInterfering) {
+                if (macro.state)
+                    isAbs = Boolean.FALSE;
+            }
+            if (isAbs == null)
+                isAbs = Boolean.TRUE;
         }
-        return true;
+        return isAbs.booleanValue();
     }
 
     public void sortMobiles() {
+        isAbs = null;
         for (int i = 0; i < NUM_RB; i++) {
             sort(sortedAbsEdges[i], ABS_COMPARATORS[i]);
             sort(sortedNonEdges[i], NON_COMPARATORS[i]);
