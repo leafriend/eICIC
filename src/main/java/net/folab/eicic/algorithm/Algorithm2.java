@@ -13,61 +13,80 @@ import net.folab.eicic.model.Pico;
 
 public class Algorithm2 implements Algorithm {
 
+    private static final int NUM_MAX_MOBILES_TS = 10;
+
+    private boolean[] bestMacroStates = new boolean[NUM_MACROS];
+
+    private Edge<?>[][] bestEdges = new Edge[NUM_MOBILES][NUM_RB];
+
+    private boolean[] testMacroStates = new boolean[NUM_MACROS];
+
+    private Edge<?>[][] testEdges = new Edge[NUM_MOBILES][NUM_RB];
+
+    private Edge<?>[][] mobileEdges = new Edge[NUM_MOBILES][NUM_RB];
+
+    boolean[][][] allMobileConnectsMacro = new boolean[NUM_MACROS][][];
+
+    boolean[] mobileConnectsMacro = new boolean[NUM_MOBILES];
+
     @Override
     public void calculate(List<Macro> macros, List<Pico> picos,
             List<Mobile> mobiles) {
-
-        boolean[] bestMacroStates = new boolean[NUM_MACROS];
-        Edge<?>[][] bestEdges = new Edge[NUM_MOBILES][NUM_RB];
 
         double mostLambdaRSum = Double.NEGATIVE_INFINITY;
         // 가능한 모든 Macro 상태(2 ^ NUM_MACRO = 1 << NUM_MACRO)에 대한 반복문
         int macroStatesCount = 1 << NUM_MACROS;
         for (int mask = 0; mask < macroStatesCount; mask++) {
 
-            boolean[] macroStates = new boolean[NUM_MACROS];
             // Macro 상태(ON/OFF) 지정
             for (int m = 0; m < NUM_MACROS; m++)
-                macroStates[m] = 1 == (((1 << m) & mask) >> m);
+                testMacroStates[m] = 1 == (((1 << m) & mask) >> m);
 
-            Edge<?>[][] _edges = new Edge[NUM_MOBILES][NUM_RB];
 
             double lambdaRSum = 0.0;
-            for (Macro macro : macros) {
+            for (int m = 0; m < macros.size(); m++) {
+                Macro macro = macros.get(m);
+
+                if (allMobileConnectsMacro[macro.idx] == null)
+                    allMobileConnectsMacro[macro.idx] = new boolean[1 << NUM_MAX_MOBILES_TS - 1][];
 
                 List<Mobile> mobilesTS = macro.getMobiles();
 
                 double mostMobileLambdaRSum = 0;
 
                 // 가능한 모든 Macro 상태(2 ^ NUM_MACRO = 1 << NUM_MACRO)에 대한 반복문
-                int mobileStatesCount = 1 << mobilesTS.size();
+                int size = mobilesTS.size();
+                int mobileStatesCount = 1 << size;
                 for (int mobileMask = 1; mobileMask < mobileStatesCount; mobileMask++) {
 
                     double mobileLambdaRSum = 0;
 
-                    boolean[] mobileConnectsMacro = new boolean[NUM_MOBILES];
-                    Edge<?>[][] edges = new Edge[NUM_MOBILES][NUM_RB];
-                    for (int u = 0; u < mobilesTS.size(); u++)
-                        mobileConnectsMacro[mobilesTS.get(u).idx] = 1 == (((1 << u) & mobileMask) >> u);
+                    if (allMobileConnectsMacro[macro.idx][mobileMask] == null) {
+                        allMobileConnectsMacro[macro.idx][mobileMask] = new boolean[NUM_MOBILES];
+                        for (int u = 0; u < size; u++)
+                            allMobileConnectsMacro[macro.idx][mobileMask][mobilesTS.get(u).idx] = 1 == (((1 << u) & mobileMask) >> u);
+                    }
 
-                    for (Mobile mobile : mobilesTS) {
+                    System.arraycopy(allMobileConnectsMacro[macro.idx][mobileMask], 0, mobileConnectsMacro, 0, NUM_MOBILES);
 
-                        if (macroStates[macro.idx]) {
+                    for (int u = 0; u < size; u++) {
+                        Mobile mobile = mobilesTS.get(u);
+
+                        if (testMacroStates[macro.idx]) {
                             // Mobile의 Macro가 켜졌다면
                             // 위에서 정한 Cell Association에 따라 lambdaR 가산
                             // 각 서브 채널별 할당 대상 결정
 
-                            Edge<?>[] mobileEdges = edges[mobile.idx];
                             if (mobileConnectsMacro[mobile.idx]) {
 
                                 mobileLambdaRSum += calculateMacroLambdaRSum(
-                                        mobile, mobileEdges,
+                                        mobile, mobileEdges[mobile.idx],
                                         mobileConnectsMacro);
 
                             } else {
 
                                 mobileLambdaRSum += calculatePicoLambdaRSum(
-                                        mobile, mobileEdges,
+                                        mobile, mobileEdges[mobile.idx],
                                         mobileConnectsMacro);
 
                             }
@@ -77,16 +96,18 @@ public class Algorithm2 implements Algorithm {
                             // Mobile의 Pico의 ABS 여부에 따라 lambdaR 가산
 
                             mobileLambdaRSum += calculatePicoLambdaRSum(mobile,
-                                    edges[mobile.idx], mobileConnectsMacro);
+                                    mobileEdges[mobile.idx], mobileConnectsMacro);
 
                         }
                     }
 
                     if (mostMobileLambdaRSum < mobileLambdaRSum) {
                         mostMobileLambdaRSum = mobileLambdaRSum;
-                        for (Mobile mobile : mobilesTS)
+                        for (int u = 0; u < size; u++) {
+                            Mobile mobile = mobilesTS.get(u);
                             for (int i = 0; i < NUM_RB; i++)
-                                _edges[mobile.idx][i] = edges[mobile.idx][i];
+                                testEdges[mobile.idx][i] = mobileEdges[mobile.idx][i];
+                        }
                     }
 
                 }
@@ -96,63 +117,24 @@ public class Algorithm2 implements Algorithm {
             if (lambdaRSum > mostLambdaRSum) {
                 mostLambdaRSum = lambdaRSum;
                 for (int m = 0; m < NUM_MACROS; m++)
-                    bestMacroStates[m] = macroStates[m];
+                    bestMacroStates[m] = testMacroStates[m];
                 for (int u = 0; u < NUM_MOBILES; u++)
                     for (int i = 0; i < NUM_RB; i++)
-                        bestEdges[u][i] = _edges[u][i];
+                        bestEdges[u][i] = testEdges[u][i];
             }
 
         }
 
-        for (Macro macro : macros)
+        for (int m = 0; m < macros.size(); m++) {
+            Macro macro = macros.get(m);
             macro.state = bestMacroStates[macro.idx];
+        }
 
-        for (Mobile mobile : mobiles)
+        for (int u = 0; u < NUM_MOBILES; u++) {
+            Mobile mobile = mobiles.get(u);
             for (int i = 0; i < NUM_RB; i++)
                 if (bestEdges[mobile.idx][i] != null)
                     bestEdges[mobile.idx][i].setActivated(i, true);
-
-        double[] macroLambdaR = new double[NUM_MOBILES];
-        for (Macro macro : macros) {
-            double lambdaR = 0.0;
-            for (int i = 0; i < NUM_RB; i++) {
-                Edge<Macro> edge = macro.getActiveEdges()[i];
-                if (edge == null)
-                    continue;
-                Mobile mobile = edge.mobile;
-                macroLambdaR[mobile.idx] += mobile.getMacroLambdaR()[i];
-                lambdaR += mobile.getMacroLambdaR()[i];
-            }
-            for (Mobile mobile : macro.getMobiles()) {
-                macro.pa3MobileLambdaR[mobile.idx] //
-                = 0.8 * macro.pa3MobileLambdaR[mobile.idx] //
-                        + 0.2 * macroLambdaR[mobile.idx];
-            }
-            macro.pa3LambdaR = 0.8 * macro.pa3LambdaR + 0.2 * lambdaR;
-        }
-
-        double[] picoLambdaR = new double[NUM_MOBILES];
-        for (Pico pico : picos) {
-            double lambdaR = 0.0;
-            for (int i = 0; i < NUM_RB; i++) {
-                Edge<Pico> edge = pico.getActiveEdges()[i];
-                if (edge == null)
-                    continue;
-                Mobile mobile = edge.mobile;
-                if (edge.baseStation.isAbs()) {
-                    picoLambdaR[mobile.idx] += mobile.getAbsPicoLambdaR()[i];
-                    lambdaR += mobile.getAbsPicoLambdaR()[i];
-                } else {
-                    picoLambdaR[mobile.idx] += mobile.getNonPicoLambdaR()[i];
-                    lambdaR += mobile.getNonPicoLambdaR()[i];
-                }
-            }
-            for (Mobile mobile : pico.getMobiles()) {
-                pico.pa3MobileLambdaR[mobile.idx] //
-                = 0.8 * pico.pa3MobileLambdaR[mobile.idx] //
-                        + 0.2 * picoLambdaR[mobile.idx];
-            }
-            pico.pa3LambdaR = 0.8 * pico.pa3LambdaR + 0.2 * lambdaR;
         }
 
     }
@@ -174,7 +156,8 @@ public class Algorithm2 implements Algorithm {
         List<Edge<Macro>>[] sortedEdges = mobile.getMacro().getSortedEdges();
         for (int i = 0; i < NUM_RB; i++) {
             Edge<Macro> firstEdge = null;
-            for (Edge<Macro> edge : sortedEdges[i]) {
+            for (int e = 0; e < sortedEdges[i].size(); e++) {
+                Edge<Macro> edge = sortedEdges[i].get(e);
                 if (!mobileConnectsMacro[edge.mobile.idx])
                     continue;
                 firstEdge = edge;
@@ -221,7 +204,8 @@ public class Algorithm2 implements Algorithm {
 
             // 각 Subchannel에서 내가 Macro에 연결한 다른 Mobile을 제외하고 첫 번째 순위인지 확인
             Edge<Pico> firstEdge = null;
-            for (Edge<Pico> edge : sortedEdges[i]) {
+            for (int e = 0; e < sortedEdges[i].size(); e++) {
+                Edge<Pico> edge = sortedEdges[i].get(e);
                 if (mobileConnectsMacro[edge.mobile.idx])
                     continue;
                 firstEdge = edge;

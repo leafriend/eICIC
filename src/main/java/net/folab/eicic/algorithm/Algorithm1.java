@@ -98,49 +98,6 @@ public class Algorithm1 implements Algorithm {
                 if (bestEdges[mobile.idx][i] != null)
                     bestEdges[mobile.idx][i].setActivated(i, true);
 
-        double[] macroLambdaR = new double[NUM_MOBILES];
-        for (Macro macro : macros) {
-            double lambdaR = 0.0;
-            for (int i = 0; i < NUM_RB; i++) {
-                Edge<Macro> edge = macro.getActiveEdges()[i];
-                if (edge == null)
-                    continue;
-                Mobile mobile = edge.mobile;
-                macroLambdaR[mobile.idx] += mobile.getMacroLambdaR()[i];
-                lambdaR += mobile.getMacroLambdaR()[i];
-            }
-            for (Mobile mobile : macro.getMobiles()) {
-                macro.pa3MobileLambdaR[mobile.idx] //
-                = 0.8 * macro.pa3MobileLambdaR[mobile.idx] //
-                        + 0.2 * macroLambdaR[mobile.idx];
-            }
-            macro.pa3LambdaR = 0.8 * macro.pa3LambdaR + 0.2 * lambdaR;
-        }
-
-        double[] picoLambdaR = new double[NUM_MOBILES];
-        for (Pico pico : picos) {
-            double lambdaR = 0.0;
-            for (int i = 0; i < NUM_RB; i++) {
-                Edge<Pico> edge = pico.getActiveEdges()[i];
-                if (edge == null)
-                    continue;
-                Mobile mobile = edge.mobile;
-                if (edge.baseStation.isAbs()) {
-                    picoLambdaR[mobile.idx] += mobile.getAbsPicoLambdaR()[i];
-                    lambdaR += mobile.getAbsPicoLambdaR()[i];
-                } else {
-                    picoLambdaR[mobile.idx] += mobile.getNonPicoLambdaR()[i];
-                    lambdaR += mobile.getNonPicoLambdaR()[i];
-                }
-            }
-            for (Mobile mobile : pico.getMobiles()) {
-                pico.pa3MobileLambdaR[mobile.idx] //
-                = 0.8 * pico.pa3MobileLambdaR[mobile.idx] //
-                        + 0.2 * picoLambdaR[mobile.idx];
-            }
-            pico.pa3LambdaR = 0.8 * pico.pa3LambdaR + 0.2 * lambdaR;
-        }
-
     }
 
     private void selectMacroFirstMobiles(List<Macro> macros) {
