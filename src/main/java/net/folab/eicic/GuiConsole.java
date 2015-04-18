@@ -107,6 +107,8 @@ public class GuiConsole implements Console {
 
     public GuiConsole() {
 
+        this.seq = 1000; // TODO Load from properties
+
         display = new Display();
 
         colorActiveBg = new Color(display, 225, 255, 225);
