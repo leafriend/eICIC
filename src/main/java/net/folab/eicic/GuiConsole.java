@@ -5,6 +5,13 @@ import static java.lang.String.*;
 import static net.folab.eicic.Constants.*;
 import static org.eclipse.swt.SWT.*;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import net.folab.eicic.algorithm.Algorithm1;
@@ -33,6 +40,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
@@ -42,11 +50,11 @@ import org.eclipse.swt.widgets.Text;
 
 public class GuiConsole implements Console {
 
-    private static final String ALGORITHM_1 = "Algorithm 1";
+    private static final String ALGORITHM_1 = "1: Algorithm 1";
 
-    private static final String ALGORITHM_2 = "Algorithm 2";
+    private static final String ALGORITHM_2 = "2: Algorithm 2";
 
-    private static final String ALGORITHM_3 = "Algorithm 3";
+    private static final String ALGORITHM_3 = "3: Algorithm 3";
 
     public static final String LAMBDA = "\u03bb";
 
@@ -159,7 +167,7 @@ public class GuiConsole implements Console {
         algorithmeCombo = new Combo(parent, READ_ONLY);
         algorithmeCombo.setItems(new String[] { ALGORITHM_1, ALGORITHM_2,
                 ALGORITHM_3 });
-        algorithmeCombo.select(1);
+        algorithmeCombo.select(0);
         algorithmeCombo.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -172,7 +180,17 @@ public class GuiConsole implements Console {
         saveButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                // TODO Save
+                FileDialog dialog = new FileDialog(shell, SAVE);
+                dialog.setText("Save");
+                // dialog.setFilterPath(filterPath);
+                String[] filterExt = { "*.csv", "*.txt", "*.*" };
+                dialog.setFilterExtensions(filterExt);
+                int pa = algorithmeCombo.getSelectionIndex() + 1;
+                dialog.setFileName("PA" + pa + "-" + calculator.getSeq() + ".csv");
+                String selected = dialog.open();
+                if (selected != null) {
+                    save(selected);
+                }
             }
         });
 
@@ -294,6 +312,47 @@ public class GuiConsole implements Console {
         // layoutData.top = new FormAttachment(100, 0);
         nextButton.setLayoutData(layoutData);
 
+    }
+
+    private void save(String selected) {
+        try {
+
+            String delim = selected.toLowerCase().endsWith(".csv") ? "," : "\t";
+
+            Charset charset = Charset.forName(System.getProperty("file.encoding"));
+
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(selected)), charset));
+
+            int cc = mobileTable.getColumnCount();
+
+            for (int c = 0; c < cc; c++) {
+                if (c > 0)
+                    writer.write(delim);
+                writer.write(mobileTable.getColumn(c).getText());
+            }
+            writer.write("\n");
+            writer.flush();
+
+            int rc = mobileTable.getItemCount();
+            for (int r = 0; r < rc; r++) {
+                TableItem item = mobileTable.getItem(r);
+                for (int c = 0; c < cc; c++) {
+                    if (c > 0)
+                        writer.write(delim);
+                    writer.write(item.getText(c));
+                }
+                writer.write("\n");
+                writer.flush();
+            }
+
+            writer.close();
+
+            System.out.println(charset);
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public void buildTablePanel(Composite parent) {
@@ -566,7 +625,6 @@ public class GuiConsole implements Console {
                 calculator.stop();
             }
         });
-        executeButton.setFocus();
 
         while (!shell.isDisposed())
             if (!display.readAndDispatch())
