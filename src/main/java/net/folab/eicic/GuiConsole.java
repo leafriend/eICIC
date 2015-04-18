@@ -72,6 +72,8 @@ public class GuiConsole implements Console {
 
     private Combo algorithmeCombo;
 
+    private Button saveButton;
+
     private Button showActiveButton;
 
     private Combo updateSeq;
@@ -155,12 +157,22 @@ public class GuiConsole implements Console {
     public void buildButtonPannel(Composite parent) {
 
         algorithmeCombo = new Combo(parent, READ_ONLY);
-        algorithmeCombo.setItems(new String[] { ALGORITHM_1, ALGORITHM_2, ALGORITHM_3 });
+        algorithmeCombo.setItems(new String[] { ALGORITHM_1, ALGORITHM_2,
+                ALGORITHM_3 });
         algorithmeCombo.select(1);
         algorithmeCombo.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 setAlgorithm();
+            }
+        });
+
+        saveButton = new Button(parent, PUSH);
+        saveButton.setText("&Save");
+        saveButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                // TODO Save
             }
         });
 
@@ -191,23 +203,25 @@ public class GuiConsole implements Console {
         });
 
         executeButton = new Button(parent, PUSH);
-        executeButton.setText("&Start");
+        executeButton.setText("Sta&rt");
         executeButtonListener = new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 if (calculator != null) {
                     String text = executeButton.getText();
-                    if ("Pau&se".endsWith(text)) {
+                    if ("P&ause".endsWith(text)) {
                         calculator.stop();
-                        executeButton.setText("&Start");
+                        executeButton.setText("Sta&rt");
                         nextButton.setEnabled(true);
                         algorithmeCombo.setEnabled(true);
-                    } else if ("&Start".endsWith(text)) {
+                        saveButton.setEnabled(true);
+                    } else if ("Sta&rt".endsWith(text)) {
                         setAlgorithm();
                         calculator.calculate(SIMULATION_TIME);
-                        executeButton.setText("Pau&se");
+                        executeButton.setText("P&ause");
                         nextButton.setEnabled(false);
                         algorithmeCombo.setEnabled(false);
+                        saveButton.setEnabled(false);
                     }
                 }
             }
@@ -239,6 +253,14 @@ public class GuiConsole implements Console {
         // layoutData.right = new FormAttachment(updateSeq, -8, LEAD);
         // layoutData.top = new FormAttachment(100, 0);
         algorithmeCombo.setLayoutData(layoutData);
+
+        // saveButton
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.left = new FormAttachment(algorithmeCombo, 8);
+        layoutData.right = new FormAttachment(algorithmeCombo, 8 + 64, TRAIL);
+        // layoutData.top = new FormAttachment(100, 0);
+        saveButton.setLayoutData(layoutData);
 
         // showActiveButton
         layoutData = new FormData();
@@ -755,7 +777,6 @@ public class GuiConsole implements Console {
         return System.currentTimeMillis();
     }
 
-
     public void setAlgorithm() {
         int index = algorithmeCombo.getSelectionIndex();
         switch (algorithmeCombo.getItem(index)) {
@@ -775,7 +796,7 @@ public class GuiConsole implements Console {
 
     public static String milisToTImeString(final long elapsed) {
         long sec = elapsed / 1000;
-        //long mil = elapsed - sec * 1000;
+        // long mil = elapsed - sec * 1000;
 
         long min = sec / 60;
         sec -= min * 60;
@@ -783,8 +804,7 @@ public class GuiConsole implements Console {
         long hour = min / 60;
         min -= hour * 60;
 
-        String format = format("%02d:%02d:%02d", hour, min,
-                sec);
+        String format = format("%02d:%02d:%02d", hour, min, sec);
         return format;
     }
 
