@@ -186,7 +186,8 @@ public class GuiConsole implements Console {
                 String[] filterExt = { "*.csv", "*.txt", "*.*" };
                 dialog.setFilterExtensions(filterExt);
                 int pa = algorithmeCombo.getSelectionIndex() + 1;
-                dialog.setFileName("PA" + pa + "-" + calculator.getSeq() + ".csv");
+                String fileName = format("PA%d-%d.csv", pa, calculator.getSeq() - 1);
+                dialog.setFileName(fileName);
                 String selected = dialog.open();
                 if (selected != null) {
                     save(selected);
@@ -323,6 +324,24 @@ public class GuiConsole implements Console {
 
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(selected)), charset));
 
+            writer.write("#Utitlity");
+            writer.write(delim);
+            writer.write(utilityText.getText());
+            writer.write("\n");
+            writer.flush();
+
+            writer.write("#Seq");
+            writer.write(delim);
+            writer.write(seqText.getText());
+            writer.write("\n");
+            writer.flush();
+
+            writer.write("#Time");
+            writer.write(delim);
+            writer.write(executeTimeText.getText());
+            writer.write("\n");
+            writer.flush();
+
             int cc = mobileTable.getColumnCount();
 
             for (int c = 0; c < cc; c++) {
@@ -346,8 +365,6 @@ public class GuiConsole implements Console {
             }
 
             writer.close();
-
-            System.out.println(charset);
 
         } catch (IOException e) {
             // TODO Auto-generated catch block
