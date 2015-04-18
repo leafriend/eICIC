@@ -2,10 +2,6 @@ package net.folab.eicic;
 
 public interface Constants {
 
-    int SIMULATION_TIME = 1000;
-
-    // - - -
-
     double PATH_LOSS_EXPO = 4.0;
 
     double LN_SHAD = 4.0;
