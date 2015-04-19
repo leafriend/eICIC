@@ -932,8 +932,16 @@ public class GuiConsole implements Console {
     }
 
     @Override
-    public void setSeq(int seq) {
+    public void setSeq(final int seq) {
         this.totalSeq = seq;
+        if (!display.isDisposed()) {
+            display.asyncExec(new Runnable() {
+                @Override
+                public void run() {
+                    totalSeqText.setText(valueOf(seq));
+                }
+            });
+        }
     }
 
 }
