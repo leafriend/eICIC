@@ -3,7 +3,9 @@ package net.folab.eicic;
 import static net.folab.eicic.Constants.*;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -248,6 +250,29 @@ public class Main {
 
     private void print(String string, Object... args) {
         System.out.println(String.format(string, args));
+    }
+
+    public static void dump(String string, int seq, List<Mobile> mobiles) {
+
+        try {
+            FileWriter writer = new FileWriter(new File(string + ".csv"), true);
+            writer.write(String.valueOf(seq));
+            double sum = 0;
+            StringBuilder sb = new StringBuilder();
+            for (int u = 0; u < NUM_MOBILES; u++) {
+                double util = Math.log(mobiles.get(u).getThroughput());
+                sb.append(",").append(util);
+                sum += util;
+            }
+            writer.write("," + sum);
+            writer.write(sb.toString());
+            writer.write("\n");
+            writer.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
 
 }

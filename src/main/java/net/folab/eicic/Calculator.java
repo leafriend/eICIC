@@ -112,6 +112,10 @@ public class Calculator {
         for (int p = 0; p < NUM_PICOS; p++)
             picos.get(p).count();
 
+        if (seq % 100 == 0) {
+            Main.dump(algorithm.getClass().getSimpleName(), seq, mobiles);
+        }
+
         seq++;
     }
 
