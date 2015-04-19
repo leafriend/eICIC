@@ -892,6 +892,8 @@ public class GuiConsole implements Console {
 
     @Override
     public void end() {
+        if (display.isDisposed())
+            return;
         display.asyncExec(new Runnable() {
             @Override
             public void run() {
