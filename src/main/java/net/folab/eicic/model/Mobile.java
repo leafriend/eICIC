@@ -161,7 +161,7 @@ public class Mobile {
 
     @Override
     public String toString() {
-        return String.format("Mobile<%d@%.3f,%.3f>", idx, x, y);
+        return String.format("Mobile<%d>", idx);
     }
 
     /* bean getter/setter *************************************************** */

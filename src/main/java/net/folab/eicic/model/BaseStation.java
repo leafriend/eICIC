@@ -53,8 +53,7 @@ public abstract class BaseStation<T extends BaseStation<T>> {
 
     @Override
     public String toString() {
-        return String.format("%s<%d@%.3f,%.3f>", getClass().getSimpleName(),
-                idx, x, y);
+        return String.format("%s<%d>", getClass().getSimpleName(), idx);
     }
 
     public Edge<T>[] getActiveEdges() {

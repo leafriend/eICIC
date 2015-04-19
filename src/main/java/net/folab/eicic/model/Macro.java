@@ -45,9 +45,10 @@ public class Macro extends BaseStation<Macro> {
 
     @Override
     public String toString() {
-        return String.format("%s<%d@%.3f,%.3f>", (state ? getClass()
-                .getSimpleName().toUpperCase() : getClass().getSimpleName()
-                .toLowerCase()), idx, x, y);
+        return String
+                .format("%s<%d>", (state ? getClass().getSimpleName()
+                        .toUpperCase() : getClass().getSimpleName()
+                        .toLowerCase()), idx);
     }
 
     public void init() {
