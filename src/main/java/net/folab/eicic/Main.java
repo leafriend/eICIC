@@ -260,7 +260,7 @@ public class Main {
             double sum = 0;
             StringBuilder sb = new StringBuilder();
             for (int u = 0; u < NUM_MOBILES; u++) {
-                double util = Math.log(mobiles.get(u).getThroughput());
+                double util = Math.log(mobiles.get(u).getThroughput() / seq);
                 sb.append(",").append(util);
                 sum += util;
             }
