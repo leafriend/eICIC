@@ -80,6 +80,8 @@ public class GuiConsole implements Console {
 
     private Text utilityText;
 
+    private Text absText;
+
     private Combo algorithmeCombo;
 
     private Button saveButton;
@@ -566,10 +568,15 @@ public class GuiConsole implements Console {
         // - - -
 
         Label utilityLabel = new Label(parent, NONE);
-        utilityLabel.setText("Utility:");
+        utilityLabel.setText("Sum Utility:");
 
         utilityText = new Text(parent, READ_ONLY | RIGHT);
         utilityText.setText("0.000");
+
+        // - - -
+
+        absText = new Text(parent, READ_ONLY);
+        absText.setText("ABS:  0.00%  0.00%  0.00%  0.00%  0.00%  0.00%  0.00%");
 
         // - - -
 
@@ -590,6 +597,14 @@ public class GuiConsole implements Console {
         layoutData.left = new FormAttachment(utilityLabel, 0);
         layoutData.right = new FormAttachment(utilityLabel, 64, TRAIL);
         utilityText.setLayoutData(layoutData);
+
+        //
+
+        // absText
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 3);
+        layoutData.left = new FormAttachment(utilityText, 0);
+        absText.setLayoutData(layoutData);
 
         //
 
@@ -884,6 +899,16 @@ public class GuiConsole implements Console {
                 }
 
                 utilityText.setText(format("%.3f", throughput));
+
+                String abs = format("ABS:%6.2f%%%6.2f%%%6.2f%%%6.2f%%%6.2f%%%6.2f%%%6.2f%%",
+                        ((seq - macros.get(0).getAllocationCount()) / 100.0),
+                        ((seq - macros.get(1).getAllocationCount()) / 100.0),
+                        ((seq - macros.get(2).getAllocationCount()) / 100.0),
+                        ((seq - macros.get(3).getAllocationCount()) / 100.0),
+                        ((seq - macros.get(4).getAllocationCount()) / 100.0),
+                        ((seq - macros.get(5).getAllocationCount()) / 100.0),
+                        ((seq - macros.get(6).getAllocationCount()) / 100.0));
+                absText.setText(abs);
 
                 dumped = true;
             }
