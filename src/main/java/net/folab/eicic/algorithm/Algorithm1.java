@@ -19,14 +19,22 @@ public class Algorithm1 implements Algorithm {
     public void calculate(List<Macro> macros, List<Pico> picos,
             List<Mobile> mobiles) {
 
-        selectMacroFirstMobiles(macros);
+        final int macroStatesCount = 1 << NUM_MACROS;
 
         boolean[] bestMacroStates = new boolean[NUM_MACROS];
+
         Edge<?>[][] bestEdges = new Edge[NUM_MOBILES][NUM_RB];
+
+        for (int m = 0; m < NUM_MACROS; m++) {
+            Macro macro = macros.get(m);
+            List<Edge<Macro>>[] sortedEdges = macro.getSortedEdges();
+            for (int i = 0; i < NUM_RB; i++) {
+                macroFirstMobiles[macro.idx][i] = sortedEdges[i].get(0).mobile;
+            }
+        }
 
         double mostLambdaRSum = Double.NEGATIVE_INFINITY;
         // 가능한 모든 Macro 상태(2 ^ NUM_MACRO = 1 << NUM_MACRO)에 대한 반복문
-        int macroStatesCount = 1 << NUM_MACROS;
         for (int mask = 0; mask < macroStatesCount; mask++) {
 
             boolean[] macroStates = new boolean[NUM_MACROS];
@@ -98,15 +106,6 @@ public class Algorithm1 implements Algorithm {
                 if (bestEdges[mobile.idx][i] != null)
                     bestEdges[mobile.idx][i].setActivated(i, true);
 
-    }
-
-    private void selectMacroFirstMobiles(List<Macro> macros) {
-        for (Macro macro : macros) {
-            List<Edge<Macro>>[] sortedEdges = macro.getSortedEdges();
-            for (int i = 0; i < NUM_RB; i++) {
-                macroFirstMobiles[macro.idx][i] = sortedEdges[i].get(0).mobile;
-            }
-        }
     }
 
     /**
