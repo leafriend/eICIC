@@ -1,5 +1,7 @@
 package net.folab.eicic;
 
+import static net.folab.eicic.Constants.*;
+
 import java.util.List;
 
 import net.folab.eicic.algorithm.Algorithm;
@@ -83,25 +85,21 @@ public class Calculator {
     }
 
     private void calculateInternal() {
-        for (Macro macro : macros)
-            macro.initializeEdges();
-        for (Pico pico : picos)
-            pico.initializeEdges();
+        for (int m = 0; m < NUM_MACROS; m++)
+            macros.get(m).initializeEdges();
+        for (int p = 0; p < NUM_PICOS; p++)
+            picos.get(p).initializeEdges();
 
-        for (Mobile mobile : mobiles)
-            mobile.calculateDataRate();
+        for (int u = 0; u < NUM_MOBILES; u++)
+            mobiles.get(u).calculateDataRate();
 
-        for (Macro macro : macros)
-            macro.sortMobiles();
-        for (Pico pico : picos)
-            pico.sortMobiles();
+        for (int m = 0; m < NUM_MACROS; m++)
+            macros.get(m).sortMobiles();
+        for (int p = 0; p < NUM_PICOS; p++)
+            picos.get(p).sortMobiles();
 
         algorithm.calculate(macros, picos, mobiles);
 
-        for (Mobile mobile : mobiles)
-            mobile.calculateThroughput();
-        for (Mobile mobile : mobiles)
-            mobile.calculateUserRate();
         final int _t = seq;
         for (Mobile mobile : mobiles)
             mobile.calculateDualVariables(_t);
