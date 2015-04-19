@@ -69,6 +69,8 @@ public class GuiConsole implements Console {
 
     private Text seqText;
 
+    private Text totalSeqText;
+
     private Text executeTimeText;
 
     private Composite buttonPanel;
@@ -107,7 +109,7 @@ public class GuiConsole implements Console {
 
     public GuiConsole() {
 
-        this.seq = 1000; // TODO Load from properties
+        totalSeq = 1000; // TODO Load from properties
 
         display = new Display();
 
@@ -236,14 +238,16 @@ public class GuiConsole implements Console {
                         nextButton.setEnabled(true);
                         algorithmeCombo.setEnabled(true);
                         saveButton.setEnabled(true);
+                        totalSeqText.setEnabled(true);
                     } else if ("Sta&rt".endsWith(text)) {
                         setAlgorithm();
-                        GuiConsole.this.seq = 1000; // TODO
-                        calculator.calculate(GuiConsole.this.seq);
+                        totalSeq = Integer.parseInt(totalSeqText.getText());
+                        calculator.calculate(totalSeq);
                         executeButton.setText("P&ause");
                         nextButton.setEnabled(false);
                         algorithmeCombo.setEnabled(false);
                         saveButton.setEnabled(false);
+                        totalSeqText.setEnabled(false);
                     }
                 }
             }
@@ -545,7 +549,13 @@ public class GuiConsole implements Console {
     public void buildStatusBar(Composite parent) {
 
         seqText = new Text(parent, READ_ONLY | RIGHT);
-        seqText.setText(this.seq + " / " + this.seq);
+        seqText.setText("0");
+
+        Label seqSlashLabel = new Label(parent, NONE);
+        seqSlashLabel.setText(" / ");
+
+        totalSeqText = new Text(parent, BORDER | RIGHT);
+        totalSeqText.setText(valueOf(this.totalSeq));
 
         // - - -
 
@@ -569,13 +579,13 @@ public class GuiConsole implements Console {
 
         // utilityLabel
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
+        layoutData.top = new FormAttachment(0, 3);
         layoutData.left = new FormAttachment(0, 0);
         utilityLabel.setLayoutData(layoutData);
 
         // utilityText
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
+        layoutData.top = new FormAttachment(0, 3);
         layoutData.left = new FormAttachment(utilityLabel, 0);
         layoutData.right = new FormAttachment(utilityLabel, 64, TRAIL);
         utilityText.setLayoutData(layoutData);
@@ -584,15 +594,29 @@ public class GuiConsole implements Console {
 
         // seqText
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
-        layoutData.right = new FormAttachment(executeTimeText, -8);
+        layoutData.top = new FormAttachment(0, 3);
+        layoutData.left = new FormAttachment(seqSlashLabel, -8 - 64, LEAD);
+        layoutData.right = new FormAttachment(seqSlashLabel, 0);
         seqText.setLayoutData(layoutData);
+
+        // seqSlashLabel
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 3);
+        layoutData.right = new FormAttachment(totalSeqText, 0);
+        seqSlashLabel.setLayoutData(layoutData);
+
+        // seqTotalText
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.left = new FormAttachment(executeTimeText, -8 - 64, LEAD);
+        layoutData.right = new FormAttachment(executeTimeText, -8);
+        totalSeqText.setLayoutData(layoutData);
 
         //
 
         // elapsedText
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
+        layoutData.top = new FormAttachment(0, 3);
         layoutData.right = new FormAttachment(1, 1, 0);
         executeTimeText.setLayoutData(layoutData);
 
@@ -684,7 +708,7 @@ public class GuiConsole implements Console {
 
     private boolean dumped = true;
 
-    private int seq;
+    private int totalSeq;
 
     @Override
     public long dump(final int seq, final List<Macro> macros,
@@ -703,11 +727,11 @@ public class GuiConsole implements Console {
                 if (shell.isDisposed())
                     return;
 
-                seqText.setText(seq + " / " + GuiConsole.this.seq);
+                seqText.setText(valueOf(seq));
 
                 String elapsedTime = milisToTImeString(elapsed);
 
-                long estimated = elapsed * GuiConsole.this.seq / seq;
+                long estimated = seq == 0 ? 0 : elapsed * totalSeq / seq;
                 String estimatedTime = milisToTImeString(estimated);
 
                 executeTimeText.setText(elapsedTime + " / " + estimatedTime);
@@ -742,7 +766,7 @@ public class GuiConsole implements Console {
                     throw new RuntimeException("Unsupported frequency: "
                             + updateSeq.getItem(updateSeq.getSelectionIndex()));
                 }
-                if (seq == GuiConsole.this.seq)
+                if (seq == totalSeq)
                     frequncy = 1;
 
                 if (frequncy > 0 && seq % frequncy == 0) {
@@ -902,13 +926,14 @@ public class GuiConsole implements Console {
                 nextButton.setEnabled(true);
                 algorithmeCombo.setEnabled(true);
                 saveButton.setEnabled(true);
+                totalSeqText.setEnabled(false);
             }
         });
     }
 
     @Override
     public void setSeq(int seq) {
-        this.seq = seq;
+        this.totalSeq = seq;
     }
 
 }
