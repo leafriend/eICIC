@@ -80,7 +80,7 @@ public class GuiConsole implements Console {
 
     private Text utilityText;
 
-    private Text absText;
+    private Text[] absTexts;
 
     private Combo algorithmeCombo;
 
@@ -575,8 +575,15 @@ public class GuiConsole implements Console {
 
         // - - -
 
-        absText = new Text(parent, READ_ONLY);
-        absText.setText("ABS:  0.00%  0.00%  0.00%  0.00%  0.00%  0.00%  0.00%");
+        Label absLabel = new Label(parent, NONE);
+        absLabel.setText("ABS:");
+
+        absTexts = new Text[NUM_MACROS];
+        for (int m = 0; m < NUM_MACROS; m++) {
+            absTexts[m] = new Text(parent, READ_ONLY | RIGHT);
+            absTexts[m].setText("000.00%");
+        }
+
 
         // - - -
 
@@ -600,11 +607,21 @@ public class GuiConsole implements Console {
 
         //
 
-        // absText
+        // absLabel
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 3);
-        layoutData.left = new FormAttachment(utilityText, 0);
-        absText.setLayoutData(layoutData);
+        layoutData.left = new FormAttachment(utilityText, 8);
+        absLabel.setLayoutData(layoutData);
+
+
+        for (int m = 0; m < NUM_MACROS; m++) {
+            layoutData = new FormData();
+            layoutData.top = new FormAttachment(0, 3);
+            layoutData.left = new FormAttachment(m == 0 ? absLabel : absTexts[m - 1], 8);
+            absTexts[m].setLayoutData(layoutData);
+        }
+
+        // absText
 
         //
 
@@ -900,15 +917,9 @@ public class GuiConsole implements Console {
 
                 utilityText.setText(format("%.3f", throughput));
 
-                String abs = format("ABS:%6.2f%%%6.2f%%%6.2f%%%6.2f%%%6.2f%%%6.2f%%%6.2f%%",
-                        ((seq - macros.get(0).getAllocationCount()) / 100.0),
-                        ((seq - macros.get(1).getAllocationCount()) / 100.0),
-                        ((seq - macros.get(2).getAllocationCount()) / 100.0),
-                        ((seq - macros.get(3).getAllocationCount()) / 100.0),
-                        ((seq - macros.get(4).getAllocationCount()) / 100.0),
-                        ((seq - macros.get(5).getAllocationCount()) / 100.0),
-                        ((seq - macros.get(6).getAllocationCount()) / 100.0));
-                absText.setText(abs);
+                for (int m = 0; m < NUM_MACROS; m++) {
+                    absTexts[m].setText(format("%6.2f%%", (seq - macros.get(m).getAllocationCount()) / 100.0));
+                }
 
                 dumped = true;
             }
