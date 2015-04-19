@@ -645,6 +645,7 @@ public class GuiConsole implements Console {
             @Override
             public void shellClosed(ShellEvent e) {
                 calculator.stop();
+                Algorithm2.executor.shutdown();
             }
         });
 

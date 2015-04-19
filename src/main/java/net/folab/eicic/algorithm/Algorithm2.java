@@ -6,7 +6,9 @@ import static net.folab.eicic.Constants.NUM_RB;
 
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
@@ -19,7 +21,7 @@ public class Algorithm2 implements Algorithm {
 
     private static final int NUM_MAX_MOBILES_TS = 10;
 
-    private Executor executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    public static final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     private boolean[] bestMacroStates = new boolean[NUM_MACROS];
 
