@@ -28,7 +28,7 @@ public class Main {
 
     private Algorithm algorithm;
 
-    private int seq;
+    private int totalSeq;
 
     public static interface Generator<T> {
         public T generate(int idx, double[] values);
@@ -66,7 +66,7 @@ public class Main {
 
         consoleClassName = DEFAULT_CONSOLE_CLASS_NAME;
 
-        seq = 0;
+        totalSeq = 0;
 
         for (int i = 0; i < arguments.length; i++) {
             String arg = arguments[i];
@@ -81,7 +81,7 @@ public class Main {
             switch (arg) {
 
             case "-s":
-                seq = Integer.parseInt(next);
+                totalSeq = Integer.parseInt(next);
                 if (isNext)
                     i++;
                 break;
@@ -164,7 +164,7 @@ public class Main {
         if (!"net.folab.eicic.GuiConsole".equals(consoleClassName) && algorithm == null)
             return false;
 
-        if (!"net.folab.eicic.GuiConsole".equals(consoleClassName) && seq < 1)
+        if (!"net.folab.eicic.GuiConsole".equals(consoleClassName) && totalSeq < 1)
             return false;
 
         return true;
@@ -212,7 +212,7 @@ public class Main {
 
         Calculator calculator = new Calculator(macros, picos, mobiles, console);
         calculator.setAlgorithm(algorithm);
-        console.setSeq(seq);
+        console.setTotalSeq(totalSeq);
         console.start(calculator);
 
     }

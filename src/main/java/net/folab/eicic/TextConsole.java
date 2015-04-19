@@ -12,14 +12,14 @@ import net.folab.eicic.model.Pico;
 
 public class TextConsole implements Console {
 
-    private int seq;
+    private int totalSeq;
 
     public TextConsole() {
     }
 
     @Override
     public void start(Calculator calculator) {
-        calculator.calculate(this.seq);
+        calculator.calculate(this.totalSeq);
     }
 
     public long dump(int t, List<Macro> macros, List<Pico> picos,
@@ -45,7 +45,7 @@ public class TextConsole implements Console {
                 out.print(format("%12.6f", mobile.getMu()) + "\n");
             }
 
-            out.print("Time: " + format("%7d/%7d", t, this.seq) + "\t");
+            out.print("Time: " + format("%7d/%7d", t, totalSeq) + "\t");
             out.print("Util: " + format("%8.4f", throughput) + "\t");
             out.print("Elap: " + format("%8.4f", secondFrom(elapsed)) + "\t");
             out.print("Exec: " + format("%8.4f", secondFrom(execute)) + "\n");
@@ -69,8 +69,8 @@ public class TextConsole implements Console {
     }
 
     @Override
-    public void setSeq(int seq) {
-        this.seq = seq;
+    public void setTotalSeq(int totalSeq) {
+        this.totalSeq = totalSeq;
     }
 
 }

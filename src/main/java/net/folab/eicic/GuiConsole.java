@@ -932,13 +932,13 @@ public class GuiConsole implements Console {
     }
 
     @Override
-    public void setSeq(final int seq) {
-        this.totalSeq = seq;
+    public void setTotalSeq(final int totalSeq) {
+        this.totalSeq = totalSeq;
         if (!display.isDisposed()) {
             display.asyncExec(new Runnable() {
                 @Override
                 public void run() {
-                    totalSeqText.setText(valueOf(seq));
+                    totalSeqText.setText(valueOf(totalSeq));
                 }
             });
         }

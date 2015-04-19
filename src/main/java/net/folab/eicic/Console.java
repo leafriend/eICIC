@@ -15,6 +15,6 @@ public interface Console {
 
     void end();
 
-    void setSeq(int seq);
+    void setTotalSeq(int totalSeq);
 
 }
