@@ -238,6 +238,7 @@ public class GuiConsole implements Console {
                         saveButton.setEnabled(true);
                     } else if ("Sta&rt".endsWith(text)) {
                         setAlgorithm();
+                        GuiConsole.this.seq = 1000; // TODO
                         calculator.calculate(GuiConsole.this.seq);
                         executeButton.setText("P&ause");
                         nextButton.setEnabled(false);
