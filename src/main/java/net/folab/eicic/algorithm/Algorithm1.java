@@ -13,17 +13,21 @@ import net.folab.eicic.model.Pico;
 
 public class Algorithm1 implements Algorithm {
 
-    private Mobile[][] macroFirstMobiles = new Mobile[NUM_MACROS][NUM_RB];
+    private final Mobile[][] macroFirstMobiles = new Mobile[NUM_MACROS][NUM_RB];
+
+    private final int macroStatesCount = 1 << NUM_MACROS;
+
+    private final boolean[] bestMacroStates = new boolean[NUM_MACROS];
+
+    private final Edge<?>[][] bestEdges = new Edge[NUM_MOBILES][NUM_RB];
+
+    private final boolean[] macroStates = new boolean[NUM_MACROS];
+
+    private final Edge<?>[][] edges = new Edge[NUM_MOBILES][NUM_RB];
 
     @Override
     public void calculate(List<Macro> macros, List<Pico> picos,
             List<Mobile> mobiles) {
-
-        final int macroStatesCount = 1 << NUM_MACROS;
-
-        boolean[] bestMacroStates = new boolean[NUM_MACROS];
-
-        Edge<?>[][] bestEdges = new Edge[NUM_MOBILES][NUM_RB];
 
         for (int m = 0; m < NUM_MACROS; m++) {
             Macro macro = macros.get(m);
@@ -37,22 +41,21 @@ public class Algorithm1 implements Algorithm {
         // 가능한 모든 Macro 상태(2 ^ NUM_MACRO = 1 << NUM_MACRO)에 대한 반복문
         for (int mask = 0; mask < macroStatesCount; mask++) {
 
-            boolean[] macroStates = new boolean[NUM_MACROS];
             // Macro 상태(ON/OFF) 지정
             for (int m = 0; m < NUM_MACROS; m++)
                 macroStates[m] = 1 == (((1 << m) & mask) >> m);
 
-            Edge<?>[][] edges = new Edge[NUM_MOBILES][NUM_RB];
 
             double lambdaRSum = 0.0;
-            for (Macro macro : macros) {
+            for (int m = 0; m < NUM_MACROS; m++) {
+                Macro macro = macros.get(m);
 
                 if (macroStates[macro.idx]) {
                     // Mobile의 Macro가 켜졌다면
-                    // 위에서 정한 Cell Association에 따라 lambdaR 가산
-                    // 각 서브 채널별 할당 대상 결정
+                    // : 첫 번째 모바일은 Macro로 연결하고, 다른 모바일은 Pico로 연결 시도
 
-                    for (Mobile mobile : macro.getMobiles()) {
+                    for (int u = 0; u < macro.getMobiles().size(); u++) {
+                        Mobile mobile = macro.getMobiles().get(u);
 
                         Edge<?>[] mobileEdges = edges[mobile.idx];
                         boolean isAbs = mobile.getPico().isAbs();
@@ -68,8 +71,9 @@ public class Algorithm1 implements Algorithm {
                                 lambdaRSum += mobile.getMacroLambdaR()[i];
                                 mobileEdges[i] = mobile.getMacroEdge();
                             } else {
-                                // Pico로 연결
-                                lambdaRSum += calculatePicoLambdaR(mobile, mobileEdges, sortedEdges, isAbs, i);
+                                // Pico로 연결 시도
+                                lambdaRSum += calculatePicoLambdaR(mobile,
+                                        mobileEdges, sortedEdges, isAbs, i);
                             }
                         }
 
@@ -77,11 +81,13 @@ public class Algorithm1 implements Algorithm {
 
                 } else {
                     // Mobile의 Macro가 꺼졌다면
-                    // Mobile의 Pico의 ABS 여부에 따라 lambdaR 가산
+                    // : Pico로 연결 시도
 
-                    for (Mobile mobile : macro.getMobiles())
+                    for (int u = 0; u < macro.getMobiles().size(); u++) {
+                        Mobile mobile = macro.getMobiles().get(u);
                         lambdaRSum += calculatePicoLambdaRSum(mobile,
                                 edges[mobile.idx]);
+                    }
 
                 }
 
@@ -98,13 +104,15 @@ public class Algorithm1 implements Algorithm {
 
         }
 
-        for (Macro macro : macros)
-            macro.state = bestMacroStates[macro.idx];
+        for (int m = 0; m < NUM_MACROS; m++)
+           macros.get(m).state = bestMacroStates[m];
 
-        for (Mobile mobile : mobiles)
+        for (int u = 0; u < mobiles.size(); u++) {
+            Mobile mobile = mobiles.get(u);
             for (int i = 0; i < NUM_RB; i++)
                 if (bestEdges[mobile.idx][i] != null)
                     bestEdges[mobile.idx][i].setActivated(i, true);
+        }
 
     }
 
@@ -147,7 +155,10 @@ public class Algorithm1 implements Algorithm {
             List<Edge<Pico>>[] sortedEdges, boolean isAbs, int i) {
         // 각 Subchannel에서 내가 Macro에 연결한 다른 Mobile을 제외하고 첫 번째 순위인지 확인
         Edge<Pico> firstEdge = null;
-        for (Edge<Pico> edge : sortedEdges[i]) {
+        List<Edge<Pico>> array = sortedEdges[i];
+        int count = array.size();
+        for (int e = 0; e < count; e++) {
+            Edge<Pico> edge = array.get(e);
             if (macroFirstMobiles[edge.mobile.getMacro().idx][i] == edge.mobile)
                 continue;
             firstEdge = edge;
@@ -156,13 +167,16 @@ public class Algorithm1 implements Algorithm {
 
         // Pico의 현재 Subchannel의 첫 번째 Mobile이 전달받은 Mobile이라면
         Edge<Pico> picoEdge = mobile.getPicoEdge();
-        double lambdaR = 0;
+        double lambdaR;
         if (firstEdge == picoEdge) {
             if (isAbs)
                 lambdaR = mobile.getAbsPicoLambdaR()[i];
             else
-                lambdaR += mobile.getNonPicoLambdaR()[i];
+                lambdaR = mobile.getNonPicoLambdaR()[i];
             edges[i] = picoEdge;
+        } else {
+            lambdaR = 0;
+            edges[i] = null;
         }
         return lambdaR;
     }
