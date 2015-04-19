@@ -929,11 +929,13 @@ public class GuiConsole implements Console {
         display.asyncExec(new Runnable() {
             @Override
             public void run() {
+                if (display.isDisposed())
+                    return;
                 executeButton.setText("Sta&rt");
                 nextButton.setEnabled(true);
                 algorithmeCombo.setEnabled(true);
                 saveButton.setEnabled(true);
-                totalSeqText.setEnabled(false);
+                totalSeqText.setEnabled(true);
             }
         });
     }
@@ -954,6 +956,8 @@ public class GuiConsole implements Console {
     @Override
     public void setAlgorithm(Algorithm algorithm) {
         this.algorithm = algorithm;
+        if (calculator != null)
+            calculator.setAlgorithm(algorithm);
         if (algorithm instanceof Algorithm1) {
             algorithmeCombo.select(0);
         } else if (algorithm instanceof Algorithm2) {
