@@ -66,10 +66,12 @@ public class Algorithm2 implements Algorithm {
             break;
         } while (true);
 
+        int bestMacroState = -1;
         double mostLambdaRSum = Double.NEGATIVE_INFINITY;
         for (int macroState = 0; macroState < NUM_MACRO_STATES; macroState++) {
             Algorithm2MacroStates result = macroStateResults[macroState];
             if (result.lambdaRSum > mostLambdaRSum) {
+                bestMacroState = macroState;
                 mostLambdaRSum = result.lambdaRSum;
                 for (int m = 0; m < NUM_MACROS; m++) {
                     bestMacroStates[m] = result.macroStates[m];
@@ -94,6 +96,11 @@ public class Algorithm2 implements Algorithm {
                     bestEdges[mobile.idx][i].setActivated(i, true);
                 }
         }
+
+        assert bestMacroState >= 0;
+
+        if (bestMacroState != 127)
+            System.out.println("bestMacroState: " + bestMacroState); // TODO
 
     }
 

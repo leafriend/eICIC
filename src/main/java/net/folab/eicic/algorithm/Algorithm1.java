@@ -37,6 +37,7 @@ public class Algorithm1 implements Algorithm {
             }
         }
 
+        int bestMacroState = -1;
         double mostLambdaRSum = Double.NEGATIVE_INFINITY;
         // 가능한 모든 Macro 상태(2 ^ NUM_MACRO = 1 << NUM_MACRO)에 대한 반복문
         for (int mask = 0; mask < macroStatesCount; mask++) {
@@ -94,6 +95,7 @@ public class Algorithm1 implements Algorithm {
             }
 
             if (lambdaRSum > mostLambdaRSum) {
+                bestMacroState = mask;
                 mostLambdaRSum = lambdaRSum;
                 for (int m = 0; m < NUM_MACROS; m++)
                     bestMacroStates[m] = macroStates[m];
@@ -113,6 +115,11 @@ public class Algorithm1 implements Algorithm {
                 if (bestEdges[mobile.idx][i] != null)
                     bestEdges[mobile.idx][i].setActivated(i, true);
         }
+
+        assert bestMacroState >= 0;
+
+        if (bestMacroState != 127)
+            System.out.println("bestMacroState: " + bestMacroState); // TODO
 
     }
 
