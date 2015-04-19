@@ -211,7 +211,8 @@ public class Main {
             pico.init();
 
         Calculator calculator = new Calculator(macros, picos, mobiles, console);
-        calculator.setAlgorithm(algorithm);
+
+        console.setAlgorithm(algorithm);
         console.setTotalSeq(totalSeq);
         console.start(calculator);
 

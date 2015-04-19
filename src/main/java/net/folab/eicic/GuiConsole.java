@@ -13,6 +13,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.algorithm.Algorithm1;
 import net.folab.eicic.algorithm.Algorithm2;
 import net.folab.eicic.algorithm.Algorithm3;
@@ -638,6 +639,8 @@ public class GuiConsole implements Console {
     public void start(final Calculator calculator) {
         this.calculator = calculator;
 
+        calculator.setAlgorithm(algorithm);
+
         // - - -
 
         List<Macro> macros = calculator.getMacros();
@@ -709,6 +712,8 @@ public class GuiConsole implements Console {
     private boolean dumped = true;
 
     private int totalSeq;
+
+    private Algorithm algorithm;
 
     @Override
     public long dump(final int seq, final List<Macro> macros,
@@ -888,13 +893,13 @@ public class GuiConsole implements Console {
         int index = algorithmeCombo.getSelectionIndex();
         switch (algorithmeCombo.getItem(index)) {
         case ALGORITHM_1:
-            calculator.setAlgorithm(new Algorithm1());
+            setAlgorithm(new Algorithm1());
             break;
         case ALGORITHM_2:
-            calculator.setAlgorithm(new Algorithm2());
+            setAlgorithm(new Algorithm2());
             break;
         case ALGORITHM_3:
-            calculator.setAlgorithm(new Algorithm3());
+            setAlgorithm(new Algorithm3());
             break;
         default:
             break;
@@ -941,6 +946,18 @@ public class GuiConsole implements Console {
                     totalSeqText.setText(valueOf(totalSeq));
                 }
             });
+        }
+    }
+
+    @Override
+    public void setAlgorithm(Algorithm algorithm) {
+        this.algorithm = algorithm;
+        if (algorithm instanceof Algorithm1) {
+            algorithmeCombo.select(0);
+        } else if (algorithm instanceof Algorithm2) {
+            algorithmeCombo.select(1);
+        } else if (algorithm instanceof Algorithm3) {
+            algorithmeCombo.select(2);
         }
     }
 

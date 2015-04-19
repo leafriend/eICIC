@@ -6,6 +6,7 @@ import static java.lang.System.out;
 
 import java.util.List;
 
+import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
@@ -14,11 +15,15 @@ public class TextConsole implements Console {
 
     private int totalSeq;
 
+    private Algorithm algorithm;
+
     public TextConsole() {
     }
 
     @Override
     public void start(Calculator calculator) {
+        System.out.println(algorithm.getClass().getSimpleName());
+        calculator.setAlgorithm(algorithm);
         calculator.calculate(this.totalSeq);
     }
 
@@ -71,6 +76,11 @@ public class TextConsole implements Console {
     @Override
     public void setTotalSeq(int totalSeq) {
         this.totalSeq = totalSeq;
+    }
+
+    @Override
+    public void setAlgorithm(Algorithm algorithm) {
+        this.algorithm = algorithm;
     }
 
 }
