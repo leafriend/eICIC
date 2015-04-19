@@ -5,10 +5,8 @@ import static net.folab.eicic.Constants.NUM_MOBILES;
 import static net.folab.eicic.Constants.NUM_RB;
 
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
