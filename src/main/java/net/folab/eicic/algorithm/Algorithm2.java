@@ -24,7 +24,7 @@ public class Algorithm2 implements Algorithm {
 
     private Edge<?>[][] bestEdges = new Edge[NUM_MOBILES][NUM_RB];
 
-    private Algorithm2MacroResult[] macroStateResults = new Algorithm2MacroResult[NUM_MACRO_STATES];
+    private Algorithm2MacroStates[] macroStateResults = new Algorithm2MacroStates[NUM_MACRO_STATES];
 
     public static void delay(int delay) {
         try {
@@ -37,8 +37,8 @@ public class Algorithm2 implements Algorithm {
 
     public Algorithm2() {
 
-        for (int mask = 0; mask < macroStateResults.length; mask++) {
-            macroStateResults[mask] = new Algorithm2MacroResult(mask);
+        for (int macroState = 0; macroState < macroStateResults.length; macroState++) {
+            macroStateResults[macroState] = new Algorithm2MacroStates(macroState);
         }
 
     }
@@ -47,18 +47,18 @@ public class Algorithm2 implements Algorithm {
     public void calculate(List<Macro> macros, List<Pico> picos,
             List<Mobile> mobiles) {
 
-        for (int mask = 0; mask < NUM_MACRO_STATES; mask++)
-            macroStateResults[mask].finished = false;
+        for (int macroState = 0; macroState < NUM_MACRO_STATES; macroState++)
+            macroStateResults[macroState].finished = false;
 
         // 가능한 모든 Macro 상태(2 ^ NUM_MACRO = 1 << NUM_MACRO)에 대한 반복문
-        for (int mask = 0; mask < NUM_MACRO_STATES; mask++) {
-            macroStateResults[mask].macros = macros;
-            executor.execute(macroStateResults[mask]);
+        for (int macroState = 0; macroState < NUM_MACRO_STATES; macroState++) {
+            macroStateResults[macroState].macros = macros;
+            executor.execute(macroStateResults[macroState]);
         }
 
         waiting: do {
-            for (int mask = 0; mask < NUM_MACRO_STATES; mask++) {
-                if (!macroStateResults[mask].finished) {
+            for (int macroState = 0; macroState < NUM_MACRO_STATES; macroState++) {
+                if (!macroStateResults[macroState].finished) {
                     delay(0);
                     continue waiting;
                 }
@@ -67,15 +67,17 @@ public class Algorithm2 implements Algorithm {
         } while (true);
 
         double mostLambdaRSum = Double.NEGATIVE_INFINITY;
-        for (int mask = 0; mask < NUM_MACRO_STATES; mask++) {
-            Algorithm2MacroResult result = macroStateResults[mask];
+        for (int macroState = 0; macroState < NUM_MACRO_STATES; macroState++) {
+            Algorithm2MacroStates result = macroStateResults[macroState];
             if (result.lambdaRSum > mostLambdaRSum) {
                 mostLambdaRSum = result.lambdaRSum;
-                for (int m = 0; m < NUM_MACROS; m++)
+                for (int m = 0; m < NUM_MACROS; m++) {
                     bestMacroStates[m] = result.macroStates[m];
+                }
                 for (int u = 0; u < NUM_MOBILES; u++)
-                    for (int i = 0; i < NUM_RB; i++)
-                        bestEdges[u][i] = result.testEdges[u][i];
+                    for (int i = 0; i < NUM_RB; i++) {
+                        bestEdges[u][i] = result.edges[u][i];
+                    }
             }
         }
 
@@ -87,8 +89,10 @@ public class Algorithm2 implements Algorithm {
         for (int u = 0; u < NUM_MOBILES; u++) {
             Mobile mobile = mobiles.get(u);
             for (int i = 0; i < NUM_RB; i++)
-                if (bestEdges[mobile.idx][i] != null)
+                if (bestEdges[mobile.idx][i] != null) {
+//                    System.out.println(bestEdges[mobile.idx][i]);
                     bestEdges[mobile.idx][i].setActivated(i, true);
+                }
         }
 
     }
