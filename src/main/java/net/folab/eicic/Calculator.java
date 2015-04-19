@@ -100,9 +100,17 @@ public class Calculator {
 
         algorithm.calculate(macros, picos, mobiles);
 
-        final int _t = seq;
-        for (Mobile mobile : mobiles)
-            mobile.calculateDualVariables(_t);
+        for (int u = 0; u < NUM_MOBILES; u++)
+            mobiles.get(u).calculateThroughput();
+        for (int u = 0; u < NUM_MOBILES; u++)
+            mobiles.get(u).calculateUserRate();
+        for (int u = 0; u < NUM_MOBILES; u++)
+            mobiles.get(u).calculateDualVariables(seq);
+
+        for (int m = 0; m < NUM_MACROS; m++)
+            macros.get(m).count();
+        for (int p = 0; p < NUM_PICOS; p++)
+            picos.get(p).count();
 
         seq++;
     }

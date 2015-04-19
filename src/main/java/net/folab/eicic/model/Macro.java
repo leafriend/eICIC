@@ -37,7 +37,9 @@ public class Macro extends BaseStation<Macro> {
     public boolean state;
 
     @SuppressWarnings("unchecked")
-    private final List<Edge<Macro>>[] sortedEdges = new List[NUM_RB];;
+    private final List<Edge<Macro>>[] sortedEdges = new List[NUM_RB];
+
+    private int allocationCount;;
 
     public Macro(int idx, double x, double y, double txPower) {
         super(idx, x, y, txPower);
@@ -65,6 +67,15 @@ public class Macro extends BaseStation<Macro> {
 
     public List<Edge<Macro>>[] getSortedEdges() {
         return sortedEdges;
+    }
+
+    public void count() {
+        if (state)
+            allocationCount++;
+    }
+
+    public int getAllocationCount() {
+        return allocationCount;
     }
 
 }

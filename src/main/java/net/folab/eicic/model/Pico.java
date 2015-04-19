@@ -77,6 +77,8 @@ public class Pico extends BaseStation<Pico> {
 
     private Boolean isAbs;
 
+    private int nonAbsCount;
+
     public boolean isAbs() {
         if (isAbs == null) {
             for (Macro macro : macrosInterfering) {
@@ -111,6 +113,15 @@ public class Pico extends BaseStation<Pico> {
 
     public List<Edge<Pico>>[] getSortedNonEdges() {
         return sortedNonEdges;
+    }
+
+    public void count() {
+        if (!isAbs())
+            nonAbsCount++;
+    }
+
+    public int getNonAbsCount() {
+        return nonAbsCount;
     }
 
 }
