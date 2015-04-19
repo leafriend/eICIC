@@ -639,6 +639,8 @@ public class GuiConsole implements Console {
     public void start(final Calculator calculator) {
         this.calculator = calculator;
 
+        executeButton.setFocus();
+
         calculator.setAlgorithm(algorithm);
 
         // - - -
