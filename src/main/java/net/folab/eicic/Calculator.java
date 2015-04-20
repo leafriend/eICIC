@@ -24,7 +24,8 @@ public class Calculator {
         this.mobiles = mobiles;
     }
 
-    public void calculateInternal(int seq) {
+    public StateContext calculateInternal(int seq) {
+
         for (int m = 0; m < macros.length; m++)
             macros[m].initializeEdges();
         for (int p = 0; p < picos.length; p++)
@@ -51,6 +52,8 @@ public class Calculator {
             macros[m].count(state);
         for (int p = 0; p < picos.length; p++)
             picos[p].count(state);
+
+        return state;
 
     }
 
