@@ -110,7 +110,7 @@ public class Controller {
 
                 long started = System.currentTimeMillis();
 
-                while (isRunning && seq < nextSeq) {
+                while (isRunning && seq <= nextSeq) {
                     seq++;
 
                     calculator.calculateInternal(seq);
