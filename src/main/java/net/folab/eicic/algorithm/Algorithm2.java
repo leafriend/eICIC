@@ -92,9 +92,6 @@ public class Algorithm2 implements Algorithm {
 
         assert bestMacroState >= 0;
 
-        if (bestMacroState != 127)
-            System.out.println("bestMacroState: " + bestMacroState); // TODO
-
     }
 
 }

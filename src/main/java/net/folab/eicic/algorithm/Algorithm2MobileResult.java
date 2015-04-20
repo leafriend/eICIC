@@ -67,9 +67,6 @@ public class Algorithm2MobileResult {
                 // Mobile의 Macro가 꺼졌다면
                 // Mobile의 Pico의 ABS 여부에 따라 lambdaR 가산
 
-                if (cellAssoc == 1 && mobile.idx == 37)
-                    System.out.print("");
-
                 lambdaRSum += calculatePicoLambdaRSum(mobile);
 
             }
@@ -103,7 +100,6 @@ public class Algorithm2MobileResult {
                 break;
             }
             Edge<Macro> macroEdge = mobile.getMacroEdge();
-            // System.out.println(firstEdge + " == " + macroEdge);
             if (firstEdge == macroEdge) {
                 lambdaRSum += mobile.getMacroLambdaR()[i];
                 edges[i] = macroEdge;
@@ -147,16 +143,6 @@ public class Algorithm2MobileResult {
             // Pico의 현재 Subchannel의 첫 번째 Mobile이 전달받은 Mobile이라면
             Edge<Pico> picoEdge = mobile.getPicoEdge();
             if (firstEdge == picoEdge) {
-                if (i == 0) {
-                    if (mobile.idx == 19)
-                        ;// System.out.println(String.format("U#%02d[%02d]-%s#%02d",
-                            // mobile.idx, i, isAbs ? "A" : "n", pico.idx));
-                            // System.out.print("");
-                    else if (mobile.idx == 37)
-                        ;// System.out.println(String.format("U#%02d[%02d]-%s#%02d",
-                            // mobile.idx, i, isAbs ? "A" : "n", pico.idx));
-                            // System.out.print("");
-                }
                 if (isAbs)
                     lambdaRSum += mobile.getAbsPicoLambdaR()[i];
                 else

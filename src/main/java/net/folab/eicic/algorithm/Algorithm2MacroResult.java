@@ -25,8 +25,9 @@ public class Algorithm2MacroResult {
 
     double lambdaRSum;
 
-    public Algorithm2MacroResult(Algorithm2MacroStates states, boolean macroState, Macro macro) {
-        this.states= states;
+    public Algorithm2MacroResult(Algorithm2MacroStates states,
+            boolean macroState, Macro macro) {
+        this.states = states;
         this.macro = macro;
         this.macroState = macroState;
         this.mobiles = macro.getMobiles();

@@ -13,7 +13,7 @@ public class Algorithm2MacroStates implements Runnable {
 
     final int[] cellAssocs = new int[NUM_MACROS];
 
-    private final Algorithm2MacroResult[] algorithm2MacroResults =new Algorithm2MacroResult[NUM_MACROS];
+    private final Algorithm2MacroResult[] algorithm2MacroResults = new Algorithm2MacroResult[NUM_MACROS];
 
     double lambdaRSum;
 
@@ -38,13 +38,9 @@ public class Algorithm2MacroStates implements Runnable {
 
         for (int m = 0; m < NUM_MACROS; m++) {
 
-            if (this.macroState == 64) {
-                if (macros[m].idx == 3) {
-                    System.out.print("");
-                }
-            }
             if (algorithm2MacroResults[m] == null)
-                algorithm2MacroResults[m] = new Algorithm2MacroResult(this, macroStates[m], macros[m]);
+                algorithm2MacroResults[m] = new Algorithm2MacroResult(this,
+                        macroStates[m], macros[m]);
 
             algorithm2MacroResults[m].run();
             lambdaRSum += algorithm2MacroResults[m].lambdaRSum;
