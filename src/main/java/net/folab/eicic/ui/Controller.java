@@ -130,6 +130,10 @@ public class Controller {
                 console.dump(seq, macros, picos, mobiles, execute, -1);
                 accumuMillis = execute;
 
+                isRunning = false;
+                if (seq == (totalSeq + 1))
+                    console.notifyEnded();
+
             }
         };
 
