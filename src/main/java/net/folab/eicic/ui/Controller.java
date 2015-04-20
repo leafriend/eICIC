@@ -245,4 +245,8 @@ public class Controller {
         return mobiles;
     }
 
+    public long getElapsed() {
+        return accumuMillis;
+    }
+
 }
