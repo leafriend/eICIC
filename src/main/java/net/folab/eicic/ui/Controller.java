@@ -10,9 +10,12 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import net.folab.eicic.Calculator;
 import net.folab.eicic.Console;
+import net.folab.eicic.Main;
 import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
@@ -34,6 +37,18 @@ public class Controller {
     private Pico[] picos;
 
     private Mobile[] mobiles;
+
+    private ExecutorService executorService = Executors.newFixedThreadPool(1);
+
+    private Runnable runner;
+
+    private boolean isRunning = false;
+
+    private int seq = 0;
+
+    private int nextSeq = 0;
+
+    private long accumuMillis = 0;
 
     public static abstract class Generator<T> {
 
@@ -84,15 +99,13 @@ public class Controller {
 
     public void display() {
 
-        macros = loadObject("res/macro.txt", new Generator<Macro>(
-                Macro.class) {
+        macros = loadObject("res/macro.txt", new Generator<Macro>(Macro.class) {
             @Override
             public Macro generate(int idx, double[] values) {
                 return new Macro(idx, values[0], values[1], MACRO_TX_POWER);
             }
         });
-        picos = loadObject("res/pico.txt", new Generator<Pico>(
-                Pico.class) {
+        picos = loadObject("res/pico.txt", new Generator<Pico>(Pico.class) {
             @Override
             public Pico generate(int idx, double[] values) {
                 return new Pico(idx, values[0], values[1], PICO_TX_POWER);
@@ -124,6 +137,35 @@ public class Controller {
         calculator = new Calculator(macros, picos, mobiles, console);
         calculator.setAlgorithm(algorithm);
 
+        runner = new Runnable() {
+            @Override
+            public void run() {
+
+                long started = System.currentTimeMillis();
+
+                while (isRunning && seq < nextSeq) {
+                    seq++;
+
+                    calculator.calculateInternal(seq);
+                    long execute = System.currentTimeMillis() - started
+                            + accumuMillis;
+                    console.dump(seq, macros, picos, mobiles, execute, -1);
+
+                    if (seq % 100 == 0) {
+                        Main.dump(algorithm.getClass().getSimpleName(), seq,
+                                mobiles);
+                    }
+
+                }
+
+                long execute = System.currentTimeMillis() - started
+                        + accumuMillis;
+                console.dump(seq, macros, picos, mobiles, execute, -1);
+                accumuMillis = execute;
+
+            }
+        };
+
         console.setAlgorithm(algorithm);
         console.setTotalSeq(totalSeq);
         console.setController(this);
@@ -132,15 +174,20 @@ public class Controller {
     }
 
     public void start() {
-        calculator.calculate(totalSeq);
+        isRunning = true;
+        nextSeq = totalSeq;
+        executorService.execute(runner);
     }
 
     public void next() {
-        calculator.calculate();
+        isRunning = true;
+        nextSeq = seq + 1;
+        executorService.execute(runner);
     }
 
     public void stop() {
-        calculator.stop();
+        isRunning = false;
+        executorService.shutdown();
     }
 
     /* bean getter/setter *************************************************** */
@@ -162,7 +209,7 @@ public class Controller {
     }
 
     public int getSeq() {
-        return calculator.getSeq();
+        return seq;
     }
 
     public Macro[] getMacros() {

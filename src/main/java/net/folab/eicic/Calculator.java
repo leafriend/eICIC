@@ -13,15 +13,7 @@ public class Calculator {
 
     private final Mobile[] mobiles;
 
-    private int seq = 1;
-
-    private long accumuMillis = 0;
-
-    private boolean running = false;
-
     private Algorithm algorithm;
-
-    private Console console;
 
     public Calculator(Macro[] macros, Pico[] picos, Mobile[] mobiles,
             Console console) {
@@ -29,60 +21,9 @@ public class Calculator {
         this.macros = macros;
         this.picos = picos;
         this.mobiles = mobiles;
-        this.console = console;
     }
 
-    public void calculate(final int times) {
-
-        running = true;
-
-        final long started = System.currentTimeMillis();
-        final long baseAccumuMillis = accumuMillis;
-
-        new Thread() {
-            public void run() {
-
-                long elapsed = System.currentTimeMillis();
-
-                while (running && seq <= times) {
-
-                    calculateInternal();
-                    accumuMillis = baseAccumuMillis
-                            + System.currentTimeMillis() - started;
-                    dump(-1);
-
-                }
-
-                accumuMillis = baseAccumuMillis + System.currentTimeMillis()
-                        - started;
-                elapsed = dump(elapsed);
-
-                accumuMillis = baseAccumuMillis + System.currentTimeMillis()
-                        - started;
-                console.notifyEnded();
-
-            }
-        }.start();
-
-    }
-
-    public void calculate() {
-
-        final long started = System.currentTimeMillis();
-
-        new Thread() {
-            public void run() {
-
-                calculateInternal();
-                accumuMillis += System.currentTimeMillis() - started;
-                dump(-1);
-
-            }
-        }.start();
-
-    }
-
-    private void calculateInternal() {
+    public void calculateInternal(int seq) {
         for (int m = 0; m < macros.length; m++)
             macros[m].initializeEdges();
         for (int p = 0; p < picos.length; p++)
@@ -110,29 +51,6 @@ public class Calculator {
         for (int p = 0; p < picos.length; p++)
             picos[p].count();
 
-        if (seq % 100 == 0) {
-            Main.dump(algorithm.getClass().getSimpleName(), seq, mobiles);
-        }
-
-        seq++;
-    }
-
-    private long dump(long elapsed) {
-        elapsed = console.dump(seq - 1, macros, picos, mobiles, accumuMillis,
-                elapsed);
-        return elapsed;
-    }
-
-    public void stop() {
-        running = false;
-    }
-
-    public boolean isRunning() {
-        return running;
-    }
-
-    public int getSeq() {
-        return seq;
     }
 
     public Macro[] getMacros() {
