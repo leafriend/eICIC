@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,8 @@ public class Main {
 
     public static interface Generator<T> {
         public T generate(int idx, double[] values);
+
+        public Class<T> getType();
     }
 
     public static void main(String[] args) throws IOException {
@@ -46,7 +49,7 @@ public class Main {
 
     }
 
-    public static <T> List<T> loadObject(String file, Generator<T> generator)
+    public static <T> T[] loadObject(String file, Generator<T> generator)
             throws IOException {
         List<T> list = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -61,7 +64,9 @@ public class Main {
             list.add(generator.generate(idx++, values));
         }
         reader.close();
-        return list;
+        @SuppressWarnings("unchecked")
+        T[] array = (T[]) Array.newInstance(generator.getType(), list.size());
+        return list.toArray(array);
     }
 
     private Main(String[] arguments) {
@@ -163,10 +168,12 @@ public class Main {
             }
         }
 
-        if (!"net.folab.eicic.GuiConsole".equals(consoleClassName) && algorithm == null)
+        if (!"net.folab.eicic.GuiConsole".equals(consoleClassName)
+                && algorithm == null)
             return false;
 
-        if (!"net.folab.eicic.GuiConsole".equals(consoleClassName) && totalSeq < 1)
+        if (!"net.folab.eicic.GuiConsole".equals(consoleClassName)
+                && totalSeq < 1)
             return false;
 
         return true;
@@ -175,26 +182,39 @@ public class Main {
 
     private void start() throws IOException {
 
-        List<Macro> macros = loadObject("res/macro.txt",
-                new Generator<Macro>() {
-                    @Override
-                    public Macro generate(int idx, double[] values) {
-                        return new Macro(idx, values[0], values[1],
-                                MACRO_TX_POWER);
-                    }
-                });
-        List<Pico> picos = loadObject("res/pico.txt", new Generator<Pico>() {
+        Macro[] macros = loadObject("res/macro.txt", new Generator<Macro>() {
+            @Override
+            public Macro generate(int idx, double[] values) {
+                return new Macro(idx, values[0], values[1], MACRO_TX_POWER);
+            }
+
+            @Override
+            public Class<Macro> getType() {
+                return Macro.class;
+            }
+        });
+        Pico[] picos = loadObject("res/pico.txt", new Generator<Pico>() {
             @Override
             public Pico generate(int idx, double[] values) {
                 return new Pico(idx, values[0], values[1], PICO_TX_POWER);
             }
+
+            @Override
+            public Class<Pico> getType() {
+                return Pico.class;
+            }
         });
-        List<Mobile> mobiles = loadObject("res/mobile.txt",
+        Mobile[] mobiles = loadObject("res/mobile.txt",
                 new Generator<Mobile>() {
                     @Override
                     public Mobile generate(int idx, double[] values) {
                         return new Mobile(idx, values[0], values[1],
                                 MOBILE_QOS, values[2], values[3], values[4]);
+                    }
+
+                    @Override
+                    public Class<Mobile> getType() {
+                        return Mobile.class;
                     }
                 });
 
@@ -212,9 +232,7 @@ public class Main {
         for (Pico pico : picos)
             pico.init();
 
-        Calculator calculator = new Calculator(macros.toArray(new Macro[0]),
-                picos.toArray(new Pico[0]), mobiles.toArray(new Mobile[0]),
-                console);
+        Calculator calculator = new Calculator(macros, picos, mobiles, console);
 
         console.setAlgorithm(algorithm);
         console.setTotalSeq(totalSeq);
