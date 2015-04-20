@@ -1,7 +1,5 @@
 package net.folab.eicic;
 
-import static net.folab.eicic.Constants.*;
-
 import java.util.List;
 
 import net.folab.eicic.algorithm.Algorithm;
@@ -11,11 +9,11 @@ import net.folab.eicic.model.Pico;
 
 public class Calculator {
 
-    private final List<Macro> macros;
+    private final Macro[] macros;
 
-    private final List<Pico> picos;
+    private final Pico[] picos;
 
-    private final List<Mobile> mobiles;
+    private final Mobile[] mobiles;
 
     private int seq = 1;
 
@@ -27,8 +25,15 @@ public class Calculator {
 
     private Console console;
 
+    @Deprecated
     public Calculator(List<Macro> macros, List<Pico> picos,
             List<Mobile> mobiles, Console console) {
+        this(macros.toArray(new Macro[0]), picos.toArray(new Pico[0]), mobiles
+                .toArray(new Mobile[0]), console);
+    }
+
+    public Calculator(Macro[] macros, Pico[] picos, Mobile[] mobiles,
+            Console console) {
         super();
         this.macros = macros;
         this.picos = picos;
@@ -51,16 +56,18 @@ public class Calculator {
                 while (running && seq <= times) {
 
                     calculateInternal();
-                    accumuMillis = baseAccumuMillis + System.currentTimeMillis() - started;
+                    accumuMillis = baseAccumuMillis
+                            + System.currentTimeMillis() - started;
                     dump(-1);
-
 
                 }
 
-                accumuMillis = baseAccumuMillis + System.currentTimeMillis() - started;
+                accumuMillis = baseAccumuMillis + System.currentTimeMillis()
+                        - started;
                 elapsed = dump(elapsed);
 
-                accumuMillis = baseAccumuMillis + System.currentTimeMillis() - started;
+                accumuMillis = baseAccumuMillis + System.currentTimeMillis()
+                        - started;
                 console.end();
 
             }
@@ -85,32 +92,32 @@ public class Calculator {
     }
 
     private void calculateInternal() {
-        for (int m = 0; m < NUM_MACROS; m++)
-            macros.get(m).initializeEdges();
-        for (int p = 0; p < NUM_PICOS; p++)
-            picos.get(p).initializeEdges();
+        for (int m = 0; m < macros.length; m++)
+            macros[m].initializeEdges();
+        for (int p = 0; p < picos.length; p++)
+            picos[p].initializeEdges();
 
-        for (int u = 0; u < NUM_MOBILES; u++)
-            mobiles.get(u).calculateDataRate();
+        for (int u = 0; u < mobiles.length; u++)
+            mobiles[u].calculateDataRate();
 
-        for (int m = 0; m < NUM_MACROS; m++)
-            macros.get(m).sortMobiles();
-        for (int p = 0; p < NUM_PICOS; p++)
-            picos.get(p).sortMobiles();
+        for (int m = 0; m < macros.length; m++)
+            macros[m].sortMobiles();
+        for (int p = 0; p < picos.length; p++)
+            picos[p].sortMobiles();
 
         algorithm.calculate(macros, picos, mobiles);
 
-        for (int u = 0; u < NUM_MOBILES; u++)
-            mobiles.get(u).calculateThroughput();
-        for (int u = 0; u < NUM_MOBILES; u++)
-            mobiles.get(u).calculateUserRate();
-        for (int u = 0; u < NUM_MOBILES; u++)
-            mobiles.get(u).calculateDualVariables(seq);
+        for (int u = 0; u < mobiles.length; u++)
+            mobiles[u].calculateThroughput();
+        for (int u = 0; u < mobiles.length; u++)
+            mobiles[u].calculateUserRate();
+        for (int u = 0; u < mobiles.length; u++)
+            mobiles[u].calculateDualVariables(seq);
 
-        for (int m = 0; m < NUM_MACROS; m++)
-            macros.get(m).count();
-        for (int p = 0; p < NUM_PICOS; p++)
-            picos.get(p).count();
+        for (int m = 0; m < macros.length; m++)
+            macros[m].count();
+        for (int p = 0; p < picos.length; p++)
+            picos[p].count();
 
         if (seq % 100 == 0) {
             Main.dump(algorithm.getClass().getSimpleName(), seq, mobiles);
@@ -137,15 +144,15 @@ public class Calculator {
         return seq;
     }
 
-    public List<Macro> getMacros() {
+    public Macro[] getMacros() {
         return macros;
     }
 
-    public List<Pico> getPicos() {
+    public Pico[] getPicos() {
         return picos;
     }
 
-    public List<Mobile> getMobiles() {
+    public Mobile[] getMobiles() {
         return mobiles;
     }
 

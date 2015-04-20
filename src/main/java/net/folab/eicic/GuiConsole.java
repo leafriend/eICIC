@@ -405,7 +405,7 @@ public class GuiConsole implements Console {
         macroTable.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
-                List<Mobile> mobiles = calculator.getMobiles();
+                Mobile[] mobiles = calculator.getMobiles();
                 TableItem macroItem = (TableItem) e.item;
                 int macroIdx = Integer.parseInt(macroItem.getText(0));
                 boolean enabled = !picoTable.getEnabled();
@@ -424,8 +424,8 @@ public class GuiConsole implements Console {
                     }
                 }
                 int seq = calculator.getSeq();
-                List<Macro> macros = calculator.getMacros();
-                List<Pico> picos = calculator.getPicos();
+                Macro[] macros = calculator.getMacros();
+                Pico[] picos = calculator.getPicos();
                 long elapsed = 0;
                 long execute = 0;
                 dump(seq, macros, picos, mobiles, elapsed, execute);
@@ -677,7 +677,7 @@ public class GuiConsole implements Console {
 
         // - - -
 
-        List<Macro> macros = calculator.getMacros();
+        Macro[] macros = calculator.getMacros();
         for (Macro macro : macros) {
             TableItem item = macroTable.getItem(macro.idx);
             item.setText(1, valueOf(format("%.3f", macro.x)));
@@ -685,7 +685,7 @@ public class GuiConsole implements Console {
             item.setText(3, valueOf(format("%.2f", macro.txPower)));
         }
 
-        List<Pico> picos = calculator.getPicos();
+        Pico[] picos = calculator.getPicos();
         for (Pico pico : picos) {
             TableItem item = picoTable.getItem(pico.idx);
             item.setText(1, valueOf(format("%.3f", pico.x)));
@@ -693,7 +693,7 @@ public class GuiConsole implements Console {
             item.setText(3, valueOf(format("%.2f", pico.txPower)));
         }
 
-        List<Mobile> mobiles = calculator.getMobiles();
+        Mobile[] mobiles = calculator.getMobiles();
         for (Mobile mobile : mobiles) {
             TableItem item = mobileTable.getItem(mobile.idx);
             showMobile(mobile, item);
