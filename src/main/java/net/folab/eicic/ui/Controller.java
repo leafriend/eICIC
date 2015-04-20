@@ -200,7 +200,7 @@ public class Controller {
         executorService.execute(runner);
     }
 
-    public void pasue() {
+    public void pause() {
         isRunning = false;
     }
 

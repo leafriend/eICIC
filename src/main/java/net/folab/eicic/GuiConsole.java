@@ -248,7 +248,7 @@ public class GuiConsole implements Console {
             public void widgetSelected(SelectionEvent e) {
                 String text = executeButton.getText();
                 if (PAUSE.endsWith(text)) {
-                    controller.pasue();;
+                    controller.pause();;
                     setRunningState(false);
                 } else if (START.endsWith(text)) {
                     setAlgorithm();
