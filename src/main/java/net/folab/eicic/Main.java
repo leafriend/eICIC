@@ -1,5 +1,6 @@
 package net.folab.eicic;
 
+import static java.util.Arrays.asList;
 import static net.folab.eicic.Constants.*;
 
 import java.io.BufferedReader;
@@ -11,6 +12,9 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
+import joptsimple.OptionSpec;
 import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
@@ -82,53 +86,37 @@ public class Main {
 
     private Main(String[] arguments) {
 
-        consoleClassName = DEFAULT_CONSOLE_CLASS_NAME;
+        OptionParser parser = new OptionParser();
+
+        OptionSpec<String> consoleOption = parser.accepts("c")
+                .withRequiredArg().ofType(String.class);
+
+        OptionSpec<String> algorithmOption = parser.accepts("a")
+                .withRequiredArg().ofType(String.class);
+
+        OptionSpec<Integer> seqOption = parser.accepts("s").withRequiredArg()
+                .ofType(Integer.class);
+
+        OptionSpec<Void> helpOption = parser.acceptsAll(asList("h", "help"));
+
+        OptionSet optionSet = parser.parse(arguments);
 
         totalSeq = 0;
+        if (optionSet.has(seqOption))
+            totalSeq = optionSet.valueOf(seqOption).intValue();
 
-        for (int i = 0; i < arguments.length; i++) {
-            String arg = arguments[i];
-            String next = i < arguments.length - 1 ? arguments[i + 1] : null;
-            boolean isNext = true;
-            if (arg.length() > 2) {
-                next = arg.substring(2);
-                arg = arg.substring(0, 2);
-                isNext = false;
-            }
-
-            switch (arg) {
-
-            case "-s":
-                totalSeq = Integer.parseInt(next);
-                if (isNext)
-                    i++;
-                break;
-
-            case "-a":
-                if ("1".equals(next) || "2".equals(next) || "3".equals(next)) {
-                    algorithmClassName = "net.folab.eicic.algorithm.Algorithm"
-                            + next;
-                    if (isNext)
-                        i++;
-                }
-                break;
-
-            case "-c":
-                consoleClassName = next;
-                if (isNext)
-                    i++;
-                break;
-
-            case "-h":
-                isHelp = true;
-                break;
-
-            default:
-                break;
-
-            }
-
+        if (optionSet.has(algorithmOption)) {
+            algorithmClassName = "net.folab.eicic.algorithm.Algorithm"
+                    + optionSet.valueOf(algorithmOption);
         }
+
+        consoleClassName = DEFAULT_CONSOLE_CLASS_NAME;
+        if (optionSet.has(consoleOption)) {
+            consoleClassName = optionSet.valueOf(consoleOption);
+        }
+
+        if (optionSet.has(helpOption))
+            isHelp = true;
 
     }
 
