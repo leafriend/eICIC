@@ -82,13 +82,13 @@ public class Algorithm3 implements Algorithm {
 
         }
 
-        for (Macro macro : macros)
-            macro.state = bestMacroStates[macro.idx];
+        for (int m = 0; m < macros.length; m++)
+            macros[m].state = bestMacroStates[m];
 
-        for (Mobile mobile : mobiles)
+        for (int u = 0; u < mobiles.length; u++)
             for (int i = 0; i < NUM_RB; i++)
-                if (bestEdges[mobile.idx][i] != null)
-                    bestEdges[mobile.idx][i].setActivated(i, true);
+                if (bestEdges[u][i] != null)
+                    bestEdges[u][i].setActivated(i, true);
 
         double[] macroLambdaR = new double[mobiles.length];
         for (Macro macro : macros) {

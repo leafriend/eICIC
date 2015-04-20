@@ -37,7 +37,8 @@ public class Algorithm2 implements Algorithm {
     public Algorithm2() {
 
         for (int macroState = 0; macroState < macroStateResults.length; macroState++) {
-            macroStateResults[macroState] = new Algorithm2MacroStates(macroState);
+            macroStateResults[macroState] = new Algorithm2MacroStates(
+                    macroState);
         }
 
     }
@@ -81,19 +82,13 @@ public class Algorithm2 implements Algorithm {
             }
         }
 
-        for (int m = 0; m < macros.length; m++) {
-            Macro macro = macros[m];
-            macro.state = bestMacroStates[macro.idx];
-        }
+        for (int m = 0; m < macros.length; m++)
+            macros[m].state = bestMacroStates[m];
 
-        for (int u = 0; u < mobiles.length; u++) {
-            Mobile mobile = mobiles[u];
+        for (int u = 0; u < mobiles.length; u++)
             for (int i = 0; i < NUM_RB; i++)
-                if (bestEdges[mobile.idx][i] != null) {
-//                    System.out.println(bestEdges[mobile.idx][i]);
-                    bestEdges[mobile.idx][i].setActivated(i, true);
-                }
-        }
+                if (bestEdges[u][i] != null)
+                    bestEdges[u][i].setActivated(i, true);
 
         assert bestMacroState >= 0;
 

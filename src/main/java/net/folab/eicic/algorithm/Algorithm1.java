@@ -108,12 +108,10 @@ public class Algorithm1 implements Algorithm {
         for (int m = 0; m < macros.length; m++)
             macros[m].state = bestMacroStates[m];
 
-        for (int u = 0; u < mobiles.length; u++) {
-            Mobile mobile = mobiles[u];
+        for (int u = 0; u < mobiles.length; u++)
             for (int i = 0; i < NUM_RB; i++)
-                if (bestEdges[mobile.idx][i] != null)
-                    bestEdges[mobile.idx][i].setActivated(i, true);
-        }
+                if (bestEdges[u][i] != null)
+                    bestEdges[u][i].setActivated(i, true);
 
         assert bestMacroState >= 0;
 
