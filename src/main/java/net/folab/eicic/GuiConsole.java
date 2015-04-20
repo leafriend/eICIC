@@ -110,8 +110,6 @@ public class GuiConsole implements Console {
 
     private int[] mobileIdxToItems = new int[NUM_MOBILES];
 
-    private Calculator calculator;
-
     private Controller controller;
 
     private Color colorActiveBg;
@@ -199,7 +197,7 @@ public class GuiConsole implements Console {
                 dialog.setFilterExtensions(filterExt);
                 int pa = algorithmeCombo.getSelectionIndex() + 1;
                 String fileName = format("PA%d-%d.csv", pa,
-                        calculator.getSeq() - 1);
+                        controller.getSeq() - 1);
                 dialog.setFileName(fileName);
                 String selected = dialog.open();
                 if (selected != null) {
@@ -400,7 +398,7 @@ public class GuiConsole implements Console {
         macroTable.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
-                Mobile[] mobiles = calculator.getMobiles();
+                Mobile[] mobiles = controller.getMobiles();
                 TableItem macroItem = (TableItem) e.item;
                 int macroIdx = Integer.parseInt(macroItem.getText(0));
                 boolean enabled = !picoTable.getEnabled();
@@ -418,9 +416,9 @@ public class GuiConsole implements Console {
                         mobileIdxToItems[mobile.idx] = -1;
                     }
                 }
-                int seq = calculator.getSeq();
-                Macro[] macros = calculator.getMacros();
-                Pico[] picos = calculator.getPicos();
+                int seq = controller.getSeq();
+                Macro[] macros = controller.getMacros();
+                Pico[] picos = controller.getPicos();
                 long elapsed = 0;
                 long execute = 0;
                 dump(seq, macros, picos, mobiles, elapsed, execute);
@@ -662,17 +660,15 @@ public class GuiConsole implements Console {
     }
 
     @Override
-    public void start(final Calculator calculator, Controller controller) {
+    public void start(final Calculator calculator, final Controller controller) {
 
-        this.calculator = calculator;
         this.controller = controller;
-        executeButton.setFocus();
 
-        calculator.setAlgorithm(algorithm);
+        executeButton.setFocus();
 
         // - - -
 
-        Macro[] macros = calculator.getMacros();
+        Macro[] macros = controller.getMacros();
         for (Macro macro : macros) {
             TableItem item = macroTable.getItem(macro.idx);
             item.setText(1, valueOf(format("%.3f", macro.x)));
@@ -680,7 +676,7 @@ public class GuiConsole implements Console {
             item.setText(3, valueOf(format("%.2f", macro.txPower)));
         }
 
-        Pico[] picos = calculator.getPicos();
+        Pico[] picos = controller.getPicos();
         for (Pico pico : picos) {
             TableItem item = picoTable.getItem(pico.idx);
             item.setText(1, valueOf(format("%.3f", pico.x)));
@@ -688,7 +684,7 @@ public class GuiConsole implements Console {
             item.setText(3, valueOf(format("%.2f", pico.txPower)));
         }
 
-        Mobile[] mobiles = calculator.getMobiles();
+        Mobile[] mobiles = controller.getMobiles();
         for (Mobile mobile : mobiles) {
             TableItem item = mobileTable.getItem(mobile.idx);
             showMobile(mobile, item);
@@ -700,7 +696,7 @@ public class GuiConsole implements Console {
         shell.addShellListener(new ShellAdapter() {
             @Override
             public void shellClosed(ShellEvent e) {
-                calculator.stop();
+                controller.stop();
                 Algorithm2.executor.shutdown();
             }
         });
@@ -741,8 +737,6 @@ public class GuiConsole implements Console {
     private boolean dumped = true;
 
     private int totalSeq;
-
-    private Algorithm algorithm;
 
     @Override
     public long dump(final int seq, final Macro[] macros, final Pico[] picos,
@@ -986,9 +980,6 @@ public class GuiConsole implements Console {
 
     @Override
     public void setAlgorithm(Algorithm algorithm) {
-        this.algorithm = algorithm;
-        if (calculator != null)
-            calculator.setAlgorithm(algorithm);
         if (algorithm instanceof Algorithm1) {
             algorithmeCombo.select(0);
         } else if (algorithm instanceof Algorithm2) {

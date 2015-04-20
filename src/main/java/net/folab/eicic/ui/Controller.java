@@ -29,6 +29,12 @@ public class Controller {
 
     private Calculator calculator;
 
+    private Macro[] macros;
+
+    private Pico[] picos;
+
+    private Mobile[] mobiles;
+
     public static abstract class Generator<T> {
 
         public final Class<T> type;
@@ -78,21 +84,21 @@ public class Controller {
 
     public void display() {
 
-        Macro[] macros = loadObject("res/macro.txt", new Generator<Macro>(
+        macros = loadObject("res/macro.txt", new Generator<Macro>(
                 Macro.class) {
             @Override
             public Macro generate(int idx, double[] values) {
                 return new Macro(idx, values[0], values[1], MACRO_TX_POWER);
             }
         });
-        Pico[] picos = loadObject("res/pico.txt", new Generator<Pico>(
+        picos = loadObject("res/pico.txt", new Generator<Pico>(
                 Pico.class) {
             @Override
             public Pico generate(int idx, double[] values) {
                 return new Pico(idx, values[0], values[1], PICO_TX_POWER);
             }
         });
-        Mobile[] mobiles = loadObject("res/mobile.txt", new Generator<Mobile>(
+        mobiles = loadObject("res/mobile.txt", new Generator<Mobile>(
                 Mobile.class) {
             @Override
             public Mobile generate(int idx, double[] values) {
@@ -132,12 +138,42 @@ public class Controller {
         calculator.calculate();
     }
 
+    public void stop() {
+        calculator.stop();
+    }
+
+    /* bean getter/setter *************************************************** */
+
+    public Algorithm getAlgorithm() {
+        return algorithm;
+    }
+
+    public void setAlgorithm(Algorithm algorithm) {
+        this.algorithm = algorithm;
+    }
+
+    public int getTotalSeq() {
+        return totalSeq;
+    }
+
     public void setTotalSeq(int totalSeq) {
         this.totalSeq = totalSeq;
     }
 
-    public void stop() {
-        calculator.stop();
+    public int getSeq() {
+        return calculator.getSeq();
+    }
+
+    public Macro[] getMacros() {
+        return macros;
+    }
+
+    public Pico[] getPicos() {
+        return picos;
+    }
+
+    public Mobile[] getMobiles() {
+        return mobiles;
     }
 
 }
