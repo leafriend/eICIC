@@ -19,7 +19,7 @@ public class TextConsole implements Console {
     }
 
     @Override
-    public void start(Calculator calculator, Controller controller) {
+    public void start(Controller controller) {
         System.out.println(algorithm.getClass().getSimpleName());
         controller.start();
     }

@@ -660,7 +660,7 @@ public class GuiConsole implements Console {
     }
 
     @Override
-    public void start(final Calculator calculator, final Controller controller) {
+    public void start(final Controller controller) {
 
         this.controller = controller;
 
