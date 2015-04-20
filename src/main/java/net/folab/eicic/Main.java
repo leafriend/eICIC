@@ -126,45 +126,15 @@ public class Main {
             return false;
 
         if (consoleClassName != null) {
-            try {
-                @SuppressWarnings("unchecked")
-                Class<Console> consoleClass = (Class<Console>) Class
-                        .forName(consoleClassName);
-                console = consoleClass.newInstance();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            console = newInstance(consoleClassName);
+            if (console == null)
                 return false;
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-                return false;
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-                return false;
-            } catch (ClassCastException e) {
-                e.printStackTrace();
-                return false;
-            }
         }
 
         if (algorithmClassName != null) {
-            try {
-                @SuppressWarnings("unchecked")
-                Class<Algorithm> algorithmClass = (Class<Algorithm>) Class
-                        .forName(algorithmClassName);
-                algorithm = algorithmClass.newInstance();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            algorithm = newInstance(algorithmClassName);
+            if (algorithm == null)
                 return false;
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-                return false;
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-                return false;
-            } catch (ClassCastException e) {
-                e.printStackTrace();
-                return false;
-            }
         }
 
         if (!"net.folab.eicic.GuiConsole".equals(consoleClassName)
@@ -177,6 +147,26 @@ public class Main {
 
         return true;
 
+    }
+
+    public static <T> T newInstance(String className) {
+        try {
+            @SuppressWarnings("unchecked")
+            Class<T> type = (Class<T>) Class.forName(className);
+            return type.newInstance();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private void start() throws IOException {
