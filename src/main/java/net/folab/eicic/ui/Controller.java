@@ -99,7 +99,7 @@ public class Controller {
 
     public void display() {
 
-        resest();
+        reset();
 
         calculator = new Calculator(macros, picos, mobiles, console);
         calculator.setAlgorithm(algorithm);
@@ -144,7 +144,7 @@ public class Controller {
 
     }
 
-    public void resest() {
+    public void reset() {
 
         seq = 0;
         accumuMillis = 0;

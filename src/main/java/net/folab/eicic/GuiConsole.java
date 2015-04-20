@@ -237,7 +237,7 @@ public class GuiConsole implements Console {
         resetButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                controller.resest();
+                controller.reset();
             }
         });
 
