@@ -17,92 +17,94 @@ public class Main {
 
     private static final String DEFAULT_CONSOLE_CLASS_NAME = "net.folab.eicic.TextConsole";
 
-    private boolean isHelp;
-
-    private String consoleClassName;
-
-    private Console console;
-
-    private String algorithmClassName;
-
-    private Algorithm algorithm;
-
-    private int totalSeq;
-
-    public static void main(String[] args) throws IOException {
-
-        Main main = new Main(args);
-        if (main.isSufficient()) {
-            Controller controller = new Controller(main.console,
-                    main.algorithm, main.totalSeq);
-            controller.start();
-        } else
-            main.printHelp();
-
+    public static void main(String[] args) {
+        OptionParser parser = run(args);
+        if (parser != null)
+            try {
+                parser.printHelpOn(System.out);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
     }
 
-    private Main(String[] arguments) {
+    public static OptionParser run(String[] args) {
 
         OptionParser parser = new OptionParser();
 
-        OptionSpec<String> consoleOption = parser.accepts("c")
+        OptionSpec<String> consoleOption = parser
+                .acceptsAll(
+                        asList("c", "console"),
+                        String.format("Set console class name. Default: `%s`",
+                                DEFAULT_CONSOLE_CLASS_NAME)).withRequiredArg()
+                .ofType(String.class);
+
+        OptionSpec<String> algorithmOption = parser
+                .acceptsAll(
+                        asList("a", "algorithm"),
+                        "Set algorithm number. It should be one of 1/2/3. It's optional when console class  (`-c`) is `net.folab.eicic.GuiConsole`, otherwise mandatory.")
                 .withRequiredArg().ofType(String.class);
 
-        OptionSpec<String> algorithmOption = parser.accepts("a")
-                .withRequiredArg().ofType(String.class);
+        OptionSpec<Integer> seqOption = parser
+                .acceptsAll(
+                        asList("s", "sequence"),
+                        "Set sequence count to simulate. It's optional when consle class (`-c`) is `net.folab.eicic.GuiConsole`, otherwise mandatory.")
+                .withRequiredArg().ofType(Integer.class);
 
-        OptionSpec<Integer> seqOption = parser.accepts("s").withRequiredArg()
-                .ofType(Integer.class);
+        OptionSpec<Void> helpOption = parser.acceptsAll(asList("h", "help"),
+                "Prints this help").forHelp();
 
-        OptionSpec<Void> helpOption = parser.acceptsAll(asList("h", "help"));
+        OptionSet optionSet = parser.parse(args);
 
-        OptionSet optionSet = parser.parse(arguments);
-
-        totalSeq = 0;
+        int totalSeq = 0;
         if (optionSet.has(seqOption))
             totalSeq = optionSet.valueOf(seqOption).intValue();
 
+        String algorithmClassName = null;
         if (optionSet.has(algorithmOption)) {
             algorithmClassName = "net.folab.eicic.algorithm.Algorithm"
                     + optionSet.valueOf(algorithmOption);
         }
 
-        consoleClassName = DEFAULT_CONSOLE_CLASS_NAME;
+        String consoleClassName = DEFAULT_CONSOLE_CLASS_NAME;
         if (optionSet.has(consoleOption)) {
             consoleClassName = optionSet.valueOf(consoleOption);
         }
 
-        if (optionSet.has(helpOption))
-            isHelp = true;
+        // - - -
 
-    }
-
-    private boolean isSufficient() {
-
-        if (isHelp)
-            return false;
-
-        if (consoleClassName != null) {
-            console = newInstance(consoleClassName);
-            if (console == null)
-                return false;
+        if (consoleClassName == null) {
+            return parser;
+        }
+        Console console = newInstance(consoleClassName);
+        if (console == null) {
+            return parser;
         }
 
-        if (algorithmClassName != null) {
-            algorithm = newInstance(algorithmClassName);
-            if (algorithm == null)
-                return false;
+        if (algorithmClassName == null) {
+            return parser;
+        }
+        Algorithm algorithm = newInstance(algorithmClassName);
+
+        if (!"net.folab.eicic.GuiConsole".equals(consoleClassName)
+                && algorithm == null) {
+            return parser;
         }
 
         if (!"net.folab.eicic.GuiConsole".equals(consoleClassName)
-                && algorithm == null)
-            return false;
+                && totalSeq < 1) {
+            return parser;
+        }
 
-        if (!"net.folab.eicic.GuiConsole".equals(consoleClassName)
-                && totalSeq < 1)
-            return false;
+        // - - -
 
-        return true;
+        if (optionSet.has(helpOption)) {
+            return parser;
+        }
+
+        Controller controller = new Controller(console, algorithm, totalSeq);
+        controller.start();
+
+        return null;
 
     }
 
@@ -124,38 +126,6 @@ public class Main {
             e.printStackTrace();
             return null;
         }
-    }
-
-    private void printHelp() {
-        print("");
-        print("usage: java [JVM_OPTS] %s [options]", Main.class.getName());
-        print("");
-        print("You may need `-cp` option for GUI with SWT in JVM options.");
-        print("Regarding details of JVM options, check below URL:");
-        print(": http://www.oracle.com/technetwork/articles/java/vmoptions-jsp-140102.html");
-        print("");
-        print("Options:");
-
-        print(" -s <arg>                               Set sequence count to simulate.");
-        print("                                        It's optional when consle class");
-        print("                                        (`-c`) is net.folab.eicic.GuiConsole,");
-        print("                                        otherwise mandatory.");
-
-        print(" -a <arg>                               Set algorithm number.");
-        print("                                        It should be one of 1/2/3.");
-        print("                                        It's optional when consle class");
-        print("                                        (`-c`) is net.folab.eicic.GuiConsole,");
-        print("                                        otherwise mandatory.");
-
-        print(" -c <arg>                               Set console class name.");
-        print("                                        Default: %s",
-                DEFAULT_CONSOLE_CLASS_NAME);
-
-        print(" -h                                     Print this help.");
-    }
-
-    private void print(String string, Object... args) {
-        System.out.println(String.format(string, args));
     }
 
     public static void dump(String string, int seq, Mobile[] mobiles) {
