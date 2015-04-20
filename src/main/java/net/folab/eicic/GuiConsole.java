@@ -49,6 +49,10 @@ import org.eclipse.swt.widgets.Text;
 
 public class GuiConsole implements Console {
 
+    private static final String START = "Sta&rt";
+
+    private static final String PAUSE = "P&ause";
+
     private static final String ALGORITHM_1 = "1: Algorithm 1";
 
     private static final String ALGORITHM_2 = "2: Algorithm 2";
@@ -228,24 +232,24 @@ public class GuiConsole implements Console {
         });
 
         executeButton = new Button(parent, PUSH);
-        executeButton.setText("Sta&rt");
+        executeButton.setText(START);
         executeButtonListener = new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 if (calculator != null) {
                     String text = executeButton.getText();
-                    if ("P&ause".endsWith(text)) {
+                    if (PAUSE.endsWith(text)) {
                         calculator.stop();
-                        executeButton.setText("Sta&rt");
+                        executeButton.setText(START);
                         nextButton.setEnabled(true);
                         algorithmeCombo.setEnabled(true);
                         saveButton.setEnabled(true);
                         totalSeqText.setEnabled(true);
-                    } else if ("Sta&rt".endsWith(text)) {
+                    } else if (START.endsWith(text)) {
                         setAlgorithm();
                         totalSeq = Integer.parseInt(totalSeqText.getText());
                         calculator.calculate(totalSeq);
-                        executeButton.setText("P&ause");
+                        executeButton.setText(PAUSE);
                         nextButton.setEnabled(false);
                         algorithmeCombo.setEnabled(false);
                         saveButton.setEnabled(false);
@@ -969,7 +973,7 @@ public class GuiConsole implements Console {
             public void run() {
                 if (display.isDisposed())
                     return;
-                executeButton.setText("Sta&rt");
+                executeButton.setText(START);
                 nextButton.setEnabled(true);
                 algorithmeCombo.setEnabled(true);
                 saveButton.setEnabled(true);
