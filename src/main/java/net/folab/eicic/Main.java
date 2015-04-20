@@ -212,7 +212,9 @@ public class Main {
         for (Pico pico : picos)
             pico.init();
 
-        Calculator calculator = new Calculator(macros, picos, mobiles, console);
+        Calculator calculator = new Calculator(macros.toArray(new Macro[0]),
+                picos.toArray(new Pico[0]), mobiles.toArray(new Mobile[0]),
+                console);
 
         console.setAlgorithm(algorithm);
         console.setTotalSeq(totalSeq);
