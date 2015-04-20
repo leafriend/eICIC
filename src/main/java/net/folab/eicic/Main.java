@@ -101,7 +101,7 @@ public class Main {
         }
 
         Controller controller = new Controller(console, algorithm, totalSeq);
-        controller.start();
+        controller.display();
 
         return null;
 

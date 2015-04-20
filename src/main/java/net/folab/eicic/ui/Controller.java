@@ -74,7 +74,7 @@ public class Controller {
         this.totalSeq = totalSeq;
     }
 
-    public void start() {
+    public void display() {
 
         Macro[] macros = loadObject("res/macro.txt", new Generator<Macro>(
                 Macro.class) {
