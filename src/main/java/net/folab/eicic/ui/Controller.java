@@ -136,4 +136,8 @@ public class Controller {
         this.totalSeq = totalSeq;
     }
 
+    public void stop() {
+        calculator.stop();
+    }
+
 }

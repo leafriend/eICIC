@@ -242,7 +242,7 @@ public class GuiConsole implements Console {
                 if (calculator != null) {
                     String text = executeButton.getText();
                     if (PAUSE.endsWith(text)) {
-                        calculator.stop();
+                        controller.stop();
                         setRunningState(false);
                     } else if (START.endsWith(text)) {
                         setAlgorithm();
