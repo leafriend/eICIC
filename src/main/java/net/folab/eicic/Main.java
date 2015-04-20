@@ -252,15 +252,20 @@ public class Main {
         System.out.println(String.format(string, args));
     }
 
+    @Deprecated
     public static void dump(String string, int seq, List<Mobile> mobiles) {
+        dump(string, seq, mobiles.toArray(new Mobile[0]));
+    }
+
+    public static void dump(String string, int seq, Mobile[] mobiles) {
 
         try {
             FileWriter writer = new FileWriter(new File(string + ".csv"), true);
             writer.write(String.valueOf(seq));
             double sum = 0;
             StringBuilder sb = new StringBuilder();
-            for (int u = 0; u < NUM_MOBILES; u++) {
-                double util = Math.log(mobiles.get(u).getThroughput() / seq);
+            for (int u = 0; u < mobiles.length; u++) {
+                double util = Math.log(mobiles[u].getThroughput() / seq);
                 sb.append(",").append(util);
                 sum += util;
             }
