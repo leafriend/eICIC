@@ -27,30 +27,42 @@ public class TextConsole implements Console {
         calculator.calculate(this.totalSeq);
     }
 
-    public long dump(int t, List<Macro> macros, List<Pico> picos,
-            List<Mobile> mobiles, long elapsed, long execute) {
+    @Override
+    public long dump(final int seq, final List<Macro> macros,
+            final List<Pico> picos, final List<Mobile> mobiles,
+            final long elapsed, final long execute) {
+        return dump(seq, macros.toArray(new Macro[0]),
+                picos.toArray(new Pico[0]), mobiles.toArray(new Mobile[0]),
+                elapsed, execute);
+    }
 
-        if (t % 100 == 0) {
+    @Override
+    public long dump(final int seq, final Macro[] macros, final Pico[] picos,
+            final Mobile[] mobiles, final long elapsed, final long execute) {
+
+        if (seq % 100 == 0) {
 
             double throughput = 0.0;
-            for (Mobile mobile : mobiles) {
-                throughput += mobile.getThroughput() == 0.0 ? 0.0 : log(mobile.getThroughput() / t);
+            for (int u = 0; u < mobiles.length; u++) {
+                Mobile mobile = mobiles[u];
+                throughput += mobile.getThroughput() == 0.0 ? 0.0 : log(mobile.getThroughput() / seq);
             }
 
             out.print("idx\t" + "   Rate User\t" + "       (log)\t" + "  Throughput\t" + "       (log)\t"
                     + "      lambda\t" + "          mu\n");
 
-            for (Mobile mobile : mobiles) {
+            for (int u = 0; u < mobiles.length; u++) {
+                Mobile mobile = mobiles[u];
                 out.print(format("%3d", mobile.idx) + "\t");
                 out.print(format("%12.6f", mobile.getUserRate()) + "\t");
                 out.print(format("%12.6f", log(mobile.getUserRate())) + "\t");
-                out.print(format("%12.6f", mobile.getThroughput() / t) + "\t");
-                out.print(format("%12.6f", log(mobile.getThroughput() / t)) + "\t");
+                out.print(format("%12.6f", mobile.getThroughput() / seq) + "\t");
+                out.print(format("%12.6f", log(mobile.getThroughput() / seq)) + "\t");
                 out.print(format("%12.6f", mobile.getLambda()) + "\t");
                 out.print(format("%12.6f", mobile.getMu()) + "\n");
             }
 
-            out.print("Time: " + format("%7d/%7d", t, totalSeq) + "\t");
+            out.print("Time: " + format("%7d/%7d", seq, totalSeq) + "\t");
             out.print("Util: " + format("%8.4f", throughput) + "\t");
             out.print("Elap: " + format("%8.4f", secondFrom(elapsed)) + "\t");
             out.print("Exec: " + format("%8.4f", secondFrom(execute)) + "\n");

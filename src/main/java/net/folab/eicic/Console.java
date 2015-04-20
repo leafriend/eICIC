@@ -9,8 +9,12 @@ import net.folab.eicic.model.Pico;
 
 public interface Console {
 
+    @Deprecated
     long dump(int t, List<Macro> macros, List<Pico> picos,
             List<Mobile> mobiles, long elapsed, long execute);
+
+    long dump(int t, Macro[] macros, Pico[] picos, Mobile[] mobiles,
+            long elapsed, long execute);
 
     void start(Calculator calculator);
 

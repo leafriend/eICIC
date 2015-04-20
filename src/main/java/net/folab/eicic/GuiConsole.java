@@ -753,6 +753,15 @@ public class GuiConsole implements Console {
     public long dump(final int seq, final List<Macro> macros,
             final List<Pico> picos, final List<Mobile> mobiles,
             final long elapsed, final long execute) {
+        return dump(seq, macros.toArray(new Macro[0]),
+                picos.toArray(new Pico[0]), mobiles.toArray(new Mobile[0]),
+                elapsed, execute);
+    }
+
+    @Override
+    public long dump(final int seq, final Macro[] macros, final Pico[] picos,
+            final Mobile[] mobiles, final long elapsed, final long execute) {
+
         // if (calculator.isRunning() && t % 5 != 0)
         // return elapsed;
         if (!dumped)
@@ -810,12 +819,14 @@ public class GuiConsole implements Console {
 
                 if (frequncy > 0 && seq % frequncy == 0) {
 
-                    for (Macro macro : macros) {
+                    for (int m = 0; m < macros.length; m++) {
+                        Macro macro = macros[m];
                         TableItem item = macroTable.getItem(macro.idx);
                         item.setText(4, valueOf(macro.state ? "ON" : "OFF"));
                     }
 
-                    for (Pico pico : picos) {
+                    for (int p = 0; p < picos.length; p++) {
+                        Pico pico = picos[p];
                         TableItem item = picoTable.getItem(pico.idx);
                         item.setText(4, valueOf(pico.isAbs() ? "ABS" : "non"));
                     }
@@ -823,7 +834,8 @@ public class GuiConsole implements Console {
                 }
 
                 double throughput = 0.0;
-                for (Mobile mobile : mobiles) {
+                for (int u = 0; u < mobiles.length; u++) {
+                    Mobile mobile = mobiles[u];
 
                     throughput += log(mobile.getThroughput() / seq);
 
@@ -917,8 +929,8 @@ public class GuiConsole implements Console {
 
                 utilityText.setText(format("%.3f", throughput));
 
-                for (int m = 0; m < NUM_MACROS; m++) {
-                    absTexts[m].setText(format("%6.2f%%", (seq - macros.get(m).getAllocationCount()) / 100.0));
+                for (int m = 0; m < macros.length; m++) {
+                    absTexts[m].setText(format("%6.2f%%", (seq - macros[m].getAllocationCount()) / 100.0));
                 }
 
                 dumped = true;
