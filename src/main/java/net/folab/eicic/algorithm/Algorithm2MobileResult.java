@@ -14,6 +14,7 @@ public class Algorithm2MobileResult {
 
     final int cellAssoc;
 
+    @SuppressWarnings("unused") // TODO
     private final Macro macro;
 
     private final boolean[] mobileConnectsMacro = new boolean[NUM_MOBILES];
