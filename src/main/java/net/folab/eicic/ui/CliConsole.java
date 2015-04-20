@@ -64,7 +64,6 @@ public class CliConsole implements net.folab.eicic.Console {
     @Override
     public void notifyStarted() {
         Console console = System.console();
-        boolean isRunning = true;
         do {
 
             while (!dumpped)
@@ -72,30 +71,65 @@ public class CliConsole implements net.folab.eicic.Console {
 
             console.format("PA%d: %.4f @ %d/%d> ", algorithm.getNumber(),
                     throughput, controller.getSeq(), controller.getTotalSeq());
-            String command = console.readLine();
+            String command = console.readLine().trim();
 
-            if ("start".equals(command)) {
+            if (command.length() == 0)
+                continue;
+
+            if (command.equals("start")) {
                 controller.start();
+                continue;
             }
 
-            if ("stop".equals(command)) {
+            if (command.equals("stop")) {
                 controller.pause();
+                continue;
             }
 
-            if ("reset".equals(command)) {
+            if (command.equals("reset")) {
                 controller.reset();
+                continue;
             }
 
-            if ("dump".equals(command)) {
+            if (command.startsWith("until ")) {
+                try {
+                    String number = command.substring("until ".length()).trim();
+                    int totalSeq = Integer.parseInt(number);
+                    controller.setTotalSeq(totalSeq);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+                continue;
+            }
+
+            if (command.equals("dump")) {
                 dumpped = false;
+                dump(controller.getSeq(), controller.getMacros(),
+                        controller.getPicos(), controller.getMobiles(),
+                        controller.getElapsed(), -1);
+                continue;
+            }
+
+            if ("help".equals(command)) {
+                console.printf("start           Start calculation.\n");
+                console.printf("stop            Stop running calculation.\n");
+                console.printf("reset           Reset calculation result.\n");
+                console.printf("until TOTAL_SEQ Set total sequence.\n");
+                console.printf("dump            Dump calculation dump.\n");
+                console.printf("exit            Exit program.\n");
+                console.printf("help            Print this help.\n");
+                continue;
             }
 
             if ("exit".equals(command)) {
                 controller.stop();
-                isRunning = false;
+                break;
             }
 
-        } while (isRunning);
+            console.printf("%s: Unkonwn command. Try `help`.\n", command);
+
+        } while (true);
+
     }
 
     @Override
