@@ -116,8 +116,6 @@ public class GuiConsole implements Console {
 
     public GuiConsole() {
 
-        totalSeq = 1000; // TODO Load from properties
-
         display = new Display();
 
         colorActiveBg = new Color(display, 225, 255, 225);
@@ -244,8 +242,8 @@ public class GuiConsole implements Console {
                 } else if (START.endsWith(text)) {
                     setAlgorithm();
                     setRunningState(true);
-                    controller.setTotalSeq(Integer.parseInt(totalSeqText
-                            .getText()));
+                    String number = totalSeqText.getText().replaceAll(",", "");
+                    controller.setTotalSeq(Integer.parseInt(number));
                     controller.start();
                 }
             }
@@ -551,7 +549,6 @@ public class GuiConsole implements Console {
         seqSlashLabel.setText(" / ");
 
         totalSeqText = new Text(parent, BORDER | RIGHT);
-        totalSeqText.setText(valueOf(this.totalSeq));
 
         // - - -
 
@@ -734,8 +731,6 @@ public class GuiConsole implements Console {
 
     private boolean dumped = true;
 
-    private int totalSeq;
-
     @Override
     public long dump(final int seq, final Macro[] macros, final Pico[] picos,
             final Mobile[] mobiles, final long elapsed, final long execute) {
@@ -753,11 +748,11 @@ public class GuiConsole implements Console {
                 if (shell.isDisposed())
                     return;
 
-                seqText.setText(valueOf(seq));
+                seqText.setText(format("%,d", seq));
 
                 String elapsedTime = milisToTImeString(elapsed);
 
-                long estimated = seq == 0 ? 0 : elapsed * totalSeq / seq;
+                long estimated = seq == 0 ? 0 : elapsed * controller.getTotalSeq() / seq;
                 String estimatedTime = milisToTImeString(estimated);
 
                 executeTimeText.setText(elapsedTime + " / " + estimatedTime);
@@ -792,7 +787,7 @@ public class GuiConsole implements Console {
                     throw new RuntimeException("Unsupported frequency: "
                             + updateSeq.getItem(updateSeq.getSelectionIndex()));
                 }
-                if (seq == totalSeq)
+                if (seq == controller.getTotalSeq())
                     frequncy = 1;
 
                 if (frequncy > 0 && seq % frequncy == 0) {
@@ -965,12 +960,11 @@ public class GuiConsole implements Console {
 
     @Override
     public void setTotalSeq(final int totalSeq) {
-        this.totalSeq = totalSeq;
         if (!display.isDisposed()) {
             display.asyncExec(new Runnable() {
                 @Override
                 public void run() {
-                    totalSeqText.setText(valueOf(totalSeq));
+                    totalSeqText.setText(format("%,d", totalSeq));
                 }
             });
         }
