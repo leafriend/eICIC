@@ -30,7 +30,7 @@ public class TextConsole implements Console {
     public long dump(final int seq, final Macro[] macros, final Pico[] picos,
             final Mobile[] mobiles, final long elapsed, final long execute) {
 
-        if (seq % 100 == 0) {
+        if (seq != 0 && seq % 100 == 0) {
 
             double throughput = 0.0;
             for (int u = 0; u < mobiles.length; u++) {
