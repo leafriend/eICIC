@@ -239,17 +239,16 @@ public class GuiConsole implements Console {
         executeButtonListener = new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                if (calculator != null) {
-                    String text = executeButton.getText();
-                    if (PAUSE.endsWith(text)) {
-                        controller.stop();
-                        setRunningState(false);
-                    } else if (START.endsWith(text)) {
-                        setAlgorithm();
-                        setRunningState(true);
-                        controller.setTotalSeq(Integer.parseInt(totalSeqText.getText()));
-                        controller.start();
-                    }
+                String text = executeButton.getText();
+                if (PAUSE.endsWith(text)) {
+                    controller.stop();
+                    setRunningState(false);
+                } else if (START.endsWith(text)) {
+                    setAlgorithm();
+                    setRunningState(true);
+                    controller.setTotalSeq(Integer.parseInt(totalSeqText
+                            .getText()));
+                    controller.start();
                 }
             }
         };
@@ -262,9 +261,7 @@ public class GuiConsole implements Console {
         nextButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                if (calculator != null) {
-                    controller.next();
-                }
+                controller.next();
             }
         });
 
@@ -582,7 +579,6 @@ public class GuiConsole implements Console {
             absTexts[m].setText("000.00%");
         }
 
-
         // - - -
 
         parent.setLayout(new FormLayout());
@@ -611,11 +607,11 @@ public class GuiConsole implements Console {
         layoutData.left = new FormAttachment(utilityText, 8);
         absLabel.setLayoutData(layoutData);
 
-
         for (int m = 0; m < NUM_MACROS; m++) {
             layoutData = new FormData();
             layoutData.top = new FormAttachment(0, 3);
-            layoutData.left = new FormAttachment(m == 0 ? absLabel : absTexts[m - 1], 8);
+            layoutData.left = new FormAttachment(m == 0 ? absLabel
+                    : absTexts[m - 1], 8);
             absTexts[m].setLayoutData(layoutData);
         }
 
@@ -920,7 +916,8 @@ public class GuiConsole implements Console {
                 utilityText.setText(format("%.3f", throughput));
 
                 for (int m = 0; m < macros.length; m++) {
-                    absTexts[m].setText(format("%6.2f%%", (seq - macros[m].getAllocationCount()) / 100.0));
+                    absTexts[m].setText(format("%6.2f%%",
+                            (seq - macros[m].getAllocationCount()) / 100.0));
                 }
 
                 dumped = true;
