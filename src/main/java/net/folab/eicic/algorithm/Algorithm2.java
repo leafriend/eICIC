@@ -46,6 +46,12 @@ public class Algorithm2 implements Algorithm {
     @Override
     public void calculate(List<Macro> macros, List<Pico> picos,
             List<Mobile> mobiles) {
+        calculate(macros.toArray(new Macro[0]), picos.toArray(new Pico[0]),
+                mobiles.toArray(new Mobile[0]));
+    }
+
+    @Override
+    public void calculate(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
 
         for (int macroState = 0; macroState < NUM_MACRO_STATES; macroState++)
             macroStateResults[macroState].finished = false;
@@ -73,23 +79,23 @@ public class Algorithm2 implements Algorithm {
             if (result.lambdaRSum > mostLambdaRSum) {
                 bestMacroState = macroState;
                 mostLambdaRSum = result.lambdaRSum;
-                for (int m = 0; m < NUM_MACROS; m++) {
+                for (int m = 0; m < macros.length; m++) {
                     bestMacroStates[m] = result.macroStates[m];
                 }
-                for (int u = 0; u < NUM_MOBILES; u++)
+                for (int u = 0; u < mobiles.length; u++)
                     for (int i = 0; i < NUM_RB; i++) {
                         bestEdges[u][i] = result.edges[u][i];
                     }
             }
         }
 
-        for (int m = 0; m < macros.size(); m++) {
-            Macro macro = macros.get(m);
+        for (int m = 0; m < macros.length; m++) {
+            Macro macro = macros[m];
             macro.state = bestMacroStates[macro.idx];
         }
 
-        for (int u = 0; u < NUM_MOBILES; u++) {
-            Mobile mobile = mobiles.get(u);
+        for (int u = 0; u < mobiles.length; u++) {
+            Mobile mobile = mobiles[u];
             for (int i = 0; i < NUM_RB; i++)
                 if (bestEdges[mobile.idx][i] != null) {
 //                    System.out.println(bestEdges[mobile.idx][i]);

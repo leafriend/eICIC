@@ -16,23 +16,29 @@ public class Algorithm3 implements Algorithm {
     @Override
     public void calculate(List<Macro> macros, List<Pico> picos,
             List<Mobile> mobiles) {
+        calculate(macros.toArray(new Macro[0]), picos.toArray(new Pico[0]),
+                mobiles.toArray(new Mobile[0]));
+    }
 
-        boolean[] bestMacroStates = new boolean[NUM_MACROS];
-        Edge<?>[][] bestEdges = new Edge[NUM_MOBILES][NUM_RB];
+    @Override
+    public void calculate(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
+
+        boolean[] bestMacroStates = new boolean[macros.length];
+        Edge<?>[][] bestEdges = new Edge[mobiles.length][NUM_RB];
 
         chooseMobileConnection(mobiles);
 
         double mostLambdaRSum = Double.NEGATIVE_INFINITY;
         // 가능한 모든 Macro 상태(2 ^ NUM_MACRO = 1 << NUM_MACRO)에 대한 반복문
-        int macroStatesCount = 1 << NUM_MACROS;
+        int macroStatesCount = 1 << macros.length;
         for (int mask = 0; mask < macroStatesCount; mask++) {
 
-            boolean[] macroStates = new boolean[NUM_MACROS];
+            boolean[] macroStates = new boolean[macros.length];
             // Macro 상태(ON/OFF) 지정
-            for (int m = 0; m < NUM_MACROS; m++)
+            for (int m = 0; m < macros.length; m++)
                 macroStates[m] = 1 == (((1 << m) & mask) >> m);
 
-            Edge<?>[][] edges = new Edge[NUM_MOBILES][NUM_RB];
+            Edge<?>[][] edges = new Edge[mobiles.length][NUM_RB];
 
             double lambdaRSum = 0.0;
             for (Macro macro : macros) {
@@ -73,9 +79,9 @@ public class Algorithm3 implements Algorithm {
 
             if (lambdaRSum > mostLambdaRSum) {
                 mostLambdaRSum = lambdaRSum;
-                for (int m = 0; m < NUM_MACROS; m++)
+                for (int m = 0; m < macros.length; m++)
                     bestMacroStates[m] = macroStates[m];
-                for (int u = 0; u < NUM_MOBILES; u++)
+                for (int u = 0; u < mobiles.length; u++)
                     for (int i = 0; i < NUM_RB; i++)
                         bestEdges[u][i] = edges[u][i];
             }
@@ -90,7 +96,7 @@ public class Algorithm3 implements Algorithm {
                 if (bestEdges[mobile.idx][i] != null)
                     bestEdges[mobile.idx][i].setActivated(i, true);
 
-        double[] macroLambdaR = new double[NUM_MOBILES];
+        double[] macroLambdaR = new double[mobiles.length];
         for (Macro macro : macros) {
             double lambdaR = 0.0;
             for (int i = 0; i < NUM_RB; i++) {
@@ -109,7 +115,7 @@ public class Algorithm3 implements Algorithm {
             macro.pa3LambdaR = 0.8 * macro.pa3LambdaR + 0.2 * lambdaR;
         }
 
-        double[] picoLambdaR = new double[NUM_MOBILES];
+        double[] picoLambdaR = new double[mobiles.length];
         for (Pico pico : picos) {
             double lambdaR = 0.0;
             for (int i = 0; i < NUM_RB; i++) {
@@ -144,7 +150,7 @@ public class Algorithm3 implements Algorithm {
      *
      * @return Mobile.idx를 인덱스로 가지는 연결 여부 배열
      */
-    public void chooseMobileConnection(List<Mobile> mobiles) {
+    public void chooseMobileConnection(Mobile[] mobiles) {
 
         for (Mobile mobile : mobiles) {
 

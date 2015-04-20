@@ -4,8 +4,6 @@ import static net.folab.eicic.Constants.NUM_MACROS;
 import static net.folab.eicic.Constants.NUM_MOBILES;
 import static net.folab.eicic.Constants.NUM_RB;
 
-import java.util.List;
-
 import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
 
@@ -23,7 +21,7 @@ public class Algorithm2MacroStates implements Runnable {
 
     Edge<?>[][] edges = new Edge[NUM_MOBILES][NUM_RB];
 
-    public List<Macro> macros;
+    public Macro[] macros;
 
     public boolean finished;
 
@@ -41,12 +39,12 @@ public class Algorithm2MacroStates implements Runnable {
         for (int m = 0; m < NUM_MACROS; m++) {
 
             if (this.macroState == 64) {
-                if (macros.get(m).idx == 3) {
+                if (macros[m].idx == 3) {
                     System.out.print("");
                 }
             }
             if (algorithm2MacroResults[m] == null)
-                algorithm2MacroResults[m] = new Algorithm2MacroResult(this, macroStates[m], macros.get(m));
+                algorithm2MacroResults[m] = new Algorithm2MacroResult(this, macroStates[m], macros[m]);
 
             algorithm2MacroResults[m].run();
             lambdaRSum += algorithm2MacroResults[m].lambdaRSum;

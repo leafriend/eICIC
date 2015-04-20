@@ -28,9 +28,15 @@ public class Algorithm1 implements Algorithm {
     @Override
     public void calculate(List<Macro> macros, List<Pico> picos,
             List<Mobile> mobiles) {
+        calculate(macros.toArray(new Macro[0]), picos.toArray(new Pico[0]),
+                mobiles.toArray(new Mobile[0]));
+    }
 
-        for (int m = 0; m < NUM_MACROS; m++) {
-            Macro macro = macros.get(m);
+    @Override
+    public void calculate(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
+
+        for (int m = 0; m < macros.length; m++) {
+            Macro macro = macros[m];
             List<Edge<Macro>>[] sortedEdges = macro.getSortedEdges();
             for (int i = 0; i < NUM_RB; i++) {
                 macroFirstMobiles[macro.idx][i] = sortedEdges[i].get(0).mobile;
@@ -43,13 +49,13 @@ public class Algorithm1 implements Algorithm {
         for (int mask = 0; mask < macroStatesCount; mask++) {
 
             // Macro 상태(ON/OFF) 지정
-            for (int m = 0; m < NUM_MACROS; m++)
+            for (int m = 0; m < macros.length; m++)
                 macroStates[m] = 1 == (((1 << m) & mask) >> m);
 
 
             double lambdaRSum = 0.0;
-            for (int m = 0; m < NUM_MACROS; m++) {
-                Macro macro = macros.get(m);
+            for (int m = 0; m < macros.length; m++) {
+                Macro macro = macros[m];
 
                 if (macroStates[macro.idx]) {
                     // Mobile의 Macro가 켜졌다면
@@ -97,20 +103,20 @@ public class Algorithm1 implements Algorithm {
             if (lambdaRSum > mostLambdaRSum) {
                 bestMacroState = mask;
                 mostLambdaRSum = lambdaRSum;
-                for (int m = 0; m < NUM_MACROS; m++)
+                for (int m = 0; m < macros.length; m++)
                     bestMacroStates[m] = macroStates[m];
-                for (int u = 0; u < NUM_MOBILES; u++)
+                for (int u = 0; u < mobiles.length; u++)
                     for (int i = 0; i < NUM_RB; i++)
                         bestEdges[u][i] = edges[u][i];
             }
 
         }
 
-        for (int m = 0; m < NUM_MACROS; m++)
-           macros.get(m).state = bestMacroStates[m];
+        for (int m = 0; m < macros.length; m++)
+            macros[m].state = bestMacroStates[m];
 
-        for (int u = 0; u < mobiles.size(); u++) {
-            Mobile mobile = mobiles.get(u);
+        for (int u = 0; u < mobiles.length; u++) {
+            Mobile mobile = mobiles[u];
             for (int i = 0; i < NUM_RB; i++)
                 if (bestEdges[mobile.idx][i] != null)
                     bestEdges[mobile.idx][i].setActivated(i, true);
