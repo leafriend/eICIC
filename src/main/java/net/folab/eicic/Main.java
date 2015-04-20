@@ -33,10 +33,21 @@ public class Main {
 
     private int totalSeq;
 
-    public static interface Generator<T> {
-        public T generate(int idx, double[] values);
+    public abstract class Generator<T> {
 
-        public Class<T> getType();
+        private final Class<T> type;
+
+        public Generator(Class<T> type) {
+            super();
+            this.type = type;
+        }
+
+        public abstract T generate(int idx, double[] values);
+
+        public Class<T> getType() {
+            return type;
+        }
+
     }
 
     public static void main(String[] args) throws IOException {
@@ -182,41 +193,28 @@ public class Main {
 
     private void start() throws IOException {
 
-        Macro[] macros = loadObject("res/macro.txt", new Generator<Macro>() {
+        Macro[] macros = loadObject("res/macro.txt", new Generator<Macro>(
+                Macro.class) {
             @Override
             public Macro generate(int idx, double[] values) {
                 return new Macro(idx, values[0], values[1], MACRO_TX_POWER);
             }
-
-            @Override
-            public Class<Macro> getType() {
-                return Macro.class;
-            }
         });
-        Pico[] picos = loadObject("res/pico.txt", new Generator<Pico>() {
+        Pico[] picos = loadObject("res/pico.txt", new Generator<Pico>(
+                Pico.class) {
             @Override
             public Pico generate(int idx, double[] values) {
                 return new Pico(idx, values[0], values[1], PICO_TX_POWER);
             }
-
+        });
+        Mobile[] mobiles = loadObject("res/mobile.txt", new Generator<Mobile>(
+                Mobile.class) {
             @Override
-            public Class<Pico> getType() {
-                return Pico.class;
+            public Mobile generate(int idx, double[] values) {
+                return new Mobile(idx, values[0], values[1], MOBILE_QOS,
+                        values[2], values[3], values[4]);
             }
         });
-        Mobile[] mobiles = loadObject("res/mobile.txt",
-                new Generator<Mobile>() {
-                    @Override
-                    public Mobile generate(int idx, double[] values) {
-                        return new Mobile(idx, values[0], values[1],
-                                MOBILE_QOS, values[2], values[3], values[4]);
-                    }
-
-                    @Override
-                    public Class<Mobile> getType() {
-                        return Mobile.class;
-                    }
-                });
 
         for (Macro macro : macros)
             for (Mobile mobile : mobiles)
