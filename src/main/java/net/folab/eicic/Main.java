@@ -80,10 +80,9 @@ public class Main {
             return parser;
         }
 
-        if (algorithmClassName == null) {
-            return parser;
-        }
-        Algorithm algorithm = newInstance(algorithmClassName);
+        Algorithm algorithm = null;
+        if (algorithmClassName != null)
+            newInstance(algorithmClassName);
 
         if (!"net.folab.eicic.GuiConsole".equals(consoleClassName)
                 && algorithm == null) {
