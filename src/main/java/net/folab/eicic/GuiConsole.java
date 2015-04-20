@@ -568,6 +568,7 @@ public class GuiConsole implements Console {
         seqSlashLabel.setText(" / ");
 
         totalSeqText = new Text(parent, BORDER | RIGHT);
+        totalSeqText.setText("0");
 
         // - - -
 
