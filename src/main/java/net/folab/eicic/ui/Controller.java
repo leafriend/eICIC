@@ -133,7 +133,7 @@ public class Controller {
                 accumuMillis = execute;
 
                 isRunning = false;
-                if (seq == (totalSeq + 1))
+                if (seq == totalSeq)
                     console.notifyEnded();
 
             }
