@@ -8,8 +8,8 @@ import net.folab.eicic.ui.Controller;
 
 public interface Console {
 
-    long dump(int t, Macro[] macros, Pico[] picos, Mobile[] mobiles,
-            long elapsed, long execute);
+    void dump(int t, Macro[] macros, Pico[] picos, Mobile[] mobiles,
+            long elapsed);
 
     void notifyStarted();
 

@@ -437,8 +437,7 @@ public class GuiConsole implements Console {
                 Macro[] macros = controller.getMacros();
                 Pico[] picos = controller.getPicos();
                 long elapsed = 0;
-                long execute = 0;
-                dump(seq, macros, picos, mobiles, elapsed, execute);
+                dump(seq, macros, picos, mobiles, elapsed);
             }
         });
 
@@ -751,16 +750,16 @@ public class GuiConsole implements Console {
     private boolean dumped = true;
 
     @Override
-    public long dump(final int seq, final Macro[] macros, final Pico[] picos,
-            final Mobile[] mobiles, final long elapsed, final long execute) {
+    public void dump(final int seq, final Macro[] macros, final Pico[] picos,
+            final Mobile[] mobiles, final long elapsed) {
 
         // if (calculator.isRunning() && t % 5 != 0)
         // return elapsed;
         if (!dumped)
-            return -1;
+            return;
         dumped = false;
         if (display.isDisposed())
-            return -1;
+            return;
         display.asyncExec(new Runnable() {
             @Override
             public void run() {
@@ -929,7 +928,7 @@ public class GuiConsole implements Console {
                 dumped = true;
             }
         });
-        return System.currentTimeMillis();
+
     }
 
     public void setAlgorithm() {

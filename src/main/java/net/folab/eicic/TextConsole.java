@@ -27,8 +27,8 @@ public class TextConsole implements Console {
     }
 
     @Override
-    public long dump(final int seq, final Macro[] macros, final Pico[] picos,
-            final Mobile[] mobiles, final long elapsed, final long execute) {
+    public void dump(final int seq, final Macro[] macros, final Pico[] picos,
+            final Mobile[] mobiles, final long elapsed) {
 
         if (seq != 0 && seq % 100 == 0) {
 
@@ -54,14 +54,8 @@ public class TextConsole implements Console {
 
             out.print("Time: " + format("%7d/%7d", seq, totalSeq) + "\t");
             out.print("Util: " + format("%8.4f", throughput) + "\t");
-            out.print("Elap: " + format("%8.4f", secondFrom(elapsed)) + "\t");
-            out.print("Exec: " + format("%8.4f", secondFrom(execute)) + "\n");
-
-            return System.currentTimeMillis();
-
-        } else {
-
-            return elapsed;
+            out.print("Elap: " + format("%8.4f", secondFrom(elapsed)) + "\n");
+            // TODO out.print("Exec: " + format("%8.4f", secondFrom(execute)) + "\n");
 
         }
 

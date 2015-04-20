@@ -115,7 +115,7 @@ public class Controller {
                     calculator.calculateInternal(seq);
                     long execute = System.currentTimeMillis() - started
                             + accumuMillis;
-                    console.dump(seq, macros, picos, mobiles, execute, -1);
+                    console.dump(seq, macros, picos, mobiles, execute);
 
                     if (seq % 100 == 0) {
                         Main.dump(algorithm.getClass().getSimpleName(), seq,
@@ -129,7 +129,7 @@ public class Controller {
 
                 long execute = System.currentTimeMillis() - started
                         + accumuMillis;
-                console.dump(seq, macros, picos, mobiles, execute, -1);
+                console.dump(seq, macros, picos, mobiles, execute);
                 accumuMillis = execute;
 
                 isRunning = false;
@@ -186,7 +186,7 @@ public class Controller {
         for (Pico pico : picos)
             pico.init();
 
-        console.dump(seq, macros, picos, mobiles, accumuMillis, -1);
+        console.dump(seq, macros, picos, mobiles, accumuMillis);
 
     }
 

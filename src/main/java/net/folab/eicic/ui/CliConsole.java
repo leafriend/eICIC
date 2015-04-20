@@ -20,8 +20,8 @@ public class CliConsole implements net.folab.eicic.Console {
     private double throughput;
 
     @Override
-    public synchronized long dump(int seq, Macro[] macros, Pico[] picos, Mobile[] mobiles,
-            long elapsed, long execute) {
+    public synchronized void dump(int seq, Macro[] macros, Pico[] picos, Mobile[] mobiles,
+            long elapsed) {
 
         throughput = 0.0;
         for (int u = 0; u < mobiles.length; u++) {
@@ -30,7 +30,6 @@ public class CliConsole implements net.folab.eicic.Console {
                     .getThroughput() / seq);
         }
 
-        return -1;
     }
 
     private void dump() {
