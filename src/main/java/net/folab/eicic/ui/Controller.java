@@ -110,8 +110,7 @@ public class Controller {
 
                 long started = System.currentTimeMillis();
 
-                while (isRunning && seq <= nextSeq) {
-                    seq++;
+                while (isRunning && ++seq < nextSeq) {
 
                     calculator.calculateInternal(seq);
                     long execute = System.currentTimeMillis() - started
@@ -122,6 +121,9 @@ public class Controller {
                         Main.dump(algorithm.getClass().getSimpleName(), seq,
                                 mobiles);
                     }
+
+                    if (seq == nextSeq)
+                        break;
 
                 }
 
