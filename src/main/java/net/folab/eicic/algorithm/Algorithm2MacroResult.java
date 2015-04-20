@@ -77,6 +77,13 @@ public class Algorithm2MacroResult {
             result = results[0];
             result.run();
 
+            for (int u = 0; u < size; u++) {
+                Mobile mobile = mobilesTS.get(u);
+                for (int i = 0; i < NUM_RB; i++) {
+                    states.edges[mobile.idx][i] = result.edges[mobile.idx][i];
+                }
+            }
+
             this.lambdaRSum = result.lambdaRSum;
 
         }
