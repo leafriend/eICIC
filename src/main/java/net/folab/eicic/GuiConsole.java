@@ -712,7 +712,7 @@ public class GuiConsole implements Console {
             @Override
             public void shellClosed(ShellEvent e) {
                 controller.stop();
-                // Algorithm2.executor.shutdown();
+                Algorithm2.executor.shutdown(); // TODO Generalize
             }
         });
 
