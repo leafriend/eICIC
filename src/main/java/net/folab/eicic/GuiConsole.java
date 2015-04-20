@@ -660,9 +660,7 @@ public class GuiConsole implements Console {
     }
 
     @Override
-    public void start(final Controller controller) {
-
-        this.controller = controller;
+    public void notifyStarted() {
 
         executeButton.setFocus();
 
@@ -952,7 +950,7 @@ public class GuiConsole implements Console {
     }
 
     @Override
-    public void end() {
+    public void notifyEnded() {
         if (display.isDisposed())
             return;
         display.asyncExec(new Runnable() {
@@ -995,6 +993,11 @@ public class GuiConsole implements Console {
         algorithmeCombo.setEnabled(!isRunning);
         saveButton.setEnabled(!isRunning);
         totalSeqText.setEnabled(!isRunning);
+    }
+
+    @Override
+    public void setController(Controller controller) {
+        this.controller = controller;
     }
 
 }

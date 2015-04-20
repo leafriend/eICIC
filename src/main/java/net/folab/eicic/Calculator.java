@@ -59,7 +59,7 @@ public class Calculator {
 
                 accumuMillis = baseAccumuMillis + System.currentTimeMillis()
                         - started;
-                console.end();
+                console.notifyEnded();
 
             }
         }.start();

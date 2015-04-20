@@ -15,11 +15,13 @@ public class TextConsole implements Console {
 
     private Algorithm algorithm;
 
+    private Controller controller;
+
     public TextConsole() {
     }
 
     @Override
-    public void start(Controller controller) {
+    public void notifyStarted() {
         System.out.println(algorithm.getClass().getSimpleName());
         controller.start();
     }
@@ -70,7 +72,7 @@ public class TextConsole implements Console {
     }
 
     @Override
-    public void end() {
+    public void notifyEnded() {
     }
 
     @Override
@@ -81,6 +83,11 @@ public class TextConsole implements Console {
     @Override
     public void setAlgorithm(Algorithm algorithm) {
         this.algorithm = algorithm;
+    }
+
+    @Override
+    public void setController(Controller controller) {
+        this.controller = controller;
     }
 
 }

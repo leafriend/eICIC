@@ -11,12 +11,14 @@ public interface Console {
     long dump(int t, Macro[] macros, Pico[] picos, Mobile[] mobiles,
             long elapsed, long execute);
 
-    void start(Controller controller);
+    void notifyStarted();
 
-    void end();
+    void notifyEnded();
 
     void setTotalSeq(int totalSeq);
 
     void setAlgorithm(Algorithm algorithm);
+
+    void setController(Controller controller);
 
 }

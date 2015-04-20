@@ -126,7 +126,8 @@ public class Controller {
 
         console.setAlgorithm(algorithm);
         console.setTotalSeq(totalSeq);
-        console.start(this);
+        console.setController(this);
+        console.notifyStarted();
 
     }
 
