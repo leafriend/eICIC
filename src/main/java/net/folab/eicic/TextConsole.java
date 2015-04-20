@@ -3,11 +3,11 @@ package net.folab.eicic;
 import static java.lang.Math.log;
 import static java.lang.String.format;
 import static java.lang.System.out;
-
 import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
+import net.folab.eicic.ui.Controller;
 
 public class TextConsole implements Console {
 
@@ -19,7 +19,7 @@ public class TextConsole implements Console {
     }
 
     @Override
-    public void start(Calculator calculator) {
+    public void start(Calculator calculator, Controller controller) {
         System.out.println(algorithm.getClass().getSimpleName());
         calculator.setAlgorithm(algorithm);
         calculator.calculate(this.totalSeq);

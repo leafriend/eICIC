@@ -21,6 +21,7 @@ import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
+import net.folab.eicic.ui.Controller;
 
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -663,7 +664,7 @@ public class GuiConsole implements Console {
     }
 
     @Override
-    public void start(final Calculator calculator) {
+    public void start(final Calculator calculator, Controller controller) {
         this.calculator = calculator;
 
         executeButton.setFocus();
