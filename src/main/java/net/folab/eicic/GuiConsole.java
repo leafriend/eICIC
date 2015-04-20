@@ -240,20 +240,12 @@ public class GuiConsole implements Console {
                     String text = executeButton.getText();
                     if (PAUSE.endsWith(text)) {
                         calculator.stop();
-                        executeButton.setText(START);
-                        nextButton.setEnabled(true);
-                        algorithmeCombo.setEnabled(true);
-                        saveButton.setEnabled(true);
-                        totalSeqText.setEnabled(true);
+                        setRunningState(false);
                     } else if (START.endsWith(text)) {
                         setAlgorithm();
                         totalSeq = Integer.parseInt(totalSeqText.getText());
+                        setRunningState(true);
                         calculator.calculate(totalSeq);
-                        executeButton.setText(PAUSE);
-                        nextButton.setEnabled(false);
-                        algorithmeCombo.setEnabled(false);
-                        saveButton.setEnabled(false);
-                        totalSeqText.setEnabled(false);
                     }
                 }
             }
@@ -973,11 +965,7 @@ public class GuiConsole implements Console {
             public void run() {
                 if (display.isDisposed())
                     return;
-                executeButton.setText(START);
-                nextButton.setEnabled(true);
-                algorithmeCombo.setEnabled(true);
-                saveButton.setEnabled(true);
-                totalSeqText.setEnabled(true);
+                setRunningState(false);
             }
         });
     }
@@ -1007,6 +995,14 @@ public class GuiConsole implements Console {
         } else if (algorithm instanceof Algorithm3) {
             algorithmeCombo.select(2);
         }
+    }
+
+    private void setRunningState(boolean isRunning) {
+        executeButton.setText(isRunning ? PAUSE : START);
+        nextButton.setEnabled(!isRunning);
+        algorithmeCombo.setEnabled(!isRunning);
+        saveButton.setEnabled(!isRunning);
+        totalSeqText.setEnabled(!isRunning);
     }
 
 }
