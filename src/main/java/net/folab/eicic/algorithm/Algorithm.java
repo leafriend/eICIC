@@ -6,6 +6,8 @@ import net.folab.eicic.model.Pico;
 
 public interface Algorithm {
 
+    int getNumber();
+
     void calculate(Macro[] macros, Pico[] picos, Mobile[] mobiles);
 
 }

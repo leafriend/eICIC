@@ -15,6 +15,11 @@ public class Algorithm3 implements Algorithm {
     final boolean[] mobileConnectsMacro = new boolean[NUM_MOBILES];
 
     @Override
+    public int getNumber() {
+        return 3;
+    }
+
+    @Override
     public void calculate(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
 
         boolean[] bestMacroStates = new boolean[macros.length];

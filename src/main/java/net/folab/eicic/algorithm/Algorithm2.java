@@ -44,6 +44,11 @@ public class Algorithm2 implements Algorithm {
     }
 
     @Override
+    public int getNumber() {
+        return 2;
+    }
+
+    @Override
     public void calculate(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
 
         for (int macroState = 0; macroState < NUM_MACRO_STATES; macroState++)
