@@ -10,6 +10,7 @@ import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
+import net.folab.eicic.model.StateContext;
 
 public class CliConsole implements net.folab.eicic.Console {
 
@@ -22,8 +23,8 @@ public class CliConsole implements net.folab.eicic.Console {
     private int frequency;
 
     @Override
-    public synchronized void dump(int seq, Macro[] macros, Pico[] picos, Mobile[] mobiles,
-            long elapsed) {
+    public synchronized void dump(int seq, StateContext state, Macro[] macros, Pico[] picos,
+            Mobile[] mobiles, long elapsed) {
 
         throughput = 0.0;
         for (int u = 0; u < mobiles.length; u++) {

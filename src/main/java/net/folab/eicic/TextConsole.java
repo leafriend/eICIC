@@ -7,6 +7,7 @@ import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
+import net.folab.eicic.model.StateContext;
 import net.folab.eicic.ui.Controller;
 
 public class TextConsole implements Console {
@@ -27,8 +28,8 @@ public class TextConsole implements Console {
     }
 
     @Override
-    public void dump(final int seq, final Macro[] macros, final Pico[] picos,
-            final Mobile[] mobiles, final long elapsed) {
+    public void dump(final int seq, StateContext state, final Macro[] macros,
+            final Pico[] picos, final Mobile[] mobiles, final long elapsed) {
 
         if (seq != 0 && seq % 100 == 0) {
 

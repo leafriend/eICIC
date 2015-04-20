@@ -21,6 +21,7 @@ import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
+import net.folab.eicic.model.StateContext;
 
 public class Controller {
 
@@ -107,15 +108,15 @@ public class Controller {
         runner = new Runnable() {
             @Override
             public void run() {
-
                 long started = System.currentTimeMillis();
 
-                while (isRunning && ++seq < nextSeq) {
+                StateContext state = null;
+                while (isRunning && seq++ < nextSeq) {
 
-                    calculator.calculateInternal(seq);
+                    state = calculator.calculateInternal(seq);
                     long execute = System.currentTimeMillis() - started
                             + accumuMillis;
-                    console.dump(seq, macros, picos, mobiles, execute);
+                    console.dump(seq, state, macros, picos, mobiles, execute);
 
                     if (seq % 100 == 0) {
                         Main.dump(algorithm.getClass().getSimpleName(), seq,
@@ -129,7 +130,7 @@ public class Controller {
 
                 long execute = System.currentTimeMillis() - started
                         + accumuMillis;
-                console.dump(seq, macros, picos, mobiles, execute);
+                console.dump(seq, state, macros, picos, mobiles, execute);
                 accumuMillis = execute;
 
                 isRunning = false;
@@ -186,7 +187,7 @@ public class Controller {
         for (Pico pico : picos)
             pico.init();
 
-        console.dump(seq, macros, picos, mobiles, accumuMillis);
+        console.dump(seq, null, macros, picos, mobiles, accumuMillis);
 
     }
 

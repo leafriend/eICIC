@@ -21,6 +21,7 @@ import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
+import net.folab.eicic.model.StateContext;
 import net.folab.eicic.ui.Controller;
 
 import org.eclipse.swt.dnd.Clipboard;
@@ -438,7 +439,7 @@ public class GuiConsole implements Console {
                 Macro[] macros = controller.getMacros();
                 Pico[] picos = controller.getPicos();
                 long elapsed = 0;
-                dump(seq, macros, picos, mobiles, elapsed);
+                dump(seq, null, macros, picos, mobiles, elapsed);
             }
         });
 
@@ -752,8 +753,8 @@ public class GuiConsole implements Console {
     private boolean dumped = true;
 
     @Override
-    public void dump(final int seq, final Macro[] macros, final Pico[] picos,
-            final Mobile[] mobiles, final long elapsed) {
+    public void dump(final int seq, final StateContext state, final Macro[] macros,
+            final Pico[] picos, final Mobile[] mobiles, final long elapsed) {
 
         // if (calculator.isRunning() && t % 5 != 0)
         // return elapsed;
@@ -811,23 +812,23 @@ public class GuiConsole implements Console {
                 if (seq == controller.getTotalSeq())
                     frequncy = 1;
 
-                /* FIXME Revert here
-                if (frequncy > 0 && seq % frequncy == 0) {
+                if (state != null) {
 
                     for (int m = 0; m < macros.length; m++) {
                         Macro macro = macros[m];
                         TableItem item = macroTable.getItem(macro.idx);
-                        item.setText(4, valueOf(macro.state ? "ON" : "OFF"));
+                        item.setText(4, valueOf(state.macroIsOn(m) ? "ON"
+                                : "OFF"));
                     }
 
                     for (int p = 0; p < picos.length; p++) {
                         Pico pico = picos[p];
                         TableItem item = picoTable.getItem(pico.idx);
-                        item.setText(4, valueOf(pico.isAbs() ? "ABS" : "non"));
+                        item.setText(4, valueOf(state.picoIsAbs(p) ? "ABS"
+                                : "non"));
                     }
 
                 }
-                */
 
                 double throughput = 0.0;
                 for (int u = 0; u < mobiles.length; u++) {
@@ -870,13 +871,14 @@ public class GuiConsole implements Console {
                         texts[index++] = format("%.6f", mobile.getLambda());
                         texts[index++] = format("%.6f", mobile.getMu());
 
+                        if (state != null) {
+
                         Edge<? extends BaseStation<?>>[] activeEdges = mobile
                                 .getActiveEdges();
                         double[] macroLambdaR = mobile.getMacroLambdaR();
                         double[] absPicoLambdaR = mobile.getAbsPicoLambdaR();
                         double[] nonPicoLambdaR = mobile.getNonPicoLambdaR();
-                        boolean isAbs = false; // FIXME
-                                                // mobile.getPico().isAbs();
+                        boolean isAbs = state.picoIsAbs(mobile.getPico().idx);
                         for (int j = 0; j < NUM_RB; j++) {
                             String bs = null;
                             double lambdaR = 0;
@@ -895,7 +897,7 @@ public class GuiConsole implements Console {
                                 } else if (activeEdges[j].baseStation instanceof Pico) {
                                     Pico pico = (Pico) activeEdges[j].baseStation;
                                     if (isAbs) {
-                                        bs = "abs";
+                                        bs = "ABS";
                                         lambdaR = absPicoLambdaR[j];
                                         rank = pico.getSortedAbsEdges()[j]
                                                 .indexOf(activeEdges[j]);
@@ -919,6 +921,8 @@ public class GuiConsole implements Console {
                             texts[index + j * 3 + 2] = bs == null ? ""
                                     : valueOf(rank);
                         }
+                        }
+
                         item.setText(texts);
                     }
 
