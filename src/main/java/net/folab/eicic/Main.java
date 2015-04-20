@@ -82,7 +82,7 @@ public class Main {
 
         Algorithm algorithm = null;
         if (algorithmClassName != null)
-            newInstance(algorithmClassName);
+            algorithm = newInstance(algorithmClassName);
 
         if (!"net.folab.eicic.GuiConsole".equals(consoleClassName)
                 && algorithm == null) {
