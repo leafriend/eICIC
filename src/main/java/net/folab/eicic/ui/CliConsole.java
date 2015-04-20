@@ -19,6 +19,8 @@ public class CliConsole implements net.folab.eicic.Console {
 
     private double throughput;
 
+    private int frequency;
+
     @Override
     public synchronized void dump(int seq, Macro[] macros, Pico[] picos, Mobile[] mobiles,
             long elapsed) {
@@ -28,6 +30,12 @@ public class CliConsole implements net.folab.eicic.Console {
             Mobile mobile = mobiles[u];
             throughput += mobile.getThroughput() == 0.0 ? 0.0 : log(mobile
                     .getThroughput() / seq);
+        }
+
+        if (frequency > 0 && seq % frequency == 0) {
+            System.out.println();
+            dump();
+            prompt();
         }
 
     }
@@ -62,8 +70,7 @@ public class CliConsole implements net.folab.eicic.Console {
         Console console = System.console();
         do {
 
-            console.format("PA%d: %.4f @ %d/%d> ", algorithm.getNumber(),
-                    throughput, controller.getSeq(), controller.getTotalSeq());
+            prompt();
             String command = console.readLine().trim();
 
             if (command.length() == 0)
@@ -100,6 +107,16 @@ public class CliConsole implements net.folab.eicic.Console {
                 continue;
             }
 
+            if (command.startsWith("dump ")) {
+                try {
+                    String number = command.substring("dump ".length()).trim();
+                    frequency  = Integer.parseInt(number);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+                continue;
+            }
+
             if ("help".equals(command)) {
                 console.printf("start           Start calculation.\n");
                 console.printf("stop            Stop running calculation.\n");
@@ -120,6 +137,11 @@ public class CliConsole implements net.folab.eicic.Console {
 
         } while (true);
 
+    }
+
+    public void prompt() {
+        out.print(String.format("PA%d: %.4f @ %d/%d> ", algorithm.getNumber(),
+                throughput, controller.getSeq(), controller.getTotalSeq()));
     }
 
     @Override
