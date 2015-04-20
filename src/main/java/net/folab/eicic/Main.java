@@ -15,7 +15,7 @@ import net.folab.eicic.ui.Controller;
 
 public class Main {
 
-    private static final String DEFAULT_CONSOLE_CLASS_NAME = "net.folab.eicic.TextConsole";
+    private static final String DEFAULT_CONSOLE_CLASS_NAME = "net.folab.eicic.ui.CliConsole";
 
     public static void main(String[] args) {
         OptionParser parser = run(args);
