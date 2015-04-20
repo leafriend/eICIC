@@ -11,6 +11,7 @@ import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
+import net.folab.eicic.model.StateContext;
 
 public class Algorithm2 implements Algorithm {
 
@@ -19,7 +20,7 @@ public class Algorithm2 implements Algorithm {
     public static final ExecutorService executor = Executors
             .newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-    private boolean[] bestMacroStates = new boolean[NUM_MACROS];
+    private StateContext state;
 
     private Edge<?>[][] bestEdges = new Edge[NUM_MOBILES][NUM_RB];
 
@@ -34,25 +35,21 @@ public class Algorithm2 implements Algorithm {
         }
     }
 
-    public Algorithm2() {
-
-        for (int macroState = 0; macroState < macroStateResults.length; macroState++) {
-            macroStateResults[macroState] = new Algorithm2MacroStates(
-                    macroState);
-        }
-
-    }
-
     @Override
     public int getNumber() {
         return 2;
     }
 
     @Override
-    public void calculate(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
+    public StateContext calculate(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
 
-        for (int macroState = 0; macroState < NUM_MACRO_STATES; macroState++)
+        for (int macroState = 0; macroState < NUM_MACRO_STATES; macroState++) {
+            if (macroStateResults[macroState] == null)
+                macroStateResults[macroState] = new Algorithm2MacroStates(
+                        StateContext.getStateContext(macroState, macros, picos,
+                                mobiles));
             macroStateResults[macroState].finished = false;
+        }
 
         // 가능한 모든 Macro 상태(2 ^ NUM_MACRO = 1 << NUM_MACRO)에 대한 반복문
         for (int macroState = 0; macroState < NUM_MACRO_STATES; macroState++) {
@@ -77,9 +74,7 @@ public class Algorithm2 implements Algorithm {
             if (result.lambdaRSum > mostLambdaRSum) {
                 bestMacroState = macroState;
                 mostLambdaRSum = result.lambdaRSum;
-                for (int m = 0; m < macros.length; m++) {
-                    bestMacroStates[m] = result.macroStates[m];
-                }
+                this.state = result.state;
                 for (int u = 0; u < mobiles.length; u++)
                     for (int i = 0; i < NUM_RB; i++) {
                         bestEdges[u][i] = result.edges[u][i];
@@ -87,15 +82,14 @@ public class Algorithm2 implements Algorithm {
             }
         }
 
-        for (int m = 0; m < macros.length; m++)
-            macros[m].state = bestMacroStates[m];
-
         for (int u = 0; u < mobiles.length; u++)
             for (int i = 0; i < NUM_RB; i++)
                 if (bestEdges[u][i] != null)
                     bestEdges[u][i].setActivated(i, true);
 
         assert bestMacroState >= 0;
+
+        return state;
 
     }
 

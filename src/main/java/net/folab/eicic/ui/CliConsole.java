@@ -65,6 +65,8 @@ public class CliConsole implements net.folab.eicic.Console {
     @Override
     public void notifyStarted() {
         Console console = System.console();
+        if (console == null)
+            throw new RuntimeException("Faield to get Console instance");
         do {
 
             prompt();

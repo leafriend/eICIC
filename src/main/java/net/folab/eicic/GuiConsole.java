@@ -248,7 +248,8 @@ public class GuiConsole implements Console {
             public void widgetSelected(SelectionEvent e) {
                 String text = executeButton.getText();
                 if (PAUSE.endsWith(text)) {
-                    controller.pause();;
+                    controller.pause();
+                    ;
                     setRunningState(false);
                 } else if (START.endsWith(text)) {
                     setAlgorithm();
@@ -710,7 +711,7 @@ public class GuiConsole implements Console {
             @Override
             public void shellClosed(ShellEvent e) {
                 controller.stop();
-                Algorithm2.executor.shutdown();
+                // Algorithm2.executor.shutdown();
             }
         });
 
@@ -770,7 +771,8 @@ public class GuiConsole implements Console {
 
                 String elapsedTime = milisToTImeString(elapsed);
 
-                long estimated = seq == 0 ? 0 : elapsed * controller.getTotalSeq() / seq;
+                long estimated = seq == 0 ? 0 : elapsed
+                        * controller.getTotalSeq() / seq;
                 String estimatedTime = milisToTImeString(estimated);
 
                 executeTimeText.setText(elapsedTime + " / " + estimatedTime);
@@ -808,6 +810,7 @@ public class GuiConsole implements Console {
                 if (seq == controller.getTotalSeq())
                     frequncy = 1;
 
+                /* FIXME Revert here
                 if (frequncy > 0 && seq % frequncy == 0) {
 
                     for (int m = 0; m < macros.length; m++) {
@@ -823,6 +826,7 @@ public class GuiConsole implements Console {
                     }
 
                 }
+                */
 
                 double throughput = 0.0;
                 for (int u = 0; u < mobiles.length; u++) {
@@ -870,7 +874,8 @@ public class GuiConsole implements Console {
                         double[] macroLambdaR = mobile.getMacroLambdaR();
                         double[] absPicoLambdaR = mobile.getAbsPicoLambdaR();
                         double[] nonPicoLambdaR = mobile.getNonPicoLambdaR();
-                        boolean isAbs = mobile.getPico().isAbs();
+                        boolean isAbs = false; // FIXME
+                                                // mobile.getPico().isAbs();
                         for (int j = 0; j < NUM_RB; j++) {
                             String bs = null;
                             double lambdaR = 0;
@@ -922,7 +927,8 @@ public class GuiConsole implements Console {
 
                 for (int m = 0; m < macros.length; m++) {
                     absTexts[m].setText(format("%6.2f%%",
-                            (seq - macros[m].getAllocationCount()) / 100.0));
+                            (seq - macros[m].getAllocationCount()) * 100.0
+                                    / seq));
                 }
 
                 dumped = true;

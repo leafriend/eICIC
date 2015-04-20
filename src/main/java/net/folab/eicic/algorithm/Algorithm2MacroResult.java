@@ -49,8 +49,8 @@ public class Algorithm2MacroResult {
 
                 Algorithm2MobileResult result;
                 if (results[cellAssoc] == null)
-                    results[cellAssoc] = new Algorithm2MobileResult(cellAssoc,
-                            macro, macroState);
+                    results[cellAssoc] = new Algorithm2MobileResult(
+                            states.state, cellAssoc, macro, macroState);
                 result = results[cellAssoc];
                 result.run();
 
@@ -72,7 +72,8 @@ public class Algorithm2MacroResult {
 
             Algorithm2MobileResult result;
             if (results[0] == null)
-                results[0] = new Algorithm2MobileResult(0, macro, macroState);
+                results[0] = new Algorithm2MobileResult(states.state, 0, macro,
+                        macroState);
             result = results[0];
             result.run();
 

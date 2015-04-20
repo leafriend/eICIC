@@ -34,8 +34,6 @@ public class Macro extends BaseStation<Macro> {
         }
     }
 
-    public boolean state;
-
     @SuppressWarnings("unchecked")
     private final List<Edge<Macro>>[] sortedEdges = new List[NUM_RB];
 
@@ -43,14 +41,6 @@ public class Macro extends BaseStation<Macro> {
 
     public Macro(int idx, double x, double y, double txPower) {
         super(idx, x, y, txPower);
-    }
-
-    @Override
-    public String toString() {
-        return String
-                .format("%s<%d>", (state ? getClass().getSimpleName()
-                        .toUpperCase() : getClass().getSimpleName()
-                        .toLowerCase()), idx);
     }
 
     public void init() {
@@ -69,8 +59,8 @@ public class Macro extends BaseStation<Macro> {
         return sortedEdges;
     }
 
-    public void count() {
-        if (state)
+    public void count(StateContext state) {
+        if (state.macroIsOn(idx))
             allocationCount++;
     }
 

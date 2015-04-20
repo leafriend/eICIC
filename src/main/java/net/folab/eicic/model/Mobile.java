@@ -1,7 +1,15 @@
 package net.folab.eicic.model;
 
-import static java.lang.Math.*;
-import static net.folab.eicic.Constants.*;
+import static java.lang.Math.abs;
+import static java.lang.Math.log;
+import static net.folab.eicic.Constants.BW_PER_RB;
+import static net.folab.eicic.Constants.MEGA;
+import static net.folab.eicic.Constants.NOISE;
+import static net.folab.eicic.Constants.NUM_RB;
+import static net.folab.eicic.Constants.RATE_MAX;
+import static net.folab.eicic.Constants.STEPSIZE2;
+import static net.folab.eicic.Constants.STEPSIZE3;
+import static net.folab.eicic.Constants.STEPSIZE4;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,7 +118,7 @@ public class Mobile {
         return bandwidth * log(1 + numerator / denominator);
     }
 
-    public void calculateThroughput() {
+    public void calculateThroughput(StateContext state) {
         instantRate = 0.0;
         for (int i = 0; i < NUM_RB; i++) {
             Edge<?> edge = activeEdges[i];
@@ -120,7 +128,7 @@ public class Mobile {
                     instantRate += macroDataRate[i];
 
                 } else if (edge.baseStation instanceof Pico) {
-                    if (((Pico) edge.baseStation).isAbs()) {
+                    if (state.picoIsAbs(((Pico) edge.baseStation).idx)) {
                         instantRate += absPicoDataRate[i];
                     } else {
                         instantRate += nonPicoDataRate[i];

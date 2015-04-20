@@ -4,6 +4,7 @@ import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
+import net.folab.eicic.model.StateContext;
 
 public class Calculator {
 
@@ -37,19 +38,19 @@ public class Calculator {
         for (int p = 0; p < picos.length; p++)
             picos[p].sortMobiles();
 
-        algorithm.calculate(macros, picos, mobiles);
+        StateContext state = algorithm.calculate(macros, picos, mobiles);
 
         for (int u = 0; u < mobiles.length; u++)
-            mobiles[u].calculateThroughput();
+            mobiles[u].calculateThroughput(state);
         for (int u = 0; u < mobiles.length; u++)
             mobiles[u].calculateUserRate();
         for (int u = 0; u < mobiles.length; u++)
             mobiles[u].calculateDualVariables(seq);
 
         for (int m = 0; m < macros.length; m++)
-            macros[m].count();
+            macros[m].count(state);
         for (int p = 0; p < picos.length; p++)
-            picos[p].count();
+            picos[p].count(state);
 
     }
 

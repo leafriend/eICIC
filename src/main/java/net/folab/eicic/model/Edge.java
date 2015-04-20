@@ -1,7 +1,10 @@
 package net.folab.eicic.model;
 
-import static java.lang.Math.*;
-import static net.folab.eicic.Constants.*;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+import static net.folab.eicic.Constants.LN_SHAD;
+import static net.folab.eicic.Constants.NUM_RB;
+import static net.folab.eicic.Constants.PATH_LOSS_EXPO;
 
 import java.util.Random;
 
@@ -73,7 +76,7 @@ public class Edge<T extends BaseStation<T>> {
                     + pow(RANDOM.nextGaussian() / 1.2533, 2));
             double logNormal = pow(10, RANDOM.nextGaussian() * LN_SHAD * 0.1);
             channelGain[i] = channelGainFactor * rayleigh * logNormal;
-//            channelGain[i] = channelGainFactor;
+            // channelGain[i] = channelGainFactor;
 
             // setActivated
             setActivated(i, false);
@@ -105,8 +108,10 @@ public class Edge<T extends BaseStation<T>> {
             mobile.activeEdges[i] = this;
         } else {
             if (this.isActivated[i]) {
-                assert baseStation.activeEdges[i] == null || baseStation.activeEdges[i] == this;
-                assert mobile.activeEdges[i] == null || mobile.activeEdges[i] == this;
+                assert baseStation.activeEdges[i] == null
+                        || baseStation.activeEdges[i] == this;
+                assert mobile.activeEdges[i] == null
+                        || mobile.activeEdges[i] == this;
                 baseStation.activeEdges[i] = null;
                 mobile.activeEdges[i] = null;
             }

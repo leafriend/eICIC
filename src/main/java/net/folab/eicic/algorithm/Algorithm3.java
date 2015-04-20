@@ -9,8 +9,11 @@ import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
+import net.folab.eicic.model.StateContext;
 
 public class Algorithm3 implements Algorithm {
+
+    private StateContext state;
 
     final boolean[] mobileConnectsMacro = new boolean[NUM_MOBILES];
 
@@ -20,9 +23,8 @@ public class Algorithm3 implements Algorithm {
     }
 
     @Override
-    public void calculate(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
+    public StateContext calculate(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
 
-        boolean[] bestMacroStates = new boolean[macros.length];
         Edge<?>[][] bestEdges = new Edge[mobiles.length][NUM_RB];
 
         chooseMobileConnection(mobiles);
@@ -30,19 +32,18 @@ public class Algorithm3 implements Algorithm {
         double mostLambdaRSum = Double.NEGATIVE_INFINITY;
         // 가능한 모든 Macro 상태(2 ^ NUM_MACRO = 1 << NUM_MACRO)에 대한 반복문
         int macroStatesCount = 1 << macros.length;
-        for (int mask = 0; mask < macroStatesCount; mask++) {
+        for (int macroState = 0; macroState < macroStatesCount; macroState++) {
 
-            boolean[] macroStates = new boolean[macros.length];
-            // Macro 상태(ON/OFF) 지정
-            for (int m = 0; m < macros.length; m++)
-                macroStates[m] = 1 == (((1 << m) & mask) >> m);
+            StateContext state = StateContext.getStateContext(macroState,
+                    macros, picos, mobiles);
 
             Edge<?>[][] edges = new Edge[mobiles.length][NUM_RB];
 
             double lambdaRSum = 0.0;
-            for (Macro macro : macros) {
+            for (int m = 0; m < macros.length; m++) {
+                Macro macro = macros[m];
 
-                if (macroStates[macro.idx]) {
+                if (state.macroIsOn(m)) {
                     // Mobile의 Macro가 켜졌다면
                     // 위에서 정한 Cell Association에 따라 lambdaR 가산
                     // 각 서브 채널별 할당 대상 결정
@@ -57,8 +58,8 @@ public class Algorithm3 implements Algorithm {
 
                         } else {
 
-                            lambdaRSum += calculatePicoLambdaRSum(mobile,
-                                    mobileEdges);
+                            lambdaRSum += calculatePicoLambdaRSum(state,
+                                    mobile, mobileEdges);
 
                         }
 
@@ -69,7 +70,7 @@ public class Algorithm3 implements Algorithm {
                     // Mobile의 Pico의 ABS 여부에 따라 lambdaR 가산
 
                     for (Mobile mobile : macro.getMobiles())
-                        lambdaRSum += calculatePicoLambdaRSum(mobile,
+                        lambdaRSum += calculatePicoLambdaRSum(state, mobile,
                                 edges[mobile.idx]);
 
                 }
@@ -78,17 +79,13 @@ public class Algorithm3 implements Algorithm {
 
             if (lambdaRSum > mostLambdaRSum) {
                 mostLambdaRSum = lambdaRSum;
-                for (int m = 0; m < macros.length; m++)
-                    bestMacroStates[m] = macroStates[m];
+                this.state = state;
                 for (int u = 0; u < mobiles.length; u++)
                     for (int i = 0; i < NUM_RB; i++)
                         bestEdges[u][i] = edges[u][i];
             }
 
         }
-
-        for (int m = 0; m < macros.length; m++)
-            macros[m].state = bestMacroStates[m];
 
         for (int u = 0; u < mobiles.length; u++)
             for (int i = 0; i < NUM_RB; i++)
@@ -122,7 +119,7 @@ public class Algorithm3 implements Algorithm {
                 if (edge == null)
                     continue;
                 Mobile mobile = edge.mobile;
-                if (edge.baseStation.isAbs()) {
+                if (state.picoIsAbs(edge.baseStation.idx)) {
                     picoLambdaR[mobile.idx] += mobile.getAbsPicoLambdaR()[i];
                     lambdaR += mobile.getAbsPicoLambdaR()[i];
                 } else {
@@ -137,6 +134,8 @@ public class Algorithm3 implements Algorithm {
             }
             pico.pa3LambdaR = 0.8 * pico.pa3LambdaR + 0.2 * lambdaR;
         }
+
+        return state;
 
     }
 
@@ -209,6 +208,8 @@ public class Algorithm3 implements Algorithm {
     /**
      * Mobile이 Pico에 연결했을 때 모든 Subchannel에서 수신할 수 있는 Lambda R 값의 합을 계산한다.
      *
+     * @param state
+     *
      * @param mobile
      *            Pico로 연결할 Mobile
      * @param edges
@@ -217,14 +218,15 @@ public class Algorithm3 implements Algorithm {
      *
      * @return 전달받은 Mobile의 Lambda R 합
      */
-    public double calculatePicoLambdaRSum(Mobile mobile, Edge<?>[] edges) {
+    public double calculatePicoLambdaRSum(StateContext state, Mobile mobile,
+            Edge<?>[] edges) {
         // Mobile의 Lambda R 합
         double lambdaRSum = 0.0;
         Pico pico = mobile.getPico();
 
         // Mobile이 연결하려는 Pico의 각 Subchannel에 정렬된 Mobile 목록
         List<Edge<Pico>>[] sortedEdges;
-        boolean isAbs = pico.isAbs();
+        boolean isAbs = state.picoIsAbs(pico.idx);
         if (isAbs) {
             sortedEdges = pico.getSortedAbsEdges();
         } else {

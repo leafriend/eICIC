@@ -9,13 +9,13 @@ import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
+import net.folab.eicic.model.StateContext;
 
 public class Algorithm2MobileResult {
 
-    final int cellAssoc;
+    private StateContext state;
 
-    @SuppressWarnings("unused") // TODO
-    private final Macro macro;
+    final int cellAssoc;
 
     private final boolean[] mobileConnectsMacro = new boolean[NUM_MOBILES];
 
@@ -29,9 +29,10 @@ public class Algorithm2MobileResult {
 
     Edge<?>[][] edges = new Edge[NUM_MOBILES][NUM_RB];
 
-    public Algorithm2MobileResult(int cellAssoc, Macro macro, boolean macroState) {
+    public Algorithm2MobileResult(StateContext state, int cellAssoc,
+            Macro macro, boolean macroState) {
+        this.state = state;
         this.cellAssoc = cellAssoc;
-        this.macro = macro;
         this.mobiles = macro.getMobiles();
         this.size = mobiles.size();
         this.macroState = macroState;
@@ -129,7 +130,7 @@ public class Algorithm2MobileResult {
 
         // Mobile이 연결하려는 Pico의 각 Subchannel에 정렬된 Mobile 목록
         List<Edge<Pico>>[] sortedEdges;
-        boolean isAbs = pico.isAbs();
+        boolean isAbs = state.picoIsAbs(pico.idx);
         if (isAbs) {
             sortedEdges = pico.getSortedAbsEdges();
         } else {

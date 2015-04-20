@@ -37,12 +37,12 @@ public class Pico extends BaseStation<Pico> {
         public int compare(Edge<Pico> a, Edge<Pico> b) {
             if (isAbs) {
                 return (int) signum( //
-                        b.mobile.absPicoLambdaR[i] - a.mobile.absPicoLambdaR[i] //
-                        );
+                b.mobile.absPicoLambdaR[i] - a.mobile.absPicoLambdaR[i] //
+                );
             } else {
                 return (int) signum( //
-                        b.mobile.nonPicoLambdaR[i] - a.mobile.nonPicoLambdaR[i] //
-                        );
+                b.mobile.nonPicoLambdaR[i] - a.mobile.nonPicoLambdaR[i] //
+                );
             }
         }
 
@@ -75,24 +75,9 @@ public class Pico extends BaseStation<Pico> {
             macrosInterfering.add(macro);
     }
 
-    private Boolean isAbs;
-
     private int nonAbsCount;
 
-    public boolean isAbs() {
-        if (isAbs == null) {
-            for (Macro macro : macrosInterfering) {
-                if (macro.state)
-                    isAbs = Boolean.FALSE;
-            }
-            if (isAbs == null)
-                isAbs = Boolean.TRUE;
-        }
-        return isAbs.booleanValue();
-    }
-
     public void sortMobiles() {
-        isAbs = null;
         for (int i = 0; i < NUM_RB; i++) {
             sort(sortedAbsEdges[i], ABS_COMPARATORS[i]);
             sort(sortedNonEdges[i], NON_COMPARATORS[i]);
@@ -115,8 +100,8 @@ public class Pico extends BaseStation<Pico> {
         return sortedNonEdges;
     }
 
-    public void count() {
-        if (!isAbs())
+    public void count(StateContext state) {
+        if (!state.picoIsAbs(idx))
             nonAbsCount++;
     }
 
