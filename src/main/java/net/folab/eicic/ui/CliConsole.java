@@ -42,10 +42,7 @@ public class CliConsole implements net.folab.eicic.Console {
 
     private void dump() {
         int seq = controller.getSeq();
-        Macro[] macros = controller.getMacros();
-        Pico[] picos = controller.getPicos();
         Mobile[] mobiles = controller.getMobiles();
-        long elapsed = controller.getElapsed();
 
         out.print("idx\t" + "   Rate User\t" + "       (log)\t"
                 + "  Throughput\t" + "       (log)\t" + "      lambda\t"
