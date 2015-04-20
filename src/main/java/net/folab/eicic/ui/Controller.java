@@ -185,6 +185,10 @@ public class Controller {
         executorService.execute(runner);
     }
 
+    public void pasue() {
+        isRunning = false;
+    }
+
     public void stop() {
         isRunning = false;
         executorService.shutdown();
