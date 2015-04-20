@@ -1,6 +1,7 @@
 package net.folab.eicic.algorithm;
 
-import static net.folab.eicic.Constants.*;
+import static net.folab.eicic.Constants.NUM_MOBILES;
+import static net.folab.eicic.Constants.NUM_RB;
 
 import java.util.List;
 
@@ -12,13 +13,6 @@ import net.folab.eicic.model.Pico;
 public class Algorithm3 implements Algorithm {
 
     final boolean[] mobileConnectsMacro = new boolean[NUM_MOBILES];
-
-    @Override
-    public void calculate(List<Macro> macros, List<Pico> picos,
-            List<Mobile> mobiles) {
-        calculate(macros.toArray(new Macro[0]), picos.toArray(new Pico[0]),
-                mobiles.toArray(new Mobile[0]));
-    }
 
     @Override
     public void calculate(Macro[] macros, Pico[] picos, Mobile[] mobiles) {

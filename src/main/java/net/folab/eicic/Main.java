@@ -254,11 +254,6 @@ public class Main {
         System.out.println(String.format(string, args));
     }
 
-    @Deprecated
-    public static void dump(String string, int seq, List<Mobile> mobiles) {
-        dump(string, seq, mobiles.toArray(new Mobile[0]));
-    }
-
     public static void dump(String string, int seq, Mobile[] mobiles) {
 
         try {

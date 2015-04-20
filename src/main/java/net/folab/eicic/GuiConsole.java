@@ -11,7 +11,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
-import java.util.List;
 
 import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.algorithm.Algorithm1;
@@ -748,15 +747,6 @@ public class GuiConsole implements Console {
     private int totalSeq;
 
     private Algorithm algorithm;
-
-    @Override
-    public long dump(final int seq, final List<Macro> macros,
-            final List<Pico> picos, final List<Mobile> mobiles,
-            final long elapsed, final long execute) {
-        return dump(seq, macros.toArray(new Macro[0]),
-                picos.toArray(new Pico[0]), mobiles.toArray(new Mobile[0]),
-                elapsed, execute);
-    }
 
     @Override
     public long dump(final int seq, final Macro[] macros, final Pico[] picos,

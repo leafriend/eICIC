@@ -4,7 +4,6 @@ import static net.folab.eicic.Constants.NUM_MACROS;
 import static net.folab.eicic.Constants.NUM_MOBILES;
 import static net.folab.eicic.Constants.NUM_RB;
 
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -41,13 +40,6 @@ public class Algorithm2 implements Algorithm {
             macroStateResults[macroState] = new Algorithm2MacroStates(macroState);
         }
 
-    }
-
-    @Override
-    public void calculate(List<Macro> macros, List<Pico> picos,
-            List<Mobile> mobiles) {
-        calculate(macros.toArray(new Macro[0]), picos.toArray(new Pico[0]),
-                mobiles.toArray(new Mobile[0]));
     }
 
     @Override

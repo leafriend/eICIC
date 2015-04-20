@@ -1,7 +1,5 @@
 package net.folab.eicic;
 
-import java.util.List;
-
 import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
@@ -24,13 +22,6 @@ public class Calculator {
     private Algorithm algorithm;
 
     private Console console;
-
-    @Deprecated
-    public Calculator(List<Macro> macros, List<Pico> picos,
-            List<Mobile> mobiles, Console console) {
-        this(macros.toArray(new Macro[0]), picos.toArray(new Pico[0]), mobiles
-                .toArray(new Mobile[0]), console);
-    }
 
     public Calculator(Macro[] macros, Pico[] picos, Mobile[] mobiles,
             Console console) {

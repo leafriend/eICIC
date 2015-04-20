@@ -26,13 +26,6 @@ public class Algorithm1 implements Algorithm {
     private final Edge<?>[][] edges = new Edge[NUM_MOBILES][NUM_RB];
 
     @Override
-    public void calculate(List<Macro> macros, List<Pico> picos,
-            List<Mobile> mobiles) {
-        calculate(macros.toArray(new Macro[0]), picos.toArray(new Pico[0]),
-                mobiles.toArray(new Mobile[0]));
-    }
-
-    @Override
     public void calculate(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
 
         for (int m = 0; m < macros.length; m++) {

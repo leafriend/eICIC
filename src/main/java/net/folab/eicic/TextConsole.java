@@ -4,8 +4,6 @@ import static java.lang.Math.log;
 import static java.lang.String.format;
 import static java.lang.System.out;
 
-import java.util.List;
-
 import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
@@ -25,15 +23,6 @@ public class TextConsole implements Console {
         System.out.println(algorithm.getClass().getSimpleName());
         calculator.setAlgorithm(algorithm);
         calculator.calculate(this.totalSeq);
-    }
-
-    @Override
-    public long dump(final int seq, final List<Macro> macros,
-            final List<Pico> picos, final List<Mobile> mobiles,
-            final long elapsed, final long execute) {
-        return dump(seq, macros.toArray(new Macro[0]),
-                picos.toArray(new Pico[0]), mobiles.toArray(new Mobile[0]),
-                elapsed, execute);
     }
 
     @Override
