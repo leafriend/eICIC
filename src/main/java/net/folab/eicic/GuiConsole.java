@@ -936,13 +936,13 @@ public class GuiConsole implements Console {
         int index = algorithmeCombo.getSelectionIndex();
         switch (algorithmeCombo.getItem(index)) {
         case ALGORITHM_1:
-            setAlgorithm(new Algorithm1());
+            controller.setAlgorithm(new Algorithm1());
             break;
         case ALGORITHM_2:
-            setAlgorithm(new Algorithm2());
+            controller.setAlgorithm(new Algorithm2());
             break;
         case ALGORITHM_3:
-            setAlgorithm(new Algorithm3());
+            controller.setAlgorithm(new Algorithm3());
             break;
         default:
             break;
