@@ -20,6 +20,7 @@ import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
+import net.folab.eicic.ui.Controller;
 
 public class Main {
 
@@ -37,51 +38,16 @@ public class Main {
 
     private int totalSeq;
 
-    public abstract class Generator<T> {
-
-        private final Class<T> type;
-
-        public Generator(Class<T> type) {
-            super();
-            this.type = type;
-        }
-
-        public abstract T generate(int idx, double[] values);
-
-        public Class<T> getType() {
-            return type;
-        }
-
-    }
-
     public static void main(String[] args) throws IOException {
 
         Main main = new Main(args);
-        if (main.isSufficient())
-            main.start();
-        else
+        if (main.isSufficient()) {
+            Controller controller = new Controller(main.console,
+                    main.algorithm, main.totalSeq);
+            controller.start();
+        } else
             main.printHelp();
 
-    }
-
-    public static <T> T[] loadObject(String file, Generator<T> generator)
-            throws IOException {
-        List<T> list = new ArrayList<>();
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        String line;
-        int idx = 0;
-        while ((line = reader.readLine()) != null) {
-            String[] tokens = line.split("( |\t)+");
-            double[] values = new double[tokens.length];
-            for (int i = 0; i < tokens.length; i++) {
-                values[i] = Double.parseDouble(tokens[i]);
-            }
-            list.add(generator.generate(idx++, values));
-        }
-        reader.close();
-        @SuppressWarnings("unchecked")
-        T[] array = (T[]) Array.newInstance(generator.getType(), list.size());
-        return list.toArray(array);
     }
 
     private Main(String[] arguments) {
@@ -167,53 +133,6 @@ public class Main {
             e.printStackTrace();
             return null;
         }
-    }
-
-    private void start() throws IOException {
-
-        Macro[] macros = loadObject("res/macro.txt", new Generator<Macro>(
-                Macro.class) {
-            @Override
-            public Macro generate(int idx, double[] values) {
-                return new Macro(idx, values[0], values[1], MACRO_TX_POWER);
-            }
-        });
-        Pico[] picos = loadObject("res/pico.txt", new Generator<Pico>(
-                Pico.class) {
-            @Override
-            public Pico generate(int idx, double[] values) {
-                return new Pico(idx, values[0], values[1], PICO_TX_POWER);
-            }
-        });
-        Mobile[] mobiles = loadObject("res/mobile.txt", new Generator<Mobile>(
-                Mobile.class) {
-            @Override
-            public Mobile generate(int idx, double[] values) {
-                return new Mobile(idx, values[0], values[1], MOBILE_QOS,
-                        values[2], values[3], values[4]);
-            }
-        });
-
-        for (Macro macro : macros)
-            for (Mobile mobile : mobiles)
-                new Edge<>(macro, mobile);
-        for (Macro macro : macros)
-            for (Pico pico : picos)
-                pico.checkInterference(macro);
-        for (Pico pico : picos)
-            for (Mobile mobile : mobiles)
-                new Edge<>(pico, mobile);
-        for (Macro macro : macros)
-            macro.init();
-        for (Pico pico : picos)
-            pico.init();
-
-        Calculator calculator = new Calculator(macros, picos, mobiles, console);
-
-        console.setAlgorithm(algorithm);
-        console.setTotalSeq(totalSeq);
-        console.start(calculator);
-
     }
 
     private void printHelp() {
