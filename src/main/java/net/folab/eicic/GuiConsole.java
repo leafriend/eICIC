@@ -96,6 +96,8 @@ public class GuiConsole implements Console {
 
     private int selectedIndex;
 
+    private Button resetButton;
+
     private Button executeButton;
 
     private Button nextButton;
@@ -205,7 +207,7 @@ public class GuiConsole implements Console {
         });
 
         showActiveButton = new Button(parent, CHECK);
-        showActiveButton.setText("Show ac&tive only");
+        showActiveButton.setText("Show active only");
         showActiveButton.setSelection(true);
 
         updateSeq = new Combo(parent, READ_ONLY);
@@ -227,6 +229,15 @@ public class GuiConsole implements Console {
                 macroTable.setEnabled(enabled);
                 picoTable.setEnabled(enabled);
                 mobileTable.setEnabled(enabled);
+            }
+        });
+
+        resetButton = new Button(parent, PUSH);
+        resetButton.setText("Rese&t");
+        resetButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                controller.resest();
             }
         });
 
@@ -294,9 +305,17 @@ public class GuiConsole implements Console {
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 1);
         // layoutData.left = new FormAttachment(100, 100, -64 - 8 - 64);
-        layoutData.right = new FormAttachment(executeButton, -8, LEAD);
+        layoutData.right = new FormAttachment(resetButton, -8, LEAD);
         // layoutData.top = new FormAttachment(100, 0);
         updateSeq.setLayoutData(layoutData);
+
+        // resetButton
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.left = new FormAttachment(executeButton, -8 - 64, LEAD);
+        layoutData.right = new FormAttachment(executeButton, -8);
+        // layoutData.top = new FormAttachment(100, 0);
+        resetButton.setLayoutData(layoutData);
 
         // executeButton
         layoutData = new FormData();
@@ -982,6 +1001,7 @@ public class GuiConsole implements Console {
     }
 
     private void setRunningState(boolean isRunning) {
+        resetButton.setEnabled(!isRunning);
         executeButton.setText(isRunning ? PAUSE : START);
         nextButton.setEnabled(!isRunning);
         algorithmeCombo.setEnabled(!isRunning);

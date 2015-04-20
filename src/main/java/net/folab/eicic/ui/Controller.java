@@ -99,40 +99,7 @@ public class Controller {
 
     public void display() {
 
-        macros = loadObject("res/macro.txt", new Generator<Macro>(Macro.class) {
-            @Override
-            public Macro generate(int idx, double[] values) {
-                return new Macro(idx, values[0], values[1], MACRO_TX_POWER);
-            }
-        });
-        picos = loadObject("res/pico.txt", new Generator<Pico>(Pico.class) {
-            @Override
-            public Pico generate(int idx, double[] values) {
-                return new Pico(idx, values[0], values[1], PICO_TX_POWER);
-            }
-        });
-        mobiles = loadObject("res/mobile.txt", new Generator<Mobile>(
-                Mobile.class) {
-            @Override
-            public Mobile generate(int idx, double[] values) {
-                return new Mobile(idx, values[0], values[1], MOBILE_QOS,
-                        values[2], values[3], values[4]);
-            }
-        });
-
-        for (Macro macro : macros)
-            for (Mobile mobile : mobiles)
-                new Edge<>(macro, mobile);
-        for (Macro macro : macros)
-            for (Pico pico : picos)
-                pico.checkInterference(macro);
-        for (Pico pico : picos)
-            for (Mobile mobile : mobiles)
-                new Edge<>(pico, mobile);
-        for (Macro macro : macros)
-            macro.init();
-        for (Pico pico : picos)
-            pico.init();
+        resest();
 
         calculator = new Calculator(macros, picos, mobiles, console);
         calculator.setAlgorithm(algorithm);
@@ -170,6 +137,50 @@ public class Controller {
         console.setTotalSeq(totalSeq);
         console.setController(this);
         console.notifyStarted();
+
+    }
+
+    public void resest() {
+
+        seq = 0;
+        accumuMillis = 0;
+
+        macros = loadObject("res/macro.txt", new Generator<Macro>(Macro.class) {
+            @Override
+            public Macro generate(int idx, double[] values) {
+                return new Macro(idx, values[0], values[1], MACRO_TX_POWER);
+            }
+        });
+        picos = loadObject("res/pico.txt", new Generator<Pico>(Pico.class) {
+            @Override
+            public Pico generate(int idx, double[] values) {
+                return new Pico(idx, values[0], values[1], PICO_TX_POWER);
+            }
+        });
+        mobiles = loadObject("res/mobile.txt", new Generator<Mobile>(
+                Mobile.class) {
+            @Override
+            public Mobile generate(int idx, double[] values) {
+                return new Mobile(idx, values[0], values[1], MOBILE_QOS,
+                        values[2], values[3], values[4]);
+            }
+        });
+
+        for (Macro macro : macros)
+            for (Mobile mobile : mobiles)
+                new Edge<>(macro, mobile);
+        for (Macro macro : macros)
+            for (Pico pico : picos)
+                pico.checkInterference(macro);
+        for (Pico pico : picos)
+            for (Mobile mobile : mobiles)
+                new Edge<>(pico, mobile);
+        for (Macro macro : macros)
+            macro.init();
+        for (Pico pico : picos)
+            pico.init();
+
+        console.dump(seq, macros, picos, mobiles, accumuMillis, -1);
 
     }
 
