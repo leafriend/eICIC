@@ -27,6 +27,8 @@ public class Controller {
 
     private int totalSeq;
 
+    private Calculator calculator;
+
     public static abstract class Generator<T> {
 
         public final Class<T> type;
@@ -113,12 +115,25 @@ public class Controller {
         for (Pico pico : picos)
             pico.init();
 
-        Calculator calculator = new Calculator(macros, picos, mobiles, console);
+        calculator = new Calculator(macros, picos, mobiles, console);
+        calculator.setAlgorithm(algorithm);
 
         console.setAlgorithm(algorithm);
         console.setTotalSeq(totalSeq);
         console.start(calculator, this);
 
+    }
+
+    public void start() {
+        calculator.calculate(totalSeq);
+    }
+
+    public void next() {
+        calculator.calculate();
+    }
+
+    public void setTotalSeq(int totalSeq) {
+        this.totalSeq = totalSeq;
     }
 
 }

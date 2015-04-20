@@ -21,8 +21,7 @@ public class TextConsole implements Console {
     @Override
     public void start(Calculator calculator, Controller controller) {
         System.out.println(algorithm.getClass().getSimpleName());
-        calculator.setAlgorithm(algorithm);
-        calculator.calculate(this.totalSeq);
+        controller.start();
     }
 
     @Override

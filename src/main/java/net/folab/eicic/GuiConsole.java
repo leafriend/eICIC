@@ -112,6 +112,8 @@ public class GuiConsole implements Console {
 
     private Calculator calculator;
 
+    private Controller controller;
+
     private Color colorActiveBg;
 
     public GuiConsole() {
@@ -244,9 +246,9 @@ public class GuiConsole implements Console {
                         setRunningState(false);
                     } else if (START.endsWith(text)) {
                         setAlgorithm();
-                        totalSeq = Integer.parseInt(totalSeqText.getText());
                         setRunningState(true);
-                        calculator.calculate(totalSeq);
+                        controller.setTotalSeq(Integer.parseInt(totalSeqText.getText()));
+                        controller.start();
                     }
                 }
             }
@@ -261,7 +263,7 @@ public class GuiConsole implements Console {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 if (calculator != null) {
-                    calculator.calculate();
+                    controller.next();
                 }
             }
         });
@@ -665,8 +667,9 @@ public class GuiConsole implements Console {
 
     @Override
     public void start(final Calculator calculator, Controller controller) {
-        this.calculator = calculator;
 
+        this.calculator = calculator;
+        this.controller = controller;
         executeButton.setFocus();
 
         calculator.setAlgorithm(algorithm);
