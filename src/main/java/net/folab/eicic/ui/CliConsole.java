@@ -19,10 +19,8 @@ public class CliConsole implements net.folab.eicic.Console {
 
     private double throughput;
 
-    private boolean dumpped = true;
-
     @Override
-    public long dump(int seq, Macro[] macros, Pico[] picos, Mobile[] mobiles,
+    public synchronized long dump(int seq, Macro[] macros, Pico[] picos, Mobile[] mobiles,
             long elapsed, long execute) {
 
         throughput = 0.0;
@@ -32,8 +30,15 @@ public class CliConsole implements net.folab.eicic.Console {
                     .getThroughput() / seq);
         }
 
-        if (dumpped)
-            return -1;
+        return -1;
+    }
+
+    private void dump() {
+        int seq = controller.getSeq();
+        Macro[] macros = controller.getMacros();
+        Pico[] picos = controller.getPicos();
+        Mobile[] mobiles = controller.getMobiles();
+        long elapsed = controller.getElapsed();
 
         out.print("idx\t" + "   Rate User\t" + "       (log)\t"
                 + "  Throughput\t" + "       (log)\t" + "      lambda\t"
@@ -51,23 +56,12 @@ public class CliConsole implements net.folab.eicic.Console {
             out.print(format("%12.6f", mobile.getMu()) + "\n");
         }
 
-        // out.print("Time: " + format("%7d/%7d", seq, totalSeq) + "\t");
-        // out.print("Util: " + format("%8.4f", throughput) + "\t");
-        // out.print("Elap: " + format("%8.4f", secondFrom(elapsed)) + "\t");
-        // out.print("Exec: " + format("%8.4f", secondFrom(execute)) + "\n");
-
-        dumpped = true;
-
-        return -1;
     }
 
     @Override
     public void notifyStarted() {
         Console console = System.console();
         do {
-
-            while (!dumpped)
-                delay(0);
 
             console.format("PA%d: %.4f @ %d/%d> ", algorithm.getNumber(),
                     throughput, controller.getSeq(), controller.getTotalSeq());
@@ -103,10 +97,7 @@ public class CliConsole implements net.folab.eicic.Console {
             }
 
             if (command.equals("dump")) {
-                dumpped = false;
-                dump(controller.getSeq(), controller.getMacros(),
-                        controller.getPicos(), controller.getMobiles(),
-                        controller.getElapsed(), -1);
+                dump();
                 continue;
             }
 
