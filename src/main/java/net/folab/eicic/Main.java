@@ -1,25 +1,16 @@
 package net.folab.eicic;
 
 import static java.util.Arrays.asList;
-import static net.folab.eicic.Constants.*;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import net.folab.eicic.algorithm.Algorithm;
-import net.folab.eicic.model.Edge;
-import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
-import net.folab.eicic.model.Pico;
 import net.folab.eicic.ui.Controller;
 
 public class Main {
