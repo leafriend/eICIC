@@ -20,6 +20,10 @@ public class CliConsole implements Console {
 
     private int frequency;
 
+    private int seq;
+
+    private int saved;
+
     private long elapsed;
 
     @Override
@@ -27,6 +31,7 @@ public class CliConsole implements Console {
             Pico[] picos, Mobile[] mobiles, long elapsed) {
 
         this.elapsed = elapsed;
+        this.seq = seq;
 
         throughput = 0.0;
         for (int u = 0; u < mobiles.length; u++) {
@@ -89,7 +94,8 @@ public class CliConsole implements Console {
             }
 
             if (command.equals("reset")) {
-                controller.reset();
+                if (confirm(console))
+                    controller.reset();
                 continue;
             }
 
@@ -131,8 +137,12 @@ public class CliConsole implements Console {
             }
 
             if ("exit".equals(command)) {
-                controller.stop();
-                break;
+                if (confirm(console)) {
+                    controller.stop();
+                    break;
+                } else {
+                    continue;
+                }
             }
 
             console.printf("%s: Unkonwn command. Try `help`.\n", command);
@@ -155,6 +165,22 @@ public class CliConsole implements Console {
         out.print(String.format("PA%d:%7.3f @ %d/%d : %s> ",
                 algorithm.getNumber(), throughput, seq, totalSeq, time));
     }
+
+    private boolean confirm(java.io.Console console) {
+        if (seq == saved)
+            return true;
+        console.printf("Simulation result is not saved, therfore, your result will be lost.\nDo you want to save result before exit?\n");
+        do {
+            console.printf("[y/n]: ");
+            String answer = console.readLine().toLowerCase();
+            if (answer.equals("y")) {
+                return true;
+            } else if (answer.equals("n")) {
+                return false;
+            }
+        } while (true);
+    }
+
 
     @Override
     public void notifyEnded() {
