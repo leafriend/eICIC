@@ -738,7 +738,7 @@ public class GuiConsole implements Console {
         }
         // - - -
 
-        shell.setSize(1024, 768);
+        shell.setSize(1280, 800);
         shell.open();
         shell.addShellListener(new ShellAdapter() {
             @Override
