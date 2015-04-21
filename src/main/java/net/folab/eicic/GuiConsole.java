@@ -723,6 +723,9 @@ public class GuiConsole implements Console {
                         e.doit = continueClose;
                         if (!continueClose)
                             return;
+                    } else if (answer == CANCEL) {
+                        e.doit = false;
+                        return;
                     } else if (answer == NO) {
                     }
 
