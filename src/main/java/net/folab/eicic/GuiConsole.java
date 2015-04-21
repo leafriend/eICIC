@@ -712,10 +712,11 @@ public class GuiConsole implements Console {
             public void shellClosed(ShellEvent e) {
                 if (saved != controller.getSeq()) {
                     MessageBox messageBox = new MessageBox(shell,
-                            APPLICATION_MODAL | YES | NO);
-                    messageBox.setText("Exit without Save?");
+                            APPLICATION_MODAL | YES | CANCEL | NO
+                                    | ICON_WARNING);
+                    messageBox.setText("Result is not Saved");
                     messageBox
-                            .setMessage("Simulation result is not saved.\nWill you save before exit?");
+                            .setMessage("Simulation result is not saved, therfore, your result will be lost.\nDo you want to save result before exit?");
                     int answer = messageBox.open();
                     if (answer == YES) {
                         boolean continueClose = save();
@@ -727,9 +728,9 @@ public class GuiConsole implements Console {
 
                 } else {
                     MessageBox messageBox = new MessageBox(shell,
-                            APPLICATION_MODAL | YES | NO);
-                    messageBox.setText("Exit?");
-                    messageBox.setMessage("Will exit?");
+                            APPLICATION_MODAL | YES | NO | ICON_INFORMATION);
+                    messageBox.setText("Exit Program");
+                    messageBox.setMessage("Do you want to exit?");
                     int answer = messageBox.open();
                     if (answer == NO) {
                         e.doit = false;
