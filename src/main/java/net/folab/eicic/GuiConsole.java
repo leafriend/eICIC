@@ -78,7 +78,7 @@ public class GuiConsole implements Console {
 
     private Text totalSeqText;
 
-    private Text executeTimeText;
+    private Text executionTimeText;
 
     private Composite buttonPanel;
 
@@ -370,7 +370,7 @@ public class GuiConsole implements Console {
 
             writer.write("#Time");
             writer.write(delim);
-            writer.write(executeTimeText.getText());
+            writer.write(executionTimeText.getText());
             writer.write("\n");
             writer.flush();
 
@@ -600,8 +600,8 @@ public class GuiConsole implements Console {
 
         // - - -
 
-        executeTimeText = new Text(parent, READ_ONLY | RIGHT);
-        executeTimeText.setText("00:00:00 / 00:00:00");
+        executionTimeText = new Text(parent, READ_ONLY | RIGHT);
+        executionTimeText.setText("00:00:00 / 00:00:00");
 
         // - - -
 
@@ -649,8 +649,8 @@ public class GuiConsole implements Console {
         // seqTotalText
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(executeTimeText, -8 - 64, LEAD);
-        layoutData.right = new FormAttachment(executeTimeText, -8);
+        layoutData.left = new FormAttachment(executionTimeText, -8 - 64, LEAD);
+        layoutData.right = new FormAttachment(executionTimeText, -8);
         totalSeqText.setLayoutData(layoutData);
 
         //
@@ -659,7 +659,7 @@ public class GuiConsole implements Console {
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 3);
         layoutData.right = new FormAttachment(1, 1, 0);
-        executeTimeText.setLayoutData(layoutData);
+        executionTimeText.setLayoutData(layoutData);
 
     }
 
@@ -802,7 +802,7 @@ public class GuiConsole implements Console {
                         * controller.getTotalSeq() / seq;
                 String estimatedTime = milisToTImeString(estimated);
 
-                executeTimeText.setText(elapsedTime + " / " + estimatedTime);
+                executionTimeText.setText(elapsedTime + " / " + estimatedTime);
 
                 int frequncy;
                 switch (selectedIndex) {
