@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 
-import org.eclipse.swt.widgets.TableItem;
-
 import net.folab.eicic.Console;
 import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.model.Macro;
