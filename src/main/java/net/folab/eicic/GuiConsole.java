@@ -534,13 +534,13 @@ public class GuiConsole implements Console {
         addColumn(mobileTable, 80, "X");
         addColumn(mobileTable, 80, "Y");
         addColumn(mobileTable, 32, "M");
-        addColumn(mobileTable, 80, "M. Dist.");
-        addColumn(mobileTable, 80, "M. " + LAMBDA + "R");
-        addColumn(mobileTable, 80, "M. M. " + LAMBDA + "R");
+        // addColumn(mobileTable, 80, "M. Dist.");
+        // addColumn(mobileTable, 80, "M. " + LAMBDA + "R");
+        // addColumn(mobileTable, 80, "M. M. " + LAMBDA + "R");
         addColumn(mobileTable, 32, "P");
-        addColumn(mobileTable, 80, "P. Dist.");
-        addColumn(mobileTable, 80, "P. " + LAMBDA + "R");
-        addColumn(mobileTable, 80, "P. M. " + LAMBDA + "R");
+        // addColumn(mobileTable, 80, "P. Dist.");
+        // addColumn(mobileTable, 80, "P. " + LAMBDA + "R");
+        // addColumn(mobileTable, 80, "P. M. " + LAMBDA + "R");
         addColumn(mobileTable, 96, "User Rate");
         addColumn(mobileTable, 96, "log(User Rate)");
         addColumn(mobileTable, 96, "Throughput");
@@ -784,19 +784,19 @@ public class GuiConsole implements Console {
     }
 
     public void showMobile(Mobile mobile, TableItem item) {
-        String[] texts = new String[17 + NUM_RB];
+        String[] texts = new String[11 + NUM_RB];
         int i = 1;
         texts[i++] = format("%.3f", mobile.x);
         texts[i++] = format("%.3f", mobile.y);
         texts[i++] = valueOf(mobile.getMacro().idx);
-        texts[i++] = format("%.3f", mobile.getMacroEdge().distance);
-        texts[i++] = format("%.3f", mobile.getMacro().pa3LambdaR);
-        texts[i++] = null;
+        // texts[i++] = format("%.3f", mobile.getMacroEdge().distance);
+        // texts[i++] = format("%.3f", mobile.getMacro().pa3LambdaR);
+        // texts[i++] = null;
 
         texts[i++] = valueOf(mobile.getPico().idx);
-        texts[i++] = format("%.3f", mobile.getPicoEdge().distance);
-        texts[i++] = format("%.3f", mobile.getPico().pa3LambdaR);
-        texts[i++] = null;
+        // texts[i++] = format("%.3f", mobile.getPicoEdge().distance);
+        // texts[i++] = format("%.3f", mobile.getPico().pa3LambdaR);
+        // texts[i++] = null;
 
         texts[i++] = format("%.6f", mobile.getUserRate());
         texts[i++] = format("%.6f", log(mobile.getUserRate()));
@@ -901,23 +901,23 @@ public class GuiConsole implements Console {
                             continue;
 
                         TableItem item = mobileTable.getItem(itemIndex);
-                        String[] texts = new String[17 + NUM_RB * 3];
+                        String[] texts = new String[11 + NUM_RB * 3];
                         int index = 1;
                         texts[index++] = null;
                         texts[index++] = null;
                         texts[index++] = null;
-                        texts[index++] = null;
-                        texts[index++] = format("%.3f",
-                                mobile.getMacro().pa3LambdaR);
-                        texts[index++] = format("%.3f",
-                                mobile.getMacro().pa3MobileLambdaR[mobile.idx]);
+                        // texts[index++] = null;
+                        // texts[index++] = format("%.3f",
+                        // mobile.getMacro().pa3LambdaR);
+                        // texts[index++] = format("%.3f",
+                        // mobile.getMacro().pa3MobileLambdaR[mobile.idx]);
 
                         texts[index++] = null;
-                        texts[index++] = null;
-                        texts[index++] = format("%.3f",
-                                mobile.getPico().pa3LambdaR);
-                        texts[index++] = format("%.3f",
-                                mobile.getPico().pa3MobileLambdaR[mobile.idx]);
+                        // texts[index++] = null;
+                        // texts[index++] = format("%.3f",
+                        // mobile.getPico().pa3LambdaR);
+                        // texts[index++] = format("%.3f",
+                        // mobile.getPico().pa3MobileLambdaR[mobile.idx]);
 
                         texts[index++] = format("%.6f", mobile.getUserRate());
                         texts[index++] = format("%.6f",
