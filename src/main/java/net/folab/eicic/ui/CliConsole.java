@@ -3,16 +3,14 @@ package net.folab.eicic.ui;
 import static java.lang.Math.log;
 import static java.lang.String.format;
 import static java.lang.System.out;
-
-import java.io.Console;
-
+import net.folab.eicic.Console;
 import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
 import net.folab.eicic.model.StateContext;
 
-public class CliConsole implements net.folab.eicic.Console {
+public class CliConsole implements Console {
 
     private Algorithm algorithm;
 
@@ -22,9 +20,13 @@ public class CliConsole implements net.folab.eicic.Console {
 
     private int frequency;
 
+    private long elapsed;
+
     @Override
-    public synchronized void dump(int seq, StateContext state, Macro[] macros, Pico[] picos,
-            Mobile[] mobiles, long elapsed) {
+    public synchronized void dump(int seq, StateContext state, Macro[] macros,
+            Pico[] picos, Mobile[] mobiles, long elapsed) {
+
+        this.elapsed = elapsed;
 
         throughput = 0.0;
         for (int u = 0; u < mobiles.length; u++) {
@@ -65,7 +67,7 @@ public class CliConsole implements net.folab.eicic.Console {
 
     @Override
     public void notifyStarted() {
-        Console console = System.console();
+        java.io.Console console = System.console();
         if (console == null)
             throw new RuntimeException("Faield to get Console instance");
         do {
@@ -110,7 +112,7 @@ public class CliConsole implements net.folab.eicic.Console {
             if (command.startsWith("dump ")) {
                 try {
                     String number = command.substring("dump ".length()).trim();
-                    frequency  = Integer.parseInt(number);
+                    frequency = Integer.parseInt(number);
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -140,8 +142,18 @@ public class CliConsole implements net.folab.eicic.Console {
     }
 
     public void prompt() {
-        out.print(String.format("PA%d: %.4f @ %d/%d> ", algorithm.getNumber(),
-                throughput, controller.getSeq(), controller.getTotalSeq()));
+
+        int seq = controller.getSeq();
+        int totalSeq = controller.getTotalSeq();
+        long estimated = seq == 0 ? 0 : elapsed * totalSeq / seq;
+        long left = 1000 * ((estimated / 1000) - (elapsed / 1000));
+
+        String time = Console.milisToTimeString(elapsed) + " + "
+                + Console.milisToTimeString(left) + " = "
+                + Console.milisToTimeString(estimated);
+
+        out.print(String.format("PA%d:%7.3f @ %d/%d : %s> ",
+                algorithm.getNumber(), throughput, seq, totalSeq, time));
     }
 
     @Override
