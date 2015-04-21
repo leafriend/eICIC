@@ -29,6 +29,8 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
@@ -79,6 +81,8 @@ public class GuiConsole implements Console {
     private Text totalSeqText;
 
     private Text executionTimeText;
+
+    private Label estimationTimeLabel;
 
     private Composite buttonPanel;
 
@@ -601,7 +605,10 @@ public class GuiConsole implements Console {
         // - - -
 
         executionTimeText = new Text(parent, READ_ONLY | RIGHT);
-        executionTimeText.setText("00:00:00 / 00:00:00");
+        executionTimeText.setText("00:00:00");
+
+        estimationTimeLabel = new Label(parent, RIGHT);
+        estimationTimeLabel.setText(" + 00:00:00 = 00:00:00");
 
         // - - -
 
@@ -659,7 +666,14 @@ public class GuiConsole implements Console {
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 3);
         layoutData.right = new FormAttachment(1, 1, 0);
+        layoutData.right = new FormAttachment(estimationTimeLabel, 0);
         executionTimeText.setLayoutData(layoutData);
+
+        // elapsedText
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 3);
+        layoutData.right = new FormAttachment(1, 1, 0);
+        estimationTimeLabel.setLayoutData(layoutData);
 
     }
 
@@ -804,9 +818,12 @@ public class GuiConsole implements Console {
 
                 long estimated = seq == 0 ? 0 : elapsed
                         * controller.getTotalSeq() / seq;
-                String estimatedTime = milisToTImeString(estimated);
+                long left = 1000 * ((estimated / 1000) - (elapsed / 1000));
+                String estimatedTime = " + " + milisToTImeString(left) + " = "
+                        + milisToTImeString(estimated);
 
-                executionTimeText.setText(elapsedTime + " / " + estimatedTime);
+                executionTimeText.setText(elapsedTime);
+                estimationTimeLabel.setText(estimatedTime);
 
                 int frequncy;
                 switch (selectedIndex) {
