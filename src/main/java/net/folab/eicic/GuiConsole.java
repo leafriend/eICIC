@@ -812,13 +812,13 @@ public class GuiConsole implements Console {
 
                 seqText.setText(format("%,d", seq));
 
-                String elapsedTime = milisToTImeString(elapsed);
+                String elapsedTime = Console.milisToTimeString(elapsed);
 
                 long estimated = seq == 0 ? 0 : elapsed
                         * controller.getTotalSeq() / seq;
                 long left = 1000 * ((estimated / 1000) - (elapsed / 1000));
-                String estimatedTime = " + " + milisToTImeString(left) + " = "
-                        + milisToTImeString(estimated);
+                String estimatedTime = " + " + Console.milisToTimeString(left)
+                        + " = " + Console.milisToTimeString(estimated);
 
                 executionTimeText.setText(elapsedTime);
                 estimationTimeLabel.setText(estimatedTime);
@@ -1001,20 +1001,6 @@ public class GuiConsole implements Console {
         default:
             break;
         }
-    }
-
-    public static String milisToTImeString(final long elapsed) {
-        long sec = elapsed / 1000;
-        // long mil = elapsed - sec * 1000;
-
-        long min = sec / 60;
-        sec -= min * 60;
-
-        long hour = min / 60;
-        min -= hour * 60;
-
-        String format = format("%02d:%02d:%02d", hour, min, sec);
-        return format;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package net.folab.eicic;
 
+import static java.lang.String.format;
 import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
@@ -21,5 +22,19 @@ public interface Console {
     void setAlgorithm(Algorithm algorithm);
 
     void setController(Controller controller);
+
+    static String milisToTimeString(final long elapsed) {
+        long sec = elapsed / 1000;
+        // long mil = elapsed - sec * 1000;
+
+        long min = sec / 60;
+        sec -= min * 60;
+
+        long hour = min / 60;
+        min -= hour * 60;
+
+        String format = format("%02d:%02d:%02d", hour, min, sec);
+        return format;
+    }
 
 }
