@@ -433,8 +433,8 @@ public class GuiConsole implements Console {
         addColumn(macroTable, 80, "X");
         addColumn(macroTable, 80, "Y");
         addColumn(macroTable, 56, "Tx Power");
-        addColumn(macroTable, 56, "State", LEFT);
-        addColumn(macroTable, 56, "%");
+        addColumn(macroTable, 48, "State", LEFT);
+        addColumn(macroTable, 56, "ABS%");
 
         for (int i = 0; i < NUM_MACROS; i++) {
             TableItem item = new TableItem(macroTable, NONE);
@@ -480,8 +480,8 @@ public class GuiConsole implements Console {
         addColumn(picoTable, 80, "X");
         addColumn(picoTable, 80, "Y");
         addColumn(picoTable, 56, "Tx Power");
-        addColumn(picoTable, 56, "State", LEFT);
-        addColumn(picoTable, 56, "%");
+        addColumn(picoTable, 48, "State", LEFT);
+        addColumn(picoTable, 56, "ABS%");
 
         for (int i = 0; i < NUM_PICOS; i++) {
             TableItem item = new TableItem(picoTable, NONE);
