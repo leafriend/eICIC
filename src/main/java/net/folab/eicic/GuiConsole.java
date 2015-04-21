@@ -854,6 +854,9 @@ public class GuiConsole implements Console {
                         TableItem item = picoTable.getItem(pico.idx);
                         item.setText(4, valueOf(state.picoIsAbs(p) ? "ABS"
                                 : "non"));
+                        item.setText(5,
+                                format("%.02f", (seq - picos[p].getNonAbsCount())
+                                        * 100.0 / seq));
                     }
 
                 }
