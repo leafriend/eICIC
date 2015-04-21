@@ -2,7 +2,18 @@ package net.folab.eicic.ui;
 
 import static java.lang.Math.log;
 import static java.lang.String.format;
+import static java.lang.String.valueOf;
 import static java.lang.System.out;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+
+import org.eclipse.swt.widgets.TableItem;
+
 import net.folab.eicic.Console;
 import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.model.Macro;
@@ -125,6 +136,20 @@ public class CliConsole implements Console {
                 continue;
             }
 
+            if (command.equals("save")) {
+                String selected = "PA" + controller.getAlgorithm().getNumber();
+                selected += "-" + seq;
+                selected += ".csv";
+                save(selected);
+                continue;
+            } else if (command.startsWith("save ")){
+                String selected = command.substring("save ".length()).trim();
+                if (selected.startsWith("\"") && selected.endsWith("\""))
+                    selected = selected.substring(1, selected.length() - 1);
+                save(selected);
+                continue;
+            }
+
             if ("help".equals(command)) {
                 console.printf("start           Start calculation.\n");
                 console.printf("stop            Stop running calculation.\n");
@@ -181,6 +206,83 @@ public class CliConsole implements Console {
         } while (true);
     }
 
+    private void save(String selected) {
+        try {
+
+            int seq = controller.getSeq();
+
+            String delim = selected.toLowerCase().endsWith(".csv") ? "," : "\t";
+
+            Charset charset = Charset.forName(System
+                    .getProperty("file.encoding"));
+
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(new File(selected)), charset));
+
+            writer.write("#Utitlity");
+            writer.write(delim);
+            writer.write(format("%7.3f", throughput));
+            writer.write("\n");
+            writer.flush();
+
+            writer.write("#Seq");
+            writer.write(delim);
+            writer.write(valueOf(seq));
+            writer.write("\n");
+            writer.flush();
+
+            writer.write("#Time");
+            writer.write(delim);
+            writer.write(Console.milisToTimeString(elapsed));
+            writer.write("\n");
+            writer.flush();
+
+            writer.write("#Macro Count");
+            for (int m = 0; m < controller.getMacros().length; m++) {
+                writer.write(delim);
+                writer.write(valueOf(controller.getMacros()[m]
+                        .getAllocationCount()));
+            }
+            writer.write("\n");
+            writer.flush();
+
+            writer.write("#Macro %");
+            for (int m = 0; m < controller.getMacros().length; m++) {
+                writer.write(delim);
+                double percent = 100.0
+                        * controller.getMacros()[m].getAllocationCount() / seq;
+                writer.write(format("%.2f%%", percent));
+            }
+            writer.write("\n");
+            writer.flush();
+
+            Mobile[] mobiles = controller.getMobiles();
+
+            writer.write("#idx," + "Rate User," + "(log)," + "Throughput,"
+                    + "(log)," + "lambda," + "mu\n");
+
+            for (int u = 0; u < mobiles.length; u++) {
+                Mobile mobile = mobiles[u];
+                writer.write(format("%3d", mobile.idx) + ",");
+                writer.write(format("%12.6f", mobile.getUserRate()) + ",");
+                writer.write(format("%12.6f", log(mobile.getUserRate())) + ",");
+                writer.write(format("%12.6f", mobile.getThroughput() / seq)
+                        + ",");
+                writer.write(format("%12.6f", log(mobile.getThroughput() / seq))
+                        + ",");
+                writer.write(format("%12.6f", mobile.getLambda()) + ",");
+                writer.write(format("%12.6f", mobile.getMu()) + "\n");
+            }
+
+            writer.close();
+
+            saved = controller.getSeq();
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void notifyEnded() {
