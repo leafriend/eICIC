@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -90,6 +91,8 @@ public class GuiConsole implements Console {
     private Combo algorithmeCombo;
 
     private Button saveButton;
+
+    private int saved;
 
     private Button showActiveButton;
 
@@ -191,19 +194,7 @@ public class GuiConsole implements Console {
         saveButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                FileDialog dialog = new FileDialog(shell, SAVE);
-                dialog.setText("Save");
-                // dialog.setFilterPath(filterPath);
-                String[] filterExt = { "*.csv", "*.txt", "*.*" };
-                dialog.setFilterExtensions(filterExt);
-                int pa = algorithmeCombo.getSelectionIndex() + 1;
-                String fileName = format("PA%d-%d.csv", pa,
-                        controller.getSeq() - 1);
-                dialog.setFileName(fileName);
-                String selected = dialog.open();
-                if (selected != null) {
-                    save(selected);
-                }
+                save();
             }
         });
 
@@ -337,6 +328,25 @@ public class GuiConsole implements Console {
 
     }
 
+    public boolean save() {
+        FileDialog dialog = new FileDialog(shell, SAVE);
+        dialog.setText("Save");
+        // dialog.setFilterPath(filterPath);
+        String[] filterExt = { "*.csv", "*.txt", "*.*" };
+        dialog.setFilterExtensions(filterExt);
+        int pa = algorithmeCombo.getSelectionIndex() + 1;
+        String fileName = format("PA%d-%d.csv", pa,
+                controller.getSeq());
+        dialog.setFileName(fileName);
+        String selected = dialog.open();
+        if (selected != null) {
+            save(selected);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private void save(String selected) {
         try {
 
@@ -389,6 +399,8 @@ public class GuiConsole implements Console {
             }
 
             writer.close();
+
+            saved = controller.getSeq();
 
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -712,6 +724,33 @@ public class GuiConsole implements Console {
         shell.addShellListener(new ShellAdapter() {
             @Override
             public void shellClosed(ShellEvent e) {
+                if (saved != controller.getSeq()) {
+                    MessageBox messageBox = new MessageBox(shell,
+                            APPLICATION_MODAL | YES | NO);
+                    messageBox.setText("Exit without Save?");
+                    messageBox
+                            .setMessage("Simulation result is not saved.\nWill you save before exit?");
+                    int answer = messageBox.open();
+                    if (answer == YES) {
+                        boolean continueClose = save();
+                        e.doit = continueClose;
+                        if (!continueClose)
+                            return;
+                    } else if (answer == NO) {
+                    }
+
+                } else {
+                    MessageBox messageBox = new MessageBox(shell,
+                            APPLICATION_MODAL | YES | NO);
+                    messageBox.setText("Exit?");
+                    messageBox.setMessage("Will exit?");
+                    int answer = messageBox.open();
+                    if (answer == NO) {
+                        e.doit = false;
+                        return;
+                    }
+                }
+
                 controller.stop();
                 Algorithm2.executor.shutdown(); // TODO Generalize
             }
