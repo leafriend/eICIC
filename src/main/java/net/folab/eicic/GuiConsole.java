@@ -86,8 +86,6 @@ public class GuiConsole implements Console {
 
     private Text utilityText;
 
-    private Text[] absTexts;
-
     private Combo algorithmeCombo;
 
     private Button saveButton;
@@ -218,8 +216,6 @@ public class GuiConsole implements Console {
             public void widgetSelected(SelectionEvent e) {
                 selectedIndex = updateSeq.getSelectionIndex();
                 boolean enabled = selectedIndex != 0;
-                macroTable.setEnabled(enabled);
-                picoTable.setEnabled(enabled);
                 mobileTable.setEnabled(enabled);
             }
         });
@@ -432,13 +428,13 @@ public class GuiConsole implements Console {
         macroTable = new Table(parent, BORDER | FULL_SELECTION);
         macroTable.setLinesVisible(true);
         macroTable.setHeaderVisible(true);
-        macroTable.setEnabled(false);
 
         addColumn(macroTable, 32, "#");
         addColumn(macroTable, 80, "X");
         addColumn(macroTable, 80, "Y");
         addColumn(macroTable, 56, "Tx Power");
         addColumn(macroTable, 56, "State", LEFT);
+        addColumn(macroTable, 56, "%");
 
         for (int i = 0; i < NUM_MACROS; i++) {
             TableItem item = new TableItem(macroTable, NONE);
@@ -479,13 +475,13 @@ public class GuiConsole implements Console {
         picoTable = new Table(parent, BORDER | FULL_SELECTION);
         picoTable.setLinesVisible(true);
         picoTable.setHeaderVisible(true);
-        picoTable.setEnabled(false);
 
         addColumn(picoTable, 32, "#");
         addColumn(picoTable, 80, "X");
         addColumn(picoTable, 80, "Y");
         addColumn(picoTable, 56, "Tx Power");
         addColumn(picoTable, 56, "State", LEFT);
+        addColumn(picoTable, 56, "%");
 
         for (int i = 0; i < NUM_PICOS; i++) {
             TableItem item = new TableItem(picoTable, NONE);
@@ -569,7 +565,7 @@ public class GuiConsole implements Console {
         layoutData = new FormData();
         layoutData.top = new FormAttachment(statusBar, 0);
         layoutData.left = new FormAttachment(0, 0);
-        layoutData.right = new FormAttachment(0, 320);
+        layoutData.right = new FormAttachment(0, 380);
         // layoutData.bottom = new FormAttachment(100, 0);
         macroTable.setLayoutData(layoutData);
 
@@ -577,7 +573,7 @@ public class GuiConsole implements Console {
         layoutData = new FormData();
         layoutData.top = new FormAttachment(macroTable, 8);
         layoutData.left = new FormAttachment(0, 0);
-        layoutData.right = new FormAttachment(0, 320);
+        layoutData.right = new FormAttachment(0, 380);
         // layoutData.bottom = new FormAttachment(100, 0);
         picoTable.setLayoutData(layoutData);
 
@@ -617,17 +613,6 @@ public class GuiConsole implements Console {
 
         // - - -
 
-        Label absLabel = new Label(parent, NONE);
-        absLabel.setText("ABS:");
-
-        absTexts = new Text[NUM_MACROS];
-        for (int m = 0; m < NUM_MACROS; m++) {
-            absTexts[m] = new Text(parent, READ_ONLY | RIGHT);
-            absTexts[m].setText("000.00%");
-        }
-
-        // - - -
-
         parent.setLayout(new FormLayout());
         FormData layoutData;
 
@@ -645,24 +630,6 @@ public class GuiConsole implements Console {
         layoutData.left = new FormAttachment(utilityLabel, 0);
         layoutData.right = new FormAttachment(utilityLabel, 64, TRAIL);
         utilityText.setLayoutData(layoutData);
-
-        //
-
-        // absLabel
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 3);
-        layoutData.left = new FormAttachment(utilityText, 8);
-        absLabel.setLayoutData(layoutData);
-
-        for (int m = 0; m < NUM_MACROS; m++) {
-            layoutData = new FormData();
-            layoutData.top = new FormAttachment(0, 3);
-            layoutData.left = new FormAttachment(m == 0 ? absLabel
-                    : absTexts[m - 1], 8);
-            absTexts[m].setLayoutData(layoutData);
-        }
-
-        // absText
 
         //
 
@@ -877,6 +844,9 @@ public class GuiConsole implements Console {
                         TableItem item = macroTable.getItem(macro.idx);
                         item.setText(4, valueOf(state.macroIsOn(m) ? "ON"
                                 : "OFF"));
+                        item.setText(5,
+                                format("%.02f", (seq - macros[m].getAllocationCount())
+                                        * 100.0 / seq));
                     }
 
                     for (int p = 0; p < picos.length; p++) {
@@ -987,12 +957,6 @@ public class GuiConsole implements Console {
                 }
 
                 utilityText.setText(format("%.3f", throughput));
-
-                for (int m = 0; m < macros.length; m++) {
-                    absTexts[m].setText(format("%6.2f%%",
-                            (seq - macros[m].getAllocationCount()) * 100.0
-                                    / seq));
-                }
 
                 dumped = true;
             }
