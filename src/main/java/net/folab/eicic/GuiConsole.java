@@ -350,6 +350,8 @@ public class GuiConsole implements Console {
     private void save(String selected) {
         try {
 
+            int seq = controller.getSeq();
+
             String delim = selected.toLowerCase().endsWith(".csv") ? "," : "\t";
 
             Charset charset = Charset.forName(System
@@ -366,13 +368,30 @@ public class GuiConsole implements Console {
 
             writer.write("#Seq");
             writer.write(delim);
-            writer.write(seqText.getText());
+            writer.write(valueOf(seq));
             writer.write("\n");
             writer.flush();
 
             writer.write("#Time");
             writer.write(delim);
             writer.write(executeTimeText.getText());
+            writer.write("\n");
+            writer.flush();
+
+            writer.write("#Macro Count");
+            for (int m = 0; m < controller.getMacros().length; m++) {
+                writer.write(delim);
+                writer.write(valueOf(controller.getMacros()[m].getAllocationCount()));
+            }
+            writer.write("\n");
+            writer.flush();
+
+            writer.write("#Macro %");
+            for (int m = 0; m < controller.getMacros().length; m++) {
+                writer.write(delim);
+                double percent = 100.0 * controller.getMacros()[m].getAllocationCount() / seq;
+                writer.write(format("%.2f%%", percent));
+            }
             writer.write("\n");
             writer.flush();
 
