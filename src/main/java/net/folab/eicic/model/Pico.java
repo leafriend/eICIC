@@ -5,8 +5,8 @@ import static java.lang.Math.signum;
 import static java.lang.Math.sqrt;
 //import static java.util.Arrays.*;
 import static java.util.Collections.sort;
-import static net.folab.eicic.Constants.MACRO_INTERFERING_RANGE_ON_PICO;
-import static net.folab.eicic.Constants.NUM_RB;
+import static net.folab.eicic.model.Constants.MACRO_INTERFERING_RANGE_ON_PICO;
+import static net.folab.eicic.model.Constants.NUM_RB;
 
 import java.util.ArrayList;
 import java.util.Comparator;

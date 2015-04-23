@@ -2,14 +2,14 @@ package net.folab.eicic.model;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.log;
-import static net.folab.eicic.Constants.BW_PER_RB;
-import static net.folab.eicic.Constants.MEGA;
-import static net.folab.eicic.Constants.NOISE;
-import static net.folab.eicic.Constants.NUM_RB;
-import static net.folab.eicic.Constants.RATE_MAX;
-import static net.folab.eicic.Constants.STEPSIZE2;
-import static net.folab.eicic.Constants.STEPSIZE3;
-import static net.folab.eicic.Constants.STEPSIZE4;
+import static net.folab.eicic.model.Constants.BW_PER_RB;
+import static net.folab.eicic.model.Constants.MEGA;
+import static net.folab.eicic.model.Constants.NOISE;
+import static net.folab.eicic.model.Constants.NUM_RB;
+import static net.folab.eicic.model.Constants.RATE_MAX;
+import static net.folab.eicic.model.Constants.STEPSIZE2;
+import static net.folab.eicic.model.Constants.STEPSIZE3;
+import static net.folab.eicic.model.Constants.STEPSIZE4;
 
 import java.util.ArrayList;
 import java.util.List;

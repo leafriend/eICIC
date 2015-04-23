@@ -1,8 +1,8 @@
 package net.folab.eicic.algorithm;
 
-import static net.folab.eicic.Constants.NUM_MACROS;
-import static net.folab.eicic.Constants.NUM_MOBILES;
-import static net.folab.eicic.Constants.NUM_RB;
+import static net.folab.eicic.model.Constants.NUM_MACROS;
+import static net.folab.eicic.model.Constants.NUM_MOBILES;
+import static net.folab.eicic.model.Constants.NUM_RB;
 import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.StateContext;

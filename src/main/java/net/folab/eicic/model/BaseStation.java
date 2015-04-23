@@ -1,7 +1,7 @@
 package net.folab.eicic.model;
 
-import static net.folab.eicic.Constants.NUM_MOBILES;
-import static net.folab.eicic.Constants.NUM_RB;
+import static net.folab.eicic.model.Constants.NUM_MOBILES;
+import static net.folab.eicic.model.Constants.NUM_RB;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,7 +2,7 @@ package net.folab.eicic.ui;
 
 import static java.lang.Math.*;
 import static java.lang.String.*;
-import static net.folab.eicic.Constants.*;
+import static net.folab.eicic.model.Constants.*;
 import static org.eclipse.swt.SWT.*;
 
 import java.io.BufferedWriter;

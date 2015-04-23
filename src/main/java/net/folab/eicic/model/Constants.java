@@ -1,4 +1,4 @@
-package net.folab.eicic;
+package net.folab.eicic.model;
 
 public interface Constants {
 

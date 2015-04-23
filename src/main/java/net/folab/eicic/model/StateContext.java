@@ -1,6 +1,6 @@
 package net.folab.eicic.model;
 
-import static net.folab.eicic.Constants.NUM_MACROS;
+import static net.folab.eicic.model.Constants.NUM_MACROS;
 
 public class StateContext {
 
