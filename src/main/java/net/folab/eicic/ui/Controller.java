@@ -14,7 +14,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import net.folab.eicic.Calculator;
-import net.folab.eicic.Console;
 import net.folab.eicic.Main;
 import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.model.Edge;

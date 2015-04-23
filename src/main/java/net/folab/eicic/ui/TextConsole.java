@@ -1,4 +1,4 @@
-package net.folab.eicic;
+package net.folab.eicic.ui;
 
 import static java.lang.Math.log;
 import static java.lang.String.format;

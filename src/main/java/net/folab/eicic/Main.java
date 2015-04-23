@@ -11,6 +11,7 @@ import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.model.Mobile;
+import net.folab.eicic.ui.Console;
 import net.folab.eicic.ui.Controller;
 
 public class Main {

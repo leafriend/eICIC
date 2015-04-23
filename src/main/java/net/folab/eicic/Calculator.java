@@ -5,6 +5,7 @@ import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
 import net.folab.eicic.model.StateContext;
+import net.folab.eicic.ui.Console;
 
 public class Calculator {
 
