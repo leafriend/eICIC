@@ -1,9 +1,5 @@
 package net.folab.eicic.ui;
 
-import static net.folab.eicic.Constants.MACRO_TX_POWER;
-import static net.folab.eicic.Constants.MOBILE_QOS;
-import static net.folab.eicic.Constants.PICO_TX_POWER;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -64,6 +60,9 @@ public class Controller {
     }
 
     public static <T> T[] loadObject(String file, Generator<T> generator) {
+        String delim = "( |\t)+";
+        if (file.toLowerCase().endsWith(".csv"))
+            delim = ",";
         try {
 
             List<T> list = new ArrayList<>();
@@ -72,7 +71,7 @@ public class Controller {
             String line;
             int idx = 0;
             while ((line = reader.readLine()) != null) {
-                String[] tokens = line.split("( |\t)+");
+                String[] tokens = line.split(delim);
                 double[] values = new double[tokens.length];
                 for (int i = 0; i < tokens.length; i++) {
                     values[i] = Double.parseDouble(tokens[i]);
@@ -151,24 +150,24 @@ public class Controller {
         seq = 0;
         accumuMillis = 0;
 
-        macros = loadObject("res/macro.txt", new Generator<Macro>(Macro.class) {
+        macros = loadObject("res/macro.csv", new Generator<Macro>(Macro.class) {
             @Override
             public Macro generate(int idx, double[] values) {
-                return new Macro(idx, values[0], values[1], MACRO_TX_POWER);
+                return new Macro(idx, values[1], values[2], values[3]);
             }
         });
-        picos = loadObject("res/pico.txt", new Generator<Pico>(Pico.class) {
+        picos = loadObject("res/pico.csv", new Generator<Pico>(Pico.class) {
             @Override
             public Pico generate(int idx, double[] values) {
-                return new Pico(idx, values[0], values[1], PICO_TX_POWER);
+                return new Pico(idx, values[1], values[2], values[3]);
             }
         });
-        mobiles = loadObject("res/mobile.txt", new Generator<Mobile>(
+        mobiles = loadObject("res/mobile.csv", new Generator<Mobile>(
                 Mobile.class) {
             @Override
             public Mobile generate(int idx, double[] values) {
-                return new Mobile(idx, values[0], values[1], MOBILE_QOS,
-                        values[2], values[3], values[4]);
+                return new Mobile(idx, values[1], values[2], values[3],
+                        values[4], values[5], values[6]);
             }
         });
 
