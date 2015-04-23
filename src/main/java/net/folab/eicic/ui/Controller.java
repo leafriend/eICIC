@@ -1,7 +1,9 @@
 package net.folab.eicic.ui;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -10,7 +12,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import net.folab.eicic.Calculator;
-import net.folab.eicic.Main;
 import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
@@ -96,6 +97,29 @@ public class Controller {
         this.totalSeq = totalSeq;
     }
 
+    public static void dump(String string, int seq, Mobile[] mobiles) {
+
+        try {
+            FileWriter writer = new FileWriter(new File(string + ".csv"), true);
+            writer.write(String.valueOf(seq));
+            double sum = 0;
+            StringBuilder sb = new StringBuilder();
+            for (int u = 0; u < mobiles.length; u++) {
+                double util = Math.log(mobiles[u].getThroughput() / seq);
+                sb.append(",").append(util);
+                sum += util;
+            }
+            writer.write("," + sum);
+            writer.write(sb.toString());
+            writer.write("\n");
+            writer.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
     public void display() {
 
         reset();
@@ -116,9 +140,9 @@ public class Controller {
                             + accumuMillis;
                     console.dump(seq, state, macros, picos, mobiles, execute);
 
+                    // TODO 옵션으로 추출
                     if (seq % 100 == 0) {
-                        Main.dump(algorithm.getClass().getSimpleName(), seq,
-                                mobiles);
+                        dump(algorithm.getClass().getSimpleName(), seq, mobiles);
                     }
 
                     if (seq == nextSeq)

@@ -2,15 +2,12 @@ package net.folab.eicic;
 
 import static java.util.Arrays.asList;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import net.folab.eicic.algorithm.Algorithm;
-import net.folab.eicic.model.Mobile;
 import net.folab.eicic.ui.Console;
 import net.folab.eicic.ui.Controller;
 
@@ -126,29 +123,6 @@ public class Main {
             e.printStackTrace();
             return null;
         }
-    }
-
-    public static void dump(String string, int seq, Mobile[] mobiles) {
-
-        try {
-            FileWriter writer = new FileWriter(new File(string + ".csv"), true);
-            writer.write(String.valueOf(seq));
-            double sum = 0;
-            StringBuilder sb = new StringBuilder();
-            for (int u = 0; u < mobiles.length; u++) {
-                double util = Math.log(mobiles[u].getThroughput() / seq);
-                sb.append(",").append(util);
-                sum += util;
-            }
-            writer.write("," + sum);
-            writer.write(sb.toString());
-            writer.write("\n");
-            writer.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
     }
 
 }
