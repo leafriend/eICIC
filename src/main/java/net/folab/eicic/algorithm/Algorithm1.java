@@ -6,6 +6,7 @@ import static net.folab.eicic.model.Constants.NUM_RB;
 
 import java.util.List;
 
+import net.folab.eicic.core.Algorithm;
 import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;

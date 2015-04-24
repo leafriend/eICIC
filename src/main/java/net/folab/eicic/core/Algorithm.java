@@ -1,4 +1,4 @@
-package net.folab.eicic.algorithm;
+package net.folab.eicic.core;
 
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;

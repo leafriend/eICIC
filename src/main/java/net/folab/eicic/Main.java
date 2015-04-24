@@ -7,7 +7,7 @@ import java.io.IOException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
-import net.folab.eicic.algorithm.Algorithm;
+import net.folab.eicic.core.Algorithm;
 import net.folab.eicic.ui.Console;
 import net.folab.eicic.ui.Controller;
 

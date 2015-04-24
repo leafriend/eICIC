@@ -12,7 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import net.folab.eicic.Calculator;
-import net.folab.eicic.algorithm.Algorithm;
+import net.folab.eicic.core.Algorithm;
 import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;

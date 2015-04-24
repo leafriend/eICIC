@@ -12,10 +12,10 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 
-import net.folab.eicic.algorithm.Algorithm;
 import net.folab.eicic.algorithm.Algorithm1;
 import net.folab.eicic.algorithm.Algorithm2;
 import net.folab.eicic.algorithm.Algorithm3;
+import net.folab.eicic.core.Algorithm;
 import net.folab.eicic.model.BaseStation;
 import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
