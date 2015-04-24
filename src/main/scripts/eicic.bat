@@ -1,0 +1,1 @@
+java -ea -cp lib\* net.folab.eicic.Main -c net.folab.eicic.ui.GuiConsole
