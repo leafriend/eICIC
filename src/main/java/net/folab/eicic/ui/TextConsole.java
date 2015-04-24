@@ -4,11 +4,12 @@ import static java.lang.Math.log;
 import static java.lang.String.format;
 import static java.lang.System.out;
 import net.folab.eicic.core.Algorithm;
+import net.folab.eicic.core.Console;
+import net.folab.eicic.core.Controller;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
 import net.folab.eicic.model.StateContext;
-import net.folab.eicic.ui.Controller;
 
 public class TextConsole implements Console {
 

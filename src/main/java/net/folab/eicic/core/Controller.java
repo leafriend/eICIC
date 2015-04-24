@@ -1,4 +1,4 @@
-package net.folab.eicic.ui;
+package net.folab.eicic.core;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import net.folab.eicic.Calculator;
-import net.folab.eicic.core.Algorithm;
 import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;

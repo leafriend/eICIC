@@ -16,13 +16,14 @@ import net.folab.eicic.algorithm.Algorithm1;
 import net.folab.eicic.algorithm.Algorithm2;
 import net.folab.eicic.algorithm.Algorithm3;
 import net.folab.eicic.core.Algorithm;
+import net.folab.eicic.core.Console;
+import net.folab.eicic.core.Controller;
 import net.folab.eicic.model.BaseStation;
 import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
 import net.folab.eicic.model.StateContext;
-import net.folab.eicic.ui.Controller;
 
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;

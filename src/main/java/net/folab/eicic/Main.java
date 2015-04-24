@@ -8,8 +8,8 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import net.folab.eicic.core.Algorithm;
-import net.folab.eicic.ui.Console;
-import net.folab.eicic.ui.Controller;
+import net.folab.eicic.core.Console;
+import net.folab.eicic.core.Controller;
 
 public class Main {
 
