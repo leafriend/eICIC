@@ -82,12 +82,12 @@ public class Main {
         if (algorithmClassName != null)
             algorithm = newInstance(algorithmClassName);
 
-        if (!"net.folab.eicic.GuiConsole".equals(consoleClassName)
+        if (!"net.folab.eicic.ui.GuiConsole".equals(consoleClassName)
                 && algorithm == null) {
             return parser;
         }
 
-        if (!"net.folab.eicic.GuiConsole".equals(consoleClassName)
+        if (!"net.folab.eicic.ui.GuiConsole".equals(consoleClassName)
                 && totalSeq < 1) {
             return parser;
         }
