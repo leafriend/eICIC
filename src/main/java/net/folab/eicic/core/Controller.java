@@ -240,6 +240,7 @@ public class Controller {
 
     public void setAlgorithm(Algorithm algorithm) {
         this.algorithm = algorithm;
+        calculator.setAlgorithm(algorithm);
     }
 
     public int getTotalSeq() {
