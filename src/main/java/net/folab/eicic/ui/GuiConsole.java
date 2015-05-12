@@ -16,6 +16,7 @@ import java.util.Random;
 import net.folab.eicic.algorithm.Algorithm1;
 import net.folab.eicic.algorithm.Algorithm2;
 import net.folab.eicic.algorithm.Algorithm3;
+import net.folab.eicic.algorithm.StaticAlgorithm;
 import net.folab.eicic.core.Algorithm;
 import net.folab.eicic.core.Console;
 import net.folab.eicic.core.Controller;
@@ -56,6 +57,8 @@ public class GuiConsole implements Console {
     private static final String START = "Sta&rt";
 
     private static final String PAUSE = "P&ause";
+
+    private static final String ALGORITHM_0 = "0: Static Algorithm";
 
     private static final String ALGORITHM_1 = "1: Algorithm 1";
 
@@ -187,7 +190,8 @@ public class GuiConsole implements Console {
     public void buildButtonPannel(Composite parent) {
 
         algorithmeCombo = new Combo(parent, READ_ONLY);
-        algorithmeCombo.setItems(array(ALGORITHM_1, ALGORITHM_2, ALGORITHM_3));
+        algorithmeCombo.setItems(array(ALGORITHM_0, ALGORITHM_1, ALGORITHM_2,
+                ALGORITHM_3));
         algorithmeCombo.select(0);
         algorithmeCombo.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -1031,6 +1035,9 @@ public class GuiConsole implements Console {
     public void setAlgorithm() {
         int index = algorithmeCombo.getSelectionIndex();
         switch (algorithmeCombo.getItem(index)) {
+        case ALGORITHM_0:
+            controller.setAlgorithm(new StaticAlgorithm());
+            break;
         case ALGORITHM_1:
             controller.setAlgorithm(new Algorithm1());
             break;
