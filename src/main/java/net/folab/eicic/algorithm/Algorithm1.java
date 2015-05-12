@@ -31,7 +31,7 @@ public class Algorithm1 implements Algorithm {
     }
 
     @Override
-    public StateContext calculate(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
+    public StateContext calculate(int seq, Macro[] macros, Pico[] picos, Mobile[] mobiles) {
 
         for (int m = 0; m < macros.length; m++) {
             Macro macro = macros[m];

@@ -38,7 +38,7 @@ public class Calculator {
         for (int p = 0; p < picos.length; p++)
             picos[p].sortMobiles();
 
-        StateContext state = algorithm.calculate(macros, picos, mobiles);
+        StateContext state = algorithm.calculate(seq, macros, picos, mobiles);
 
         for (int u = 0; u < mobiles.length; u++)
             mobiles[u].calculateThroughput(state);

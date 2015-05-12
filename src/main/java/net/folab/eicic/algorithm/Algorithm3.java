@@ -24,7 +24,7 @@ public class Algorithm3 implements Algorithm {
     }
 
     @Override
-    public StateContext calculate(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
+    public StateContext calculate(int seq, Macro[] macros, Pico[] picos, Mobile[] mobiles) {
 
         Edge<?>[][] bestEdges = new Edge[mobiles.length][NUM_RB];
 

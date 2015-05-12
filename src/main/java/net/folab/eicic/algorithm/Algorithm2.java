@@ -42,7 +42,7 @@ public class Algorithm2 implements Algorithm {
     }
 
     @Override
-    public StateContext calculate(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
+    public StateContext calculate(int seq, Macro[] macros, Pico[] picos, Mobile[] mobiles) {
 
         for (int macroState = 0; macroState < NUM_MACRO_STATES; macroState++) {
             if (macroStateResults[macroState] == null)

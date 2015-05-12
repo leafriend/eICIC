@@ -9,7 +9,7 @@ public interface Algorithm {
 
     int getNumber();
 
-    StateContext calculate(Macro[] macros, Pico[] picos, Mobile[] mobiles);
+    StateContext calculate(int seq, Macro[] macros, Pico[] picos, Mobile[] mobiles);
 
     default void setUp(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
         // DO NOTHING
