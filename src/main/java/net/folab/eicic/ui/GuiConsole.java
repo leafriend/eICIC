@@ -28,7 +28,6 @@ import net.folab.eicic.model.StateContext;
 
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -124,6 +123,11 @@ public class GuiConsole implements Console {
 
     private Color colorActiveBg;
 
+    @SafeVarargs
+    public static <T> T[] array(T... items) {
+        return items;
+    }
+
     public GuiConsole() {
 
         display = new Display();
@@ -183,8 +187,7 @@ public class GuiConsole implements Console {
     public void buildButtonPannel(Composite parent) {
 
         algorithmeCombo = new Combo(parent, READ_ONLY);
-        algorithmeCombo.setItems(new String[] { ALGORITHM_1, ALGORITHM_2,
-                ALGORITHM_3 });
+        algorithmeCombo.setItems(array(ALGORITHM_1, ALGORITHM_2, ALGORITHM_3));
         algorithmeCombo.select(0);
         algorithmeCombo.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -194,7 +197,7 @@ public class GuiConsole implements Console {
         });
 
         randomCombo = new Combo(parent, READ_ONLY);
-        randomCombo.setItems(new String[] { "Random", "Pseudo", "Static" });
+        randomCombo.setItems(array("Random", "Pseudo", "Static"));
         randomCombo.select(0);
         randomCombo.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -238,14 +241,14 @@ public class GuiConsole implements Console {
         showActiveButton.setSelection(true);
 
         updateSeq = new Combo(parent, READ_ONLY);
-        String[] items = new String[] { //
-        "No Update", //
+        String[] items = array( //
+                "No Update", //
                 "Update for each 1 seq", //
                 "Update for each 10 seq", //
                 "Update for each 100 seq", //
                 "Update for each 1000 seq", //
                 "Update for each 10000 seq" //
-        };
+        );
         updateSeq.setItems(items);
         updateSeq.select(0);
         updateSeq.addSelectionListener(new SelectionAdapter() {
@@ -558,8 +561,8 @@ public class GuiConsole implements Console {
                             text += item.getText(c);
                         }
                     }
-                    clipboard.setContents(new Object[] { text },
-                            new Transfer[] { TextTransfer.getInstance() });
+                    clipboard.setContents(array(text),
+                            array(TextTransfer.getInstance()));
                 }
                 if ((e.stateMask & CTRL) == CTRL && e.keyCode == 'a') {
                     mobileTable.setSelection(0, mobileTable.getItemCount() - 1);
