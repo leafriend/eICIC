@@ -154,8 +154,10 @@ public class Controller {
                 accumuMillis = execute;
 
                 isRunning = false;
-                if (seq == totalSeq)
+                if (seq == totalSeq) {
+                    algorithm.tearDown();
                     console.notifyEnded();
+                }
 
             }
         };
@@ -212,6 +214,9 @@ public class Controller {
     }
 
     public void start() {
+        if (seq == 0) {
+            algorithm.setUp();
+        }
         isRunning = true;
         nextSeq = totalSeq;
         executorService.execute(runner);
