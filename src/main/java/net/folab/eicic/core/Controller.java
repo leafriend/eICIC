@@ -155,7 +155,7 @@ public class Controller {
 
                 isRunning = false;
                 if (seq == totalSeq) {
-                    algorithm.tearDown();
+                    algorithm.tearDown(macros, picos, mobiles);
                     console.notifyEnded();
                 }
 
@@ -215,7 +215,7 @@ public class Controller {
 
     public void start() {
         if (seq == 0) {
-            algorithm.setUp();
+            algorithm.setUp(macros, picos, mobiles);
         }
         isRunning = true;
         nextSeq = totalSeq;

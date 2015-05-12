@@ -11,11 +11,11 @@ public interface Algorithm {
 
     StateContext calculate(Macro[] macros, Pico[] picos, Mobile[] mobiles);
 
-    default void setUp() {
+    default void setUp(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
         // DO NOTHING
     }
 
-    default void tearDown() {
+    default void tearDown(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
         // DO NOTHING
     }
 
