@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.util.Random;
 
 import net.folab.eicic.algorithm.Algorithm1;
 import net.folab.eicic.algorithm.Algorithm2;
@@ -90,6 +91,8 @@ public class GuiConsole implements Console {
     private Text utilityText;
 
     private Combo algorithmeCombo;
+
+    private Combo randomCombo;
 
     private Button saveButton;
 
@@ -190,6 +193,37 @@ public class GuiConsole implements Console {
             }
         });
 
+        randomCombo = new Combo(parent, READ_ONLY);
+        randomCombo.setItems(new String[] { "Random", "Pseudo", "Static" });
+        randomCombo.select(0);
+        randomCombo.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                switch (randomCombo.getSelectionIndex()) {
+
+                case 0:
+                    Edge.setRandom(new Random(System.currentTimeMillis()));
+                    break;
+
+                case 1:
+                    Edge.setRandom(new Random(0));
+                    break;
+
+                case 2:
+                    Edge.setRandom(new Random() {
+                        private static final long serialVersionUID = -7928935803738991985L;
+                        public synchronized double nextGaussian() {
+                            return 0;
+                        };
+                    });
+                    break;
+
+                default:
+                    break;
+                }
+            }
+        });
+
         saveButton = new Button(parent, PUSH);
         saveButton.setText("&Save");
         saveButton.addSelectionListener(new SelectionAdapter() {
@@ -273,15 +307,19 @@ public class GuiConsole implements Console {
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 1);
         layoutData.left = new FormAttachment(0);
-        // layoutData.right = new FormAttachment(updateSeq, -8, LEAD);
-        // layoutData.top = new FormAttachment(100, 0);
         algorithmeCombo.setLayoutData(layoutData);
+
+        // randomCombo
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 1);
+        layoutData.left = new FormAttachment(algorithmeCombo, 8);
+        randomCombo.setLayoutData(layoutData);
 
         // saveButton
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(algorithmeCombo, 8);
-        layoutData.right = new FormAttachment(algorithmeCombo, 8 + 64, TRAIL);
+        layoutData.left = new FormAttachment(randomCombo, 8);
+        layoutData.right = new FormAttachment(randomCombo, 8 + 64, TRAIL);
         // layoutData.top = new FormAttachment(100, 0);
         saveButton.setLayoutData(layoutData);
 
