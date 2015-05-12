@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class Edge<T extends BaseStation<T>> {
 
-    private static final Random RANDOM = new Random(System.currentTimeMillis());
+    private static Random RANDOM = new Random(System.currentTimeMillis());
 
     public final T baseStation;
 
@@ -122,6 +122,11 @@ public class Edge<T extends BaseStation<T>> {
     @Override
     public String toString() {
         return "Edge<" + baseStation + "-" + mobile + ">";
+    }
+
+    public static void setRandom(Random random) {
+        assert random != null;
+        RANDOM = random;
     }
 
 }
