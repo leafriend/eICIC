@@ -88,35 +88,35 @@ public class Edge<T extends BaseStation<T>> {
         return isActivated[i];
     }
 
-    public void setActivated(int i, boolean isActivated) {
+    public void setActivated(int r, boolean isActivated) {
         if (isActivated) {
-            Edge<T> activeBaseStationEdge = baseStation.activeEdges[i];
-            Edge<? extends BaseStation<?>> activeMobileEdge = mobile.activeEdges[i];
+            Edge<T> activeBaseStationEdge = baseStation.activeEdges[r];
+            Edge<? extends BaseStation<?>> activeMobileEdge = mobile.activeEdges[r];
             assert activeBaseStationEdge == activeMobileEdge : activeBaseStationEdge
                     + " != "
                     + activeMobileEdge
                     + " for "
                     + this
                     + "["
-                    + i
+                    + r
                     + "]: " + isActivated;
             if (activeBaseStationEdge != null)
-                activeBaseStationEdge.isActivated[i] = false;
+                activeBaseStationEdge.isActivated[r] = false;
             if (activeMobileEdge != null)
-                activeMobileEdge.isActivated[i] = false;
-            baseStation.activeEdges[i] = this;
-            mobile.activeEdges[i] = this;
+                activeMobileEdge.isActivated[r] = false;
+            baseStation.activeEdges[r] = this;
+            mobile.activeEdges[r] = this;
         } else {
-            if (this.isActivated[i]) {
-                assert baseStation.activeEdges[i] == null
-                        || baseStation.activeEdges[i] == this;
-                assert mobile.activeEdges[i] == null
-                        || mobile.activeEdges[i] == this;
-                baseStation.activeEdges[i] = null;
-                mobile.activeEdges[i] = null;
+            if (this.isActivated[r]) {
+                assert baseStation.activeEdges[r] == null
+                        || baseStation.activeEdges[r] == this;
+                assert mobile.activeEdges[r] == null
+                        || mobile.activeEdges[r] == this;
+                baseStation.activeEdges[r] = null;
+                mobile.activeEdges[r] = null;
             }
         }
-        this.isActivated[i] = isActivated;
+        this.isActivated[r] = isActivated;
     }
 
     @Override
