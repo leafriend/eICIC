@@ -57,6 +57,11 @@ public class Mobile {
 
     final double[] nonPicoLambdaR = new double[NUM_RB];
 
+    /**
+     * Static Algorithm에서 Macro로 연결할건지 여부
+     */
+    public boolean saConnectToMacro = false;
+
     public Mobile(int idx, double x, double y, double qos) {
         super();
         this.idx = idx;
