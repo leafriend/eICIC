@@ -36,6 +36,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -191,6 +193,32 @@ public class GuiConsole implements Console {
         exit.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 shell.close();
+            };
+        });
+
+        // - - -
+
+        MenuItem helpHeader = new MenuItem(menuBar, CASCADE);
+        helpHeader.setText("&Help");
+
+        Menu help = new Menu(parent, DROP_DOWN);
+        helpHeader.setMenu(help);
+
+        MenuItem about = new MenuItem(help, PUSH);
+        about.setText("&About");
+        about.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                Shell dialog = new Shell(shell, DIALOG_TRIM | APPLICATION_MODAL);
+                dialog.setText("About eICIC");
+
+                Rectangle bound = dialog.getDisplay().getBounds();
+                int width = 300;
+                int height = 400;
+                int x = (bound.width - width) / 2;
+                int y = (bound.height - height) / 2;
+                dialog.setBounds(x, y, width, height);
+
+                dialog.open();
             };
         });
 
