@@ -122,6 +122,7 @@
             <plugin>
                 <groupId>com.akathist.maven.plugins.launch4j</groupId>
                 <artifactId>launch4j-maven-plugin</artifactId>
+                <version>1.7.6</version>
                 <executions>
                     <execution>
                         <id>launch4j-cli</id>
