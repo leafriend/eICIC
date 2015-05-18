@@ -29,8 +29,11 @@ import net.folab.eicic.model.StateContext;
 
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
@@ -98,6 +101,8 @@ public class GuiConsole implements Console {
     private Combo randomCombo;
 
     private Combo algorithmeCombo;
+
+    private Text creText;
 
     private int saved;
 
@@ -294,6 +299,26 @@ public class GuiConsole implements Console {
             }
         });
 
+
+        Label creLabel = new Label(parent, NONE);
+        creLabel.setText("CRE");
+        creText = new Text(parent, BORDER | RIGHT);
+        Label creBiasLabel = new Label(parent, NONE);
+
+        creText.addModifyListener(new ModifyListener() {
+            @Override
+            public void modifyText(ModifyEvent e) {
+                double cre = Double.parseDouble(creText.getText());
+                double creBias = pow(10, cre / 10);
+                if (controller != null && controller.getAlgorithm() instanceof StaticAlgorithm) {
+                    StaticAlgorithm staticAlgorithm = (StaticAlgorithm) controller.getAlgorithm();
+                    staticAlgorithm.setCreBias(creBias);
+                }
+                creBiasLabel.setText(format("%.3f", creBias));
+            }
+        });
+        creText.setText("0");
+
         showActiveButton = new Button(parent, CHECK);
         showActiveButton.setText("Show active only");
         showActiveButton.setSelection(true);
@@ -375,6 +400,26 @@ public class GuiConsole implements Console {
         layoutData.top = new FormAttachment(0, 1);
         layoutData.left = new FormAttachment(randomCombo, 8);
         algorithmeCombo.setLayoutData(layoutData);
+
+        // creLabel
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 3 + 2);
+        layoutData.left = new FormAttachment(algorithmeCombo, 8);
+        creLabel.setLayoutData(layoutData);
+
+        // creText
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 1);
+        layoutData.left = new FormAttachment(creLabel, 8);
+        layoutData.right = new FormAttachment(creLabel, 8 + 48, TRAIL);
+        creText.setLayoutData(layoutData);
+
+        // creBiasLabel
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 3 + 2);
+        layoutData.left = new FormAttachment(creText, 8);
+        layoutData.right = new FormAttachment(creText, 8 + 48, TRAIL);
+        creBiasLabel.setLayoutData(layoutData);
 
         // showActiveButton
         layoutData = new FormData();
@@ -1080,9 +1125,11 @@ public class GuiConsole implements Console {
 
     public void setAlgorithm() {
         int index = algorithmeCombo.getSelectionIndex();
+        creText.setEnabled(false);
         switch (algorithmeCombo.getItem(index)) {
         case ALGORITHM_0:
             controller.setAlgorithm(new StaticAlgorithm());
+            creText.setEnabled(true);
             break;
         case ALGORITHM_1:
             controller.setAlgorithm(new Algorithm1());
