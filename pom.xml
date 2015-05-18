@@ -118,6 +118,55 @@
                 </executions>
             </plugin>
 
+            <!-- Launch4j Plugins -->
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>launch4j-cli</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>console</headerType>
+                            <outfile>target/${project.build.finalName}/${project.artifactId}.exe</outfile>
+                            <jar>target/${project.build.finalName}.jar</jar>
+                            <errTitle>encc</errTitle>
+                            <classPath>
+                                <mainClass>net.folab.eicic.Main</mainClass>
+                                <jarLocation>lib/</jarLocation>
+                            </classPath>
+                            <jre>
+                                <minVersion>1.8.0</minVersion>
+                            </jre>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>launch4j-gui</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>gui</headerType>
+                            <outfile>target/${project.build.finalName}/${project.artifactId}w.exe</outfile>
+                            <jar>target/${project.build.finalName}.jar</jar>
+                            <errTitle>${project.artifactId}</errTitle>
+                            <classPath>
+                                <mainClass>net.folab.eicic.Main</mainClass>
+                                <jarLocation>lib/</jarLocation>
+                            </classPath>
+                            <cmdLine>-c net.folab.eicic.ui.GuiConsole</cmdLine>
+                            <jre>
+                                <minVersion>1.8.0</minVersion>
+                            </jre>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
