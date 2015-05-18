@@ -29,7 +29,6 @@ import net.folab.eicic.model.StateContext;
 
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -314,7 +313,7 @@ public class GuiConsole implements Console {
                     StaticAlgorithm staticAlgorithm = (StaticAlgorithm) controller.getAlgorithm();
                     staticAlgorithm.setCreBias(creBias);
                 }
-                creBiasLabel.setText(format("%.3f", creBias));
+                creBiasLabel.setText(format("\u21D2 %.3f", creBias));
             }
         });
         creText.setText("0");
@@ -409,7 +408,7 @@ public class GuiConsole implements Console {
 
         // creText
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 1);
+        layoutData.top = new FormAttachment(0, 1 + 1);
         layoutData.left = new FormAttachment(creLabel, 8);
         layoutData.right = new FormAttachment(creLabel, 8 + 48, TRAIL);
         creText.setLayoutData(layoutData);
@@ -418,7 +417,7 @@ public class GuiConsole implements Console {
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 3 + 2);
         layoutData.left = new FormAttachment(creText, 8);
-        layoutData.right = new FormAttachment(creText, 8 + 48, TRAIL);
+        layoutData.right = new FormAttachment(creText, 8 + 80, TRAIL);
         creBiasLabel.setLayoutData(layoutData);
 
         // showActiveButton
