@@ -212,9 +212,9 @@ public class GuiConsole implements Console {
                 Shell dialog = new Shell(shell, DIALOG_TRIM | APPLICATION_MODAL);
                 dialog.setText("About eICIC");
 
-                Rectangle bound = dialog.getDisplay().getBounds();
                 int width = 300;
                 int height = 400;
+                Rectangle bound = display.getBounds();
                 int x = (bound.width - width) / 2;
                 int y = (bound.height - height) / 2;
                 dialog.setBounds(x, y, width, height);
@@ -857,7 +857,13 @@ public class GuiConsole implements Console {
         }
         // - - -
 
-        shell.setSize(1280, 800);
+        int width = 1280;
+        int height = 800;
+        Rectangle bound = display.getBounds();
+        int x = (bound.width - width) / 2;
+        int y = (bound.height - height) / 2;
+        shell.setBounds(x, y, width, height);
+
         shell.open();
         shell.addShellListener(new ShellAdapter() {
             @Override
