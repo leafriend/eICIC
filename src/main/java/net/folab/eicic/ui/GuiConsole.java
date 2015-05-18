@@ -307,13 +307,17 @@ public class GuiConsole implements Console {
         creText.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent e) {
-                double cre = Double.parseDouble(creText.getText());
-                double creBias = pow(10, cre / 10);
-                if (controller != null && controller.getAlgorithm() instanceof StaticAlgorithm) {
-                    StaticAlgorithm staticAlgorithm = (StaticAlgorithm) controller.getAlgorithm();
-                    staticAlgorithm.setCreBias(creBias);
+                try {
+                    double cre = Double.parseDouble(creText.getText());
+                    double creBias = pow(10, cre / 10);
+                    if (controller != null && controller.getAlgorithm() instanceof StaticAlgorithm) {
+                        StaticAlgorithm staticAlgorithm = (StaticAlgorithm) controller.getAlgorithm();
+                        staticAlgorithm.setCreBias(creBias);
+                    }
+                    creBiasLabel.setText(format("\u21D2 CRE bias: %.3f", creBias));
+                } catch (NumberFormatException ex) {
+                    // TODO handle catched exception
                 }
-                creBiasLabel.setText(format("\u21D2 %.3f", creBias));
             }
         });
         creText.setText("0");
@@ -417,7 +421,7 @@ public class GuiConsole implements Console {
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 3 + 2);
         layoutData.left = new FormAttachment(creText, 8);
-        layoutData.right = new FormAttachment(creText, 8 + 80, TRAIL);
+        layoutData.right = new FormAttachment(creText, 8 + 120, TRAIL);
         creBiasLabel.setLayoutData(layoutData);
 
         // showActiveButton
