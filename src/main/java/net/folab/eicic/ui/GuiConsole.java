@@ -36,7 +36,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -99,8 +98,6 @@ public class GuiConsole implements Console {
     private Combo algorithmeCombo;
 
     private Combo randomCombo;
-
-    private Button saveButton;
 
     private int saved;
 
@@ -297,15 +294,6 @@ public class GuiConsole implements Console {
             }
         });
 
-        saveButton = new Button(parent, PUSH);
-        saveButton.setText("&Save");
-        saveButton.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                save();
-            }
-        });
-
         showActiveButton = new Button(parent, CHECK);
         showActiveButton.setText("Show active only");
         showActiveButton.setSelection(true);
@@ -387,14 +375,6 @@ public class GuiConsole implements Console {
         layoutData.top = new FormAttachment(0, 1);
         layoutData.left = new FormAttachment(algorithmeCombo, 8);
         randomCombo.setLayoutData(layoutData);
-
-        // saveButton
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(randomCombo, 8);
-        layoutData.right = new FormAttachment(randomCombo, 8 + 64, TRAIL);
-        // layoutData.top = new FormAttachment(100, 0);
-        saveButton.setLayoutData(layoutData);
 
         // showActiveButton
         layoutData = new FormData();
@@ -1160,7 +1140,6 @@ public class GuiConsole implements Console {
         executeButton.setText(isRunning ? PAUSE : START);
         nextButton.setEnabled(!isRunning);
         algorithmeCombo.setEnabled(!isRunning);
-        saveButton.setEnabled(!isRunning);
         totalSeqText.setEnabled(!isRunning);
     }
 
