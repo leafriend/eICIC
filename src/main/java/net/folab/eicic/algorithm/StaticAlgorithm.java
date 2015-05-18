@@ -12,6 +12,8 @@ import net.folab.eicic.model.StateContext;
 
 public class StaticAlgorithm implements Algorithm {
 
+    private double creBias = 1;
+
     @Override
     public int getNumber() {
         return 0;
@@ -27,7 +29,7 @@ public class StaticAlgorithm implements Algorithm {
                     / pow(macroEdge.distance, 4);
             double picoPower = picoEdge.baseStation.txPower
                     / pow(picoEdge.distance, 4);
-            if (macroPower <= CRE * picoPower)
+            if (macroPower <= creBias * picoPower)
                 mobile.saConnectToMacro = false;
             else
                 mobile.saConnectToMacro = true;
@@ -88,6 +90,14 @@ public class StaticAlgorithm implements Algorithm {
         StateContext state = StateContext.getStateContext(macroState, macros,
                 picos, mobiles);
         return state;
+    }
+
+    public double getCreBias() {
+        return creBias;
+    }
+
+    public void setCreBias(double creBias) {
+        this.creBias = creBias;
     }
 
 }
