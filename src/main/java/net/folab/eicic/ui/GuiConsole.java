@@ -161,11 +161,18 @@ public class GuiConsole implements Console {
         Menu menuBar = new Menu( parent, BAR);
         parent.setMenuBar(menuBar);
 
+        // - - -
+
         MenuItem fileHeader = new MenuItem(menuBar, CASCADE);
         fileHeader.setText("&File");
 
         Menu file = new Menu(parent, DROP_DOWN);
         fileHeader.setMenu(file);
+
+        MenuItem open = new MenuItem(file, PUSH);
+        open.setText("&Open");
+        open.setAccelerator(CTRL + 'O');
+        open.setEnabled(false);
 
         MenuItem save = new MenuItem(file, PUSH);
         save.setText("&Save");
