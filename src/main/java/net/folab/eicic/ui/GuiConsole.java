@@ -167,6 +167,17 @@ public class GuiConsole implements Console {
         Menu file = new Menu(parent, DROP_DOWN);
         fileHeader.setMenu(file);
 
+        MenuItem save = new MenuItem(file, PUSH);
+        save.setText("&Save");
+        save.setAccelerator(CTRL + 'S');
+        save.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                save();
+            };
+        });
+
+        new MenuItem(file, SEPARATOR);
+
         MenuItem exit = new MenuItem(file, PUSH);
         exit.setText("E&xit");
         exit.setAccelerator(CTRL + 'Q');
@@ -175,7 +186,6 @@ public class GuiConsole implements Console {
                 shell.close();
             };
         });
-
 
         // - - -
 
