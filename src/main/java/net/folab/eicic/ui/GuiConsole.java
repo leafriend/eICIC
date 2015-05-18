@@ -45,6 +45,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
@@ -145,7 +147,7 @@ public class GuiConsole implements Console {
 
     }
 
-    public void buildShell(Composite parent) {
+    public void buildShell(Shell parent) {
 
         buttonPanel = new Composite(parent, NONE);
         buildButtonPannel(buttonPanel);
@@ -155,6 +157,25 @@ public class GuiConsole implements Console {
 
         statusBar = new Composite(parent, NONE);
         buildStatusBar(statusBar);
+
+        Menu menuBar = new Menu( parent, BAR);
+        parent.setMenuBar(menuBar);
+
+        MenuItem fileHeader = new MenuItem(menuBar, CASCADE);
+        fileHeader.setText("&File");
+
+        Menu file = new Menu(parent, DROP_DOWN);
+        fileHeader.setMenu(file);
+
+        MenuItem exit = new MenuItem(file, PUSH);
+        exit.setText("E&xit");
+        exit.setAccelerator(CTRL + 'Q');
+        exit.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                shell.close();
+            };
+        });
+
 
         // - - -
 
