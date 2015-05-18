@@ -95,9 +95,9 @@ public class GuiConsole implements Console {
 
     private Text utilityText;
 
-    private Combo algorithmeCombo;
-
     private Combo randomCombo;
+
+    private Combo algorithmeCombo;
 
     private int saved;
 
@@ -252,17 +252,6 @@ public class GuiConsole implements Console {
 
     public void buildButtonPannel(Composite parent) {
 
-        algorithmeCombo = new Combo(parent, READ_ONLY);
-        algorithmeCombo.setItems(array(ALGORITHM_0, ALGORITHM_1, ALGORITHM_2,
-                ALGORITHM_3));
-        algorithmeCombo.select(0);
-        algorithmeCombo.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                setAlgorithm();
-            }
-        });
-
         randomCombo = new Combo(parent, READ_ONLY);
         randomCombo.setItems(array("Random", "Pseudo", "Static"));
         randomCombo.select(0);
@@ -291,6 +280,17 @@ public class GuiConsole implements Console {
                 default:
                     break;
                 }
+            }
+        });
+
+        algorithmeCombo = new Combo(parent, READ_ONLY);
+        algorithmeCombo.setItems(array(ALGORITHM_0, ALGORITHM_1, ALGORITHM_2,
+                ALGORITHM_3));
+        algorithmeCombo.select(0);
+        algorithmeCombo.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                setAlgorithm();
             }
         });
 
@@ -364,17 +364,17 @@ public class GuiConsole implements Console {
         parent.setLayout(new FormLayout());
         FormData layoutData;
 
-        // algorithmeCombo
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 1);
-        layoutData.left = new FormAttachment(0);
-        algorithmeCombo.setLayoutData(layoutData);
-
         // randomCombo
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 1);
-        layoutData.left = new FormAttachment(algorithmeCombo, 8);
+        layoutData.left = new FormAttachment(0);
         randomCombo.setLayoutData(layoutData);
+
+        // algorithmeCombo
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 1);
+        layoutData.left = new FormAttachment(randomCombo, 8);
+        algorithmeCombo.setLayoutData(layoutData);
 
         // showActiveButton
         layoutData = new FormData();
