@@ -1,6 +1,7 @@
 package net.folab.eicic;
 
 import static java.util.Arrays.asList;
+import static net.folab.eicic.ui.Util.newInstance;
 
 import java.io.IOException;
 
@@ -103,26 +104,6 @@ public class Main {
 
         return null;
 
-    }
-
-    public static <T> T newInstance(String className) {
-        try {
-            @SuppressWarnings("unchecked")
-            Class<T> type = (Class<T>) Class.forName(className);
-            return type.newInstance();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-            return null;
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            return null;
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
 }
