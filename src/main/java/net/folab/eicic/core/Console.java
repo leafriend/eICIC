@@ -14,6 +14,8 @@ public interface Console {
 
     void notifyStarted();
 
+    void notifyPaused();
+
     void notifyEnded();
 
     void setTotalSeq(int totalSeq);

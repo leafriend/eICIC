@@ -284,6 +284,10 @@ public class CliConsole implements Console {
     }
 
     @Override
+    public void notifyPaused() {
+    }
+
+    @Override
     public void notifyEnded() {
     }
 

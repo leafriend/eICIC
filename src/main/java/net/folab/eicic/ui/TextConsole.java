@@ -68,6 +68,10 @@ public class TextConsole implements Console {
     }
 
     @Override
+    public void notifyPaused() {
+    }
+
+    @Override
     public void notifyEnded() {
         controller.stop();
     }
