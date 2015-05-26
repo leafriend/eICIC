@@ -131,11 +131,6 @@ public class GuiConsole implements Console {
 
     private Color colorActiveBg;
 
-    @SafeVarargs
-    public static <T> T[] array(T... items) {
-        return items;
-    }
-
     public GuiConsole() {
 
         display = new Display();
