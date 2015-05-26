@@ -17,9 +17,10 @@ public class TextConsole implements Console {
 
     private Algorithm algorithm;
 
-    private Controller controller;
+    private final Controller controller;
 
-    public TextConsole() {
+    public TextConsole(Controller controller) {
+        this.controller = controller;
     }
 
     @Override
@@ -84,11 +85,6 @@ public class TextConsole implements Console {
     @Override
     public void setAlgorithm(Algorithm algorithm) {
         this.algorithm = algorithm;
-    }
-
-    @Override
-    public void setController(Controller controller) {
-        this.controller = controller;
     }
 
 }
