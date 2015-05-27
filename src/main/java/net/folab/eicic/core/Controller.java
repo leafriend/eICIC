@@ -1,5 +1,7 @@
 package net.folab.eicic.core;
 
+import static net.folab.eicic.ui.Util.newInstance;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -88,9 +90,12 @@ public class Controller {
         }
     }
 
-    public Controller(Console console, Algorithm algorithm, int totalSeq) {
+    public Controller(String consoleClassName, Algorithm algorithm, int totalSeq) {
         super();
-        this.console = console;
+        console = newInstance(consoleClassName, this);
+        if (console == null) {
+            //return parser;
+        }
         this.algorithm = algorithm;
         this.totalSeq = totalSeq;
     }

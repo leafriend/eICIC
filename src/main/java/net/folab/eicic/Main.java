@@ -9,7 +9,6 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import net.folab.eicic.core.Algorithm;
-import net.folab.eicic.core.Console;
 import net.folab.eicic.core.Controller;
 
 public class Main {
@@ -74,10 +73,6 @@ public class Main {
         if (consoleClassName == null) {
             return parser;
         }
-        Console console = newInstance(consoleClassName);
-        if (console == null) {
-            return parser;
-        }
 
         Algorithm algorithm = null;
         if (algorithmClassName != null)
@@ -99,7 +94,7 @@ public class Main {
             return parser;
         }
 
-        Controller controller = new Controller(console, algorithm, totalSeq);
+        Controller controller = new Controller(consoleClassName, algorithm, totalSeq);
         controller.display();
 
         return null;
