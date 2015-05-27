@@ -101,6 +101,10 @@ public class GuiConsole implements Console {
 
     private Combo algorithmeCombo;
 
+    private Text absNumeratorText;
+
+    private Text absDenominatorText;
+
     private Text creText;
 
     private int saved;
@@ -298,6 +302,43 @@ public class GuiConsole implements Console {
             }
         });
 
+        Label absLabel = new Label(parent, NONE);
+        absLabel.setText("ABS");
+
+        absNumeratorText = new Text(parent, BORDER | RIGHT);
+        absNumeratorText.setText("000");
+        absNumeratorText.addModifyListener(e -> {
+            try {
+                int absNumerator = Integer.parseInt(absNumeratorText.getText());
+                System.out.println("input absNumerator: " + absNumerator);
+                if (controller != null && controller.getAlgorithm() instanceof StaticAlgorithm) {
+                    StaticAlgorithm staticAlgorithm = (StaticAlgorithm) controller.getAlgorithm();
+                    staticAlgorithm.setAbsNumerator(absNumerator);
+                    System.out.println("set absNumerator: " + absNumerator);
+                }
+            } catch (NumberFormatException ex) {
+                // TODO handle caught exception
+            }
+        });
+
+        Label absSlashLabel = new Label(parent, NONE);
+        absSlashLabel.setText("/");
+
+        absDenominatorText = new Text(parent, BORDER | RIGHT);
+        absDenominatorText.setText("000");
+        absDenominatorText.addModifyListener(e -> {
+            try {
+                int absDenominator = Integer.parseInt(absDenominatorText.getText());
+                System.out.println("absDenominator: " + absDenominator);
+                if (controller != null && controller.getAlgorithm() instanceof StaticAlgorithm) {
+                    StaticAlgorithm staticAlgorithm = (StaticAlgorithm) controller.getAlgorithm();
+                    staticAlgorithm.setAbsDenominator(absDenominator);
+                    System.out.println("absDenominator: " + absDenominator);
+                }
+            } catch (NumberFormatException ex) {
+                // TODO handle caught exception
+            }
+        });
 
         Label creLabel = new Label(parent, NONE);
         creLabel.setText("CRE");
@@ -314,9 +355,9 @@ public class GuiConsole implements Console {
                         StaticAlgorithm staticAlgorithm = (StaticAlgorithm) controller.getAlgorithm();
                         staticAlgorithm.setCreBias(creBias);
                     }
-                    creBiasLabel.setText(format("\u21D2 CRE bias: %.3f", creBias));
+                    creBiasLabel.setText(format("\u21D2 bias: %.3f", creBias));
                 } catch (NumberFormatException ex) {
-                    // TODO handle catched exception
+                    // TODO handle caught exception
                 }
             }
         });
@@ -404,10 +445,36 @@ public class GuiConsole implements Console {
         layoutData.left = new FormAttachment(randomCombo, 8);
         algorithmeCombo.setLayoutData(layoutData);
 
-        // creLabel
+        // absLabel
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 3 + 2);
         layoutData.left = new FormAttachment(algorithmeCombo, 8);
+        absLabel.setLayoutData(layoutData);
+
+        // absNumeratorText
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 1 + 1);
+        layoutData.left = new FormAttachment(absLabel, 8);
+        absNumeratorText.setLayoutData(layoutData);
+        absNumeratorText.setText("20");
+
+        // absSlashLabel
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 3 + 2);
+        layoutData.left = new FormAttachment(absNumeratorText, 0);
+        absSlashLabel.setLayoutData(layoutData);
+
+        // absDenominatorText
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 1 + 1);
+        layoutData.left = new FormAttachment(absSlashLabel, 0);
+        absDenominatorText.setLayoutData(layoutData);
+        absDenominatorText.setText("100");
+
+        // creLabel
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 3 + 2);
+        layoutData.left = new FormAttachment(absDenominatorText, 8);
         creLabel.setLayoutData(layoutData);
 
         // creText
@@ -1137,7 +1204,8 @@ public class GuiConsole implements Console {
         creText.setEnabled(false);
         switch (algorithmeCombo.getItem(index)) {
         case ALGORITHM_0:
-            controller.setAlgorithm(new StaticAlgorithm());
+            StaticAlgorithm algorithm = new StaticAlgorithm();
+			controller.setAlgorithm(algorithm);
             creText.setEnabled(true);
             break;
         case ALGORITHM_1:

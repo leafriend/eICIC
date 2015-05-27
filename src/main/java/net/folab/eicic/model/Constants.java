@@ -24,10 +24,6 @@ public interface Constants {
 
     double MOBILE_QOS = Math.log(MOBILE_QOS_FACTOR);
 
-    int ABS_NUMERATOR = 20;
-
-    int ABS_DENOMINATOR = 100;
-
     double BANDWIDTH = 20000000;
 
     double BW_PER_RB = 180000;

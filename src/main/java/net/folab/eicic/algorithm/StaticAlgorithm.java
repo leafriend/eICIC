@@ -12,6 +12,10 @@ import net.folab.eicic.model.StateContext;
 
 public class StaticAlgorithm implements Algorithm {
 
+    private double absNumerator = 20;
+
+    private double absDenominator = 100;
+
     private double creBias = 1;
 
     @Override
@@ -40,7 +44,10 @@ public class StaticAlgorithm implements Algorithm {
     public StateContext calculate(int seq, Macro[] macros, Pico[] picos,
             Mobile[] mobiles) {
 
-        boolean isAbs = (seq % ABS_DENOMINATOR) < ABS_NUMERATOR;
+        boolean isAbs = (seq % absDenominator) < absNumerator;
+
+        System.out.println(String.format("(%d %% %f) < %f: %b", seq,
+                absDenominator, absNumerator, isAbs));
 
         int macroState = 0;
         if (!isAbs) {
@@ -90,6 +97,22 @@ public class StaticAlgorithm implements Algorithm {
         StateContext state = StateContext.getStateContext(macroState, macros,
                 picos, mobiles);
         return state;
+    }
+
+    public double getAbsNumerator() {
+        return absNumerator;
+    }
+
+    public void setAbsNumerator(double absNumerator) {
+        this.absNumerator = absNumerator;
+    }
+
+    public double getAbsDenominator() {
+        return absDenominator;
+    }
+
+    public void setAbsDenominator(double absDenominator) {
+        this.absDenominator = absDenominator;
     }
 
     public double getCreBias() {
