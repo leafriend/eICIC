@@ -130,7 +130,7 @@ public class GuiConsole implements Console {
 
                 int width = 300;
                 int height = 400;
-                Rectangle bound = display.getPrimaryMonitor().getBounds();
+                Rectangle bound = display.getPrimaryMonitor().getClientArea();
                 int x = (bound.width - width) / 2;
                 int y = (bound.height - height) / 2;
                 dialog.setBounds(x, y, width, height);
@@ -223,7 +223,7 @@ public class GuiConsole implements Console {
 
         int width = 1280;
         int height = 800;
-        Rectangle bound = display.getPrimaryMonitor().getBounds();
+        Rectangle bound = display.getPrimaryMonitor().getClientArea();
         int x = (bound.width - width) / 2;
         int y = (bound.height - height) / 2;
         shell.setBounds(x, y, width, height);
