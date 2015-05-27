@@ -261,9 +261,11 @@ public class GuiButtonPanel {
                 String text = executeButton.getText();
                 if (PAUSE.endsWith(text)) {
                     controller.pause();
+                    executeButton.setText(START);
                 } else if (START.endsWith(text)) {
                     setAlgorithm();
                     controller.start();
+                    executeButton.setText(PAUSE);
                 }
             }
         };
@@ -427,11 +429,10 @@ public class GuiButtonPanel {
         executeButton.setFocus();
     }
 
-    public void setEnabled(boolean isRunning) {
-        resetButton.setEnabled(isRunning);
-        executeButton.setText(isRunning ? START : PAUSE);
-        nextButton.setEnabled(isRunning);
-        algorithmCombo.setEnabled(isRunning);
+    public void setEnabled(boolean enabled) {
+        resetButton.setEnabled(enabled);
+        nextButton.setEnabled(enabled);
+        algorithmCombo.setEnabled(enabled);
     }
 
     public UpdateFrequencyListener getUpdateFrequencyListener() {
