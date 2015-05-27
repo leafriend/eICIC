@@ -1,18 +1,28 @@
 package net.folab.eicic.core;
 
 import static java.lang.String.format;
+import static java.lang.String.valueOf;
 import static net.folab.eicic.ui.Util.newInstance;
+import static java.util.Collections.*;
+import static java.lang.Math.*;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
 
 import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
@@ -21,6 +31,23 @@ import net.folab.eicic.model.Pico;
 import net.folab.eicic.model.StateContext;
 
 public class Controller {
+
+    public static final Map<String, Function<Mobile, String>> COLUMNS = unmodifiableMap(new LinkedHashMap<String, Function<Mobile, String>>() {
+        private static final long serialVersionUID = -6689823013265960946L;
+        {
+            put("#", u -> valueOf(u.idx));
+            put("X", u -> valueOf(u.x));
+            put("Y", u -> valueOf(u.y));
+            put("M", u -> valueOf(u.getMacro().idx));
+            put("P", u -> valueOf(u.getPico().idx));
+            put("User Rate", u -> valueOf(u.getUserRate()));
+            put("log(User Rate)", u -> valueOf(log(u.getUserRate())));
+            put("Throughput", u -> valueOf(u.getThroughput()));
+            put("log(User Rate)", u -> valueOf(log(u.getUserRate())));
+            put("λ", u -> valueOf(u.getLambda()));
+            put("μ", u -> valueOf(u.getMu()));
+        }
+    });
 
     private Console console;
 
@@ -254,6 +281,101 @@ public class Controller {
      */
     public String getDefaultSaveFileName(final String extension) {
         return format("PA%d-%d." + extension, algorithm.getNumber(), seq);
+    }
+
+    public void save(String fileName) {
+        try {
+
+            Charset charset = Charset.forName(System
+                    .getProperty("file.encoding"));
+
+            String delim = fileName.toLowerCase().endsWith(".csv") ? "," : "\t";
+
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(new File(fileName)), charset));
+
+            // - - -
+
+            writer.write("#Utitlity");
+            writer.write(delim);
+            // writer.write(utilityText.getText());
+            writer.write("\n");
+            writer.flush();
+
+            writer.write("#Seq");
+            writer.write(delim);
+            writer.write(valueOf(seq));
+            writer.write("\n");
+            writer.flush();
+
+            writer.write("#Time");
+            writer.write(delim);
+            writer.write(Console.milisToTimeString(accumuMillis));
+            writer.write("\n");
+            writer.flush();
+
+            writer.write("#Macro Count");
+            for (int m = 0; m < macros.length; m++) {
+                writer.write(delim);
+                writer.write(valueOf(macros[m].getAllocationCount()));
+            }
+            writer.write("\n");
+            writer.flush();
+
+            writer.write("#Macro %");
+            for (int m = 0; m < macros.length; m++) {
+                writer.write(delim);
+                double percent = 100.0 * macros[m].getAllocationCount() / seq;
+                writer.write(format("%.2f%%", percent));
+            }
+            writer.write("\n");
+            writer.flush();
+
+            // - - -
+
+            final boolean[] isFirst = new boolean[1];
+
+            StringBuilder headers = new StringBuilder();
+            isFirst[0] = true;
+            COLUMNS.forEach((name, func) -> {
+                String d = "";
+                if (isFirst[0]) {
+                    isFirst[0] = false;
+                } else {
+                    d = delim;
+                }
+                headers.append(d).append(name);
+            });
+            writer.write(headers.toString());
+            writer.write("\n");
+
+            for (int u = 0; u < mobiles.length; u++) {
+                StringBuilder values = new StringBuilder();
+                Mobile mobile = mobiles[u];
+                isFirst[0] = true;
+                COLUMNS.forEach((name, func) -> {
+                    String d = "";
+                    if (isFirst[0]) {
+                        isFirst[0] = false;
+                    } else {
+                        d = delim;
+                    }
+                    values.append(d).append(func.apply(mobile));
+                });
+                writer.write(values.toString());
+                writer.write("\n");
+            }
+
+            // - - -
+
+            //saved = controller.getSeq();
+
+            writer.close();
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     /* bean getter/setter *************************************************** */

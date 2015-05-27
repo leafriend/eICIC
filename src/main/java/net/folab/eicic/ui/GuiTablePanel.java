@@ -17,9 +17,6 @@ import static org.eclipse.swt.SWT.NONE;
 import static org.eclipse.swt.SWT.RIGHT;
 import static org.eclipse.swt.SWT.SHIFT;
 
-import java.io.IOException;
-import java.io.Writer;
-
 import net.folab.eicic.core.Controller;
 import net.folab.eicic.model.BaseStation;
 import net.folab.eicic.model.Edge;
@@ -299,39 +296,6 @@ public class GuiTablePanel {
         texts[i++] = format("%.6f", mobile.getMu());
 
         item.setText(texts);
-    }
-
-    public void save(Writer writer, String selected) {
-        try {
-
-            String delim = selected.toLowerCase().endsWith(".csv") ? "," : "\t";
-
-            int cc = mobileTable.getColumnCount();
-
-            for (int c = 0; c < cc; c++) {
-                if (c > 0)
-                    writer.write(delim);
-                writer.write(mobileTable.getColumn(c).getText());
-            }
-            writer.write("\n");
-            writer.flush();
-
-            int rc = mobileTable.getItemCount();
-            for (int r = 0; r < rc; r++) {
-                TableItem item = mobileTable.getItem(r);
-                for (int c = 0; c < cc; c++) {
-                    if (c > 0)
-                        writer.write(delim);
-                    writer.write(item.getText(c));
-                }
-                writer.write("\n");
-                writer.flush();
-            }
-
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 
     public Composite getControl() {

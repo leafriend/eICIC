@@ -2,13 +2,6 @@ package net.folab.eicic.ui;
 
 import static org.eclipse.swt.SWT.*;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
-
 import net.folab.eicic.algorithm.Algorithm2;
 import net.folab.eicic.core.Algorithm;
 import net.folab.eicic.core.Console;
@@ -178,35 +171,12 @@ public class GuiConsole implements Console {
         dialog.setFilterExtensions(filterExt);
         String fileName = controller.getDefaultSaveFileName("csv");
         dialog.setFileName(fileName);
-        String selected = dialog.open();
-        if (selected != null) {
-            save(selected);
+        fileName  = dialog.open();
+        if (fileName != null) {
+            controller.save(fileName);
             return true;
         } else {
             return false;
-        }
-    }
-
-    private void save(String selected) {
-        try {
-
-            Charset charset = Charset.forName(System
-                    .getProperty("file.encoding"));
-
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(new File(selected)), charset));
-
-            statusPanel.save(writer, selected);
-
-            tablePanel.save(writer, selected);
-
-            saved = controller.getSeq();
-
-            writer.close();
-
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     }
 
