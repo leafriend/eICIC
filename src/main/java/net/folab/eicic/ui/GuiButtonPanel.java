@@ -61,6 +61,10 @@ public class GuiButtonPanel {
 
     private Combo algorithmCombo;
 
+    private Text absNumeratorText;
+
+    private Text absDenominatorText;
+
     private Button executeButton;
 
     private Button resetButton;
@@ -123,7 +127,7 @@ public class GuiButtonPanel {
         Label absLabel = new Label(control, NONE);
         absLabel.setText("ABS");
 
-        Text absNumeratorText = new Text(control, BORDER | RIGHT);
+        absNumeratorText = new Text(control, BORDER | RIGHT);
         absNumeratorText.setText("000");
         absNumeratorText.addModifyListener(e -> {
             try {
@@ -142,7 +146,7 @@ public class GuiButtonPanel {
         Label absSlashLabel = new Label(control, NONE);
         absSlashLabel.setText("/");
 
-        Text absDenominatorText = new Text(control, BORDER | RIGHT);
+        absDenominatorText = new Text(control, BORDER | RIGHT);
         absDenominatorText.setText("000");
         absDenominatorText.addModifyListener(e -> {
             try {
