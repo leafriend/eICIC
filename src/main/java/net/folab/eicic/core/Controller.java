@@ -214,6 +214,7 @@ public class Controller {
     }
 
     public void start() {
+        console.notifyStarted();
         if (seq == 0) {
             algorithm.setUp(macros, picos, mobiles);
         }
@@ -229,6 +230,7 @@ public class Controller {
     }
 
     public void pause() {
+        console.notifyPaused();
         isRunning = false;
     }
 

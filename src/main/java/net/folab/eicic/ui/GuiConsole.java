@@ -1223,6 +1223,11 @@ public class GuiConsole implements Console {
     }
 
     @Override
+    public void notifyPaused() {
+        setRunningState(false);
+    }
+
+    @Override
     public void notifyEnded() {
         if (display.isDisposed())
             return;
