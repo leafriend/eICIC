@@ -1,6 +1,5 @@
 package net.folab.eicic.ui;
 
-import static java.lang.String.*;
 import static org.eclipse.swt.SWT.*;
 
 import java.io.BufferedWriter;
@@ -11,7 +10,6 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 
 import net.folab.eicic.algorithm.Algorithm2;
-import net.folab.eicic.algorithm.StaticAlgorithm;
 import net.folab.eicic.core.Algorithm;
 import net.folab.eicic.core.Console;
 import net.folab.eicic.core.Controller;
@@ -178,8 +176,7 @@ public class GuiConsole implements Console {
         // dialog.setFilterPath(filterPath);
         String[] filterExt = { "*.csv", "*.txt", "*.*" };
         dialog.setFilterExtensions(filterExt);
-        String fileName = format("PA%d-%d.csv", algorithmNumber,
-                controller.getSeq());
+        String fileName = buttonPanel.getDefaultSaveFileName();
         dialog.setFileName(fileName);
         String selected = dialog.open();
         if (selected != null) {
@@ -281,8 +278,6 @@ public class GuiConsole implements Console {
 
     private boolean dumped = true;
 
-    private int algorithmNumber;
-
     protected int updateFrequency;
 
     @Override
@@ -343,11 +338,7 @@ public class GuiConsole implements Console {
 
     @Override
     public void setAlgorithm(Algorithm algorithm) {
-        if (algorithm == null) {
-            algorithm = new StaticAlgorithm(); // TODO
-        }
         buttonPanel.setAlgorithm(algorithm);
-        algorithmNumber = algorithm.getNumber();
     }
 
     private void setRunningState(boolean isRunning) {

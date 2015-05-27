@@ -57,6 +57,8 @@ public class GuiButtonPanel {
 
     private Controller controller;
 
+    private Algorithm algorithm;
+
     private Composite control;
 
     private Combo algorithmCombo;
@@ -388,29 +390,37 @@ public class GuiButtonPanel {
     }
 
     public void setAlgorithm(Algorithm algorithm) {
-        algorithmCombo.select(algorithm.getNumber());
+        this.algorithm = algorithm;
+        if (algorithm != null)
+            algorithmCombo.select(algorithm.getNumber());
     }
 
     public void setAlgorithm() {
         int index = algorithmCombo.getSelectionIndex();
-        creText.setEnabled(false);
-        switch (algorithmCombo.getItem(index)) {
-        case ALGORITHM_0:
-            controller.setAlgorithm(new StaticAlgorithm());
-            creText.setEnabled(true);
-            break;
-        case ALGORITHM_1:
-            controller.setAlgorithm(new Algorithm1());
-            break;
-        case ALGORITHM_2:
-            controller.setAlgorithm(new Algorithm2());
-            break;
-        case ALGORITHM_3:
-            controller.setAlgorithm(new Algorithm3());
-            break;
-        default:
-            break;
+        if (algorithm == null || algorithm.getNumber() != index) {
+            creText.setEnabled(false);
+            switch (algorithmCombo.getItem(index)) {
+            case ALGORITHM_0:
+                this.algorithm = new StaticAlgorithm();
+                double absNumerator = Integer.parseInt(absNumeratorText
+                        .getText());
+                ((StaticAlgorithm) algorithm).setAbsNumerator(absNumerator);
+                creText.setEnabled(true);
+                break;
+            case ALGORITHM_1:
+                this.algorithm = new Algorithm1();
+                break;
+            case ALGORITHM_2:
+                this.algorithm = new Algorithm2();
+                break;
+            case ALGORITHM_3:
+                this.algorithm = new Algorithm3();
+                break;
+            default:
+                break;
+            }
         }
+        controller.setAlgorithm(algorithm);
     }
 
     public void setFocus() {
@@ -431,6 +441,10 @@ public class GuiButtonPanel {
     public void setUpdateFrequencyListener(
             UpdateFrequencyListener updateFrequencyListener) {
         this.updateFrequencyListener = updateFrequencyListener;
+    }
+
+    public String getDefaultSaveFileName() {
+        return format("PA%d-%d.csv", algorithm.getNumber(), controller.getSeq());
     }
 
 }
