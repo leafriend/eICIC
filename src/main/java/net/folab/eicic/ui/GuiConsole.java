@@ -21,8 +21,6 @@ import net.folab.eicic.model.Pico;
 import net.folab.eicic.model.StateContext;
 import net.folab.eicic.ui.GuiButtonPanel.UpdateFrequencyListener;
 
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
@@ -31,15 +29,12 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 
 public class GuiConsole implements Console {
 
@@ -51,19 +46,9 @@ public class GuiConsole implements Console {
 
     private int saved;
 
-    private Composite statusBar;
-
-    private Text seqText;
-
-    private Text totalSeqText;
-
-    private Text executionTimeText;
-
-    private Label estimationTimeLabel;
-
-    private Text utilityText;
-
     private GuiTablePanel tablePanel;
+
+    private GuiStatusPanel statusPanel;
 
     private final Controller controller;
 
@@ -92,8 +77,7 @@ public class GuiConsole implements Console {
 
         tablePanel = new GuiTablePanel(shell, controller);
 
-        statusBar = new Composite(parent, NONE);
-        buildStatusBar(statusBar);
+        statusPanel = new GuiStatusPanel(shell, controller);
 
         Menu menuBar = new Menu(parent, BAR);
         parent.setMenuBar(menuBar);
@@ -175,7 +159,7 @@ public class GuiConsole implements Console {
         layoutData.top = new FormAttachment(buttonPanel.getControl(), 8);
         layoutData.left = new FormAttachment(0, 8);
         layoutData.right = new FormAttachment(100, -8);
-        layoutData.bottom = new FormAttachment(statusBar, -8);
+        layoutData.bottom = new FormAttachment(statusPanel.getControl(), -8);
         tablePanel.getControl().setLayoutData(layoutData);
 
         // statusBar
@@ -184,7 +168,7 @@ public class GuiConsole implements Console {
         layoutData.left = new FormAttachment(0, 8);
         layoutData.right = new FormAttachment(100, -8);
         layoutData.bottom = new FormAttachment(100, -8);
-        statusBar.setLayoutData(layoutData);
+        statusPanel.getControl().setLayoutData(layoutData);
 
     }
 
@@ -209,52 +193,13 @@ public class GuiConsole implements Console {
     private void save(String selected) {
         try {
 
-            int seq = controller.getSeq();
-
-            String delim = selected.toLowerCase().endsWith(".csv") ? "," : "\t";
-
             Charset charset = Charset.forName(System
                     .getProperty("file.encoding"));
 
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream(new File(selected)), charset));
 
-            writer.write("#Utitlity");
-            writer.write(delim);
-            writer.write(utilityText.getText());
-            writer.write("\n");
-            writer.flush();
-
-            writer.write("#Seq");
-            writer.write(delim);
-            writer.write(valueOf(seq));
-            writer.write("\n");
-            writer.flush();
-
-            writer.write("#Time");
-            writer.write(delim);
-            writer.write(executionTimeText.getText());
-            writer.write("\n");
-            writer.flush();
-
-            writer.write("#Macro Count");
-            for (int m = 0; m < controller.getMacros().length; m++) {
-                writer.write(delim);
-                writer.write(valueOf(controller.getMacros()[m]
-                        .getAllocationCount()));
-            }
-            writer.write("\n");
-            writer.flush();
-
-            writer.write("#Macro %");
-            for (int m = 0; m < controller.getMacros().length; m++) {
-                writer.write(delim);
-                double percent = 100.0
-                        * controller.getMacros()[m].getAllocationCount() / seq;
-                writer.write(format("%.2f%%", percent));
-            }
-            writer.write("\n");
-            writer.flush();
+            statusPanel.save(writer, selected);
 
             tablePanel.save(writer, selected);
 
@@ -266,99 +211,6 @@ public class GuiConsole implements Console {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    }
-
-    public void buildStatusBar(Composite parent) {
-
-        seqText = new Text(parent, READ_ONLY | RIGHT);
-        seqText.setText("0");
-
-        Label seqSlashLabel = new Label(parent, NONE);
-        seqSlashLabel.setText(" / ");
-
-        totalSeqText = new Text(parent, BORDER | RIGHT);
-        totalSeqText.setText("0");
-        totalSeqText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                String number = totalSeqText.getText().replaceAll(",", "");
-                controller.setTotalSeq(Integer.parseInt(number));
-            }
-        });
-
-        // - - -
-
-        executionTimeText = new Text(parent, READ_ONLY | RIGHT);
-        executionTimeText.setText("00:00:00");
-
-        estimationTimeLabel = new Label(parent, RIGHT);
-        estimationTimeLabel.setText(" + 00:00:00 = 00:00:00");
-
-        // - - -
-
-        Label utilityLabel = new Label(parent, NONE);
-        utilityLabel.setText("Sum Utility:");
-
-        utilityText = new Text(parent, READ_ONLY | RIGHT);
-        utilityText.setText("0.000");
-
-        // - - -
-
-        parent.setLayout(new FormLayout());
-        FormData layoutData;
-
-        //
-
-        // utilityLabel
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 3);
-        layoutData.left = new FormAttachment(0, 0);
-        utilityLabel.setLayoutData(layoutData);
-
-        // utilityText
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 3);
-        layoutData.left = new FormAttachment(utilityLabel, 0);
-        layoutData.right = new FormAttachment(utilityLabel, 64, TRAIL);
-        utilityText.setLayoutData(layoutData);
-
-        //
-
-        // seqText
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 3);
-        layoutData.left = new FormAttachment(seqSlashLabel, -8 - 64, LEAD);
-        layoutData.right = new FormAttachment(seqSlashLabel, 0);
-        seqText.setLayoutData(layoutData);
-
-        // seqSlashLabel
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 3);
-        layoutData.right = new FormAttachment(totalSeqText, 0);
-        seqSlashLabel.setLayoutData(layoutData);
-
-        // seqTotalText
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(executionTimeText, -8 - 64, LEAD);
-        layoutData.right = new FormAttachment(executionTimeText, -8);
-        totalSeqText.setLayoutData(layoutData);
-
-        //
-
-        // elapsedText
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 3);
-        layoutData.right = new FormAttachment(1, 1, 0);
-        layoutData.right = new FormAttachment(estimationTimeLabel, 0);
-        executionTimeText.setLayoutData(layoutData);
-
-        // elapsedText
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 3);
-        layoutData.right = new FormAttachment(1, 1, 0);
-        estimationTimeLabel.setLayoutData(layoutData);
-
     }
 
     @Override
@@ -451,26 +303,13 @@ public class GuiConsole implements Console {
                 if (shell.isDisposed())
                     return;
 
-                seqText.setText(format("%,d", seq));
-
-                String elapsedTime = Console.milisToTimeString(elapsed);
-
-                long estimated = seq == 0 ? 0 : elapsed
-                        * controller.getTotalSeq() / seq;
-                long left = 1000 * ((estimated / 1000) - (elapsed / 1000));
-                String estimatedTime = " + " + Console.milisToTimeString(left)
-                        + " = " + Console.milisToTimeString(estimated);
-
-                executionTimeText.setText(elapsedTime);
-                estimationTimeLabel.setText(estimatedTime);
-
                 if (seq == controller.getTotalSeq())
                     updateFrequency = 1; // TODO ?
 
                 double throughput = tablePanel.dump(seq, state, macros, picos,
                         mobiles);
 
-                utilityText.setText(format("%.3f", throughput));
+                statusPanel.dump(seq, elapsed, throughput);
 
                 dumped = true;
             }
@@ -499,14 +338,7 @@ public class GuiConsole implements Console {
 
     @Override
     public void setTotalSeq(final int totalSeq) {
-        if (!display.isDisposed()) {
-            display.asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    totalSeqText.setText(format("%,d", totalSeq));
-                }
-            });
-        }
+        statusPanel.setTotalSeq(totalSeq);
     }
 
     @Override
@@ -520,7 +352,7 @@ public class GuiConsole implements Console {
 
     private void setRunningState(boolean isRunning) {
         buttonPanel.setEnabled(!isRunning);
-        totalSeqText.setEnabled(!isRunning);
+        statusPanel.setEnabled(!isRunning);
     }
 
 }
