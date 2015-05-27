@@ -129,11 +129,16 @@ public class GuiConsole implements Console {
                 dialog.setBounds(x, y, width, height);
 
                 Link link = new Link(dialog, CENTER);
-                link.setText("<A>https://github.com/leafriend/eICIC</A>");
-                link.addSelectionListener(new SelectionAdapter(){
+                link.setText("Designed by <A>pooheup</A>\nDeveloped by <A>leafriend</A>\n<A>https://github.com/leafriend/eICIC</A>");
+                link.addSelectionListener(new SelectionAdapter() {
                     @Override
                     public void widgetSelected(SelectionEvent e) {
-                        Program.launch(e.text);
+                        if ("pooheup".equals(e.text)
+                                || "leafriend".equals(e.text)) {
+                            Program.launch("https://github.com/" + e.text);
+                        } else {
+                            Program.launch(e.text);
+                        }
                     }
                 });
 
