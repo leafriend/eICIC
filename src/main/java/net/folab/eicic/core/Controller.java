@@ -75,6 +75,8 @@ public class Controller {
 
     private long accumuMillis = 0;
 
+    private boolean saved = true;
+
     public static abstract class Generator<T> {
 
         public final Class<T> type;
@@ -165,6 +167,8 @@ public class Controller {
 
                 StateContext state = null;
                 while (isRunning && seq++ < nextSeq) {
+
+                    saved = false;
 
                     state = calculator.calculateInternal(seq);
                     long execute = System.currentTimeMillis() - started
@@ -368,7 +372,7 @@ public class Controller {
 
             // - - -
 
-            //saved = controller.getSeq();
+            saved = true;
 
             writer.close();
 
@@ -415,6 +419,10 @@ public class Controller {
 
     public long getElapsed() {
         return accumuMillis;
+    }
+
+    public boolean isSaved() {
+        return saved;
     }
 
 }

@@ -35,8 +35,6 @@ public class GuiConsole implements Console {
 
     private GuiButtonPanel buttonPanel;
 
-    private int saved;
-
     private GuiTablePanel tablePanel;
 
     private GuiStatusPanel statusPanel;
@@ -202,7 +200,7 @@ public class GuiConsole implements Console {
         shell.addShellListener(new ShellAdapter() {
             @Override
             public void shellClosed(ShellEvent e) {
-                if (saved != controller.getSeq()) {
+                if (!controller.isSaved()) {
                     MessageBox messageBox = new MessageBox(shell,
                             APPLICATION_MODAL | YES | CANCEL | NO
                                     | ICON_WARNING);
