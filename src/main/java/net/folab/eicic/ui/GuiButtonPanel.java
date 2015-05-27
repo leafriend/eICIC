@@ -443,8 +443,4 @@ public class GuiButtonPanel {
         this.updateFrequencyListener = updateFrequencyListener;
     }
 
-    public String getDefaultSaveFileName() {
-        return format("PA%d-%d.csv", algorithm.getNumber(), controller.getSeq());
-    }
-
 }

@@ -1,5 +1,6 @@
 package net.folab.eicic.core;
 
+import static java.lang.String.format;
 import static net.folab.eicic.ui.Util.newInstance;
 
 import java.io.BufferedReader;
@@ -241,6 +242,18 @@ public class Controller {
     public void stop() {
         isRunning = false;
         executorService.shutdown();
+    }
+
+    /**
+     * Returns default file name based current algorithm and seq.
+     *
+     * @param extension
+     *            Suffix used as extension without period (<code>.</code>)
+     *
+     * @return default file name
+     */
+    public String getDefaultSaveFileName(final String extension) {
+        return format("PA%d-%d." + extension, algorithm.getNumber(), seq);
     }
 
     /* bean getter/setter *************************************************** */

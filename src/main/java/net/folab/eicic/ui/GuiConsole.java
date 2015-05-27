@@ -176,7 +176,7 @@ public class GuiConsole implements Console {
         // dialog.setFilterPath(filterPath);
         String[] filterExt = { "*.csv", "*.txt", "*.*" };
         dialog.setFilterExtensions(filterExt);
-        String fileName = buttonPanel.getDefaultSaveFileName();
+        String fileName = controller.getDefaultSaveFileName("csv");
         dialog.setFileName(fileName);
         String selected = dialog.open();
         if (selected != null) {
