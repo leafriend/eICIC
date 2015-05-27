@@ -12,11 +12,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
-import java.util.Random;
 
-import net.folab.eicic.algorithm.Algorithm1;
 import net.folab.eicic.algorithm.Algorithm2;
-import net.folab.eicic.algorithm.Algorithm3;
 import net.folab.eicic.algorithm.StaticAlgorithm;
 import net.folab.eicic.core.Algorithm;
 import net.folab.eicic.core.Console;
@@ -27,6 +24,7 @@ import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
 import net.folab.eicic.model.StateContext;
+import net.folab.eicic.ui.GuiButtonPanel.UpdateFrequencyListener;
 
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -43,8 +41,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
@@ -60,18 +56,6 @@ import org.eclipse.swt.widgets.Text;
 
 public class GuiConsole implements Console {
 
-    private static final String START = "Sta&rt";
-
-    private static final String PAUSE = "P&ause";
-
-    private static final String ALGORITHM_0 = "0: Static Algorithm";
-
-    private static final String ALGORITHM_1 = "1: Algorithm 1";
-
-    private static final String ALGORITHM_2 = "2: Algorithm 2";
-
-    private static final String ALGORITHM_3 = "3: Algorithm 3";
-
     public static final String LAMBDA = "\u03bb";
 
     public static final String MU = "\u03bc";
@@ -81,6 +65,10 @@ public class GuiConsole implements Console {
     private Clipboard clipboard;
 
     private Shell shell;
+
+    private GuiButtonPanel buttonPanel;
+
+    private int saved;
 
     private Composite statusBar;
 
@@ -92,35 +80,7 @@ public class GuiConsole implements Console {
 
     private Label estimationTimeLabel;
 
-    private Composite buttonPanel;
-
-    private SelectionAdapter executeButtonListener;
-
     private Text utilityText;
-
-    private Combo randomCombo;
-
-    private Combo algorithmeCombo;
-
-    private Text absNumeratorText;
-
-    private Text absDenominatorText;
-
-    private Text creText;
-
-    private int saved;
-
-    private Button showActiveButton;
-
-    private Combo updateSeq;
-
-    private int selectedIndex;
-
-    private Button resetButton;
-
-    private Button executeButton;
-
-    private Button nextButton;
 
     private Composite tablePanel;
 
@@ -154,8 +114,15 @@ public class GuiConsole implements Console {
 
     public void buildShell(Shell parent) {
 
-        buttonPanel = new Composite(parent, NONE);
-        buildButtonPannel(buttonPanel);
+        buttonPanel = new GuiButtonPanel(shell, controller);
+        buttonPanel.setUpdateFrequencyListener(new UpdateFrequencyListener() {
+            @Override
+            public void updateFrequencyModified(int updateFrequency) {
+                GuiConsole.this.updateFrequency = updateFrequency;
+                boolean enabled = updateFrequency != 0;
+                mobileTable.setEnabled(enabled);
+            }
+        });
 
         tablePanel = new Composite(parent, NONE);
         buildTablePanel(tablePanel);
@@ -163,7 +130,7 @@ public class GuiConsole implements Console {
         statusBar = new Composite(parent, NONE);
         buildStatusBar(statusBar);
 
-        Menu menuBar = new Menu( parent, BAR);
+        Menu menuBar = new Menu(parent, BAR);
         parent.setMenuBar(menuBar);
 
         // - - -
@@ -236,11 +203,11 @@ public class GuiConsole implements Console {
         layoutData.left = new FormAttachment(0, 8);
         layoutData.right = new FormAttachment(100, -8);
         // layoutData.bottom = new FormAttachment(statusBar, 8);
-        buttonPanel.setLayoutData(layoutData);
+        buttonPanel.getControl().setLayoutData(layoutData);
 
         // tablePanel
         layoutData = new FormData();
-        layoutData.top = new FormAttachment(buttonPanel, 8);
+        layoutData.top = new FormAttachment(buttonPanel.getControl(), 8);
         layoutData.left = new FormAttachment(0, 8);
         layoutData.right = new FormAttachment(100, -8);
         layoutData.bottom = new FormAttachment(statusBar, -8);
@@ -256,289 +223,13 @@ public class GuiConsole implements Console {
 
     }
 
-    public void buildButtonPannel(Composite parent) {
-
-        randomCombo = new Combo(parent, READ_ONLY);
-        randomCombo.setItems(array("Random", "Pseudo", "Static"));
-        randomCombo.select(0);
-        randomCombo.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                switch (randomCombo.getSelectionIndex()) {
-
-                case 0:
-                    Edge.setRandom(new Random(System.currentTimeMillis()));
-                    break;
-
-                case 1:
-                    Edge.setRandom(new Random(0));
-                    break;
-
-                case 2:
-                    Edge.setRandom(new Random() {
-                        private static final long serialVersionUID = -7928935803738991985L;
-                        public synchronized double nextGaussian() {
-                            return 0;
-                        };
-                    });
-                    break;
-
-                default:
-                    break;
-                }
-            }
-        });
-
-        algorithmeCombo = new Combo(parent, READ_ONLY);
-        algorithmeCombo.setItems(array(ALGORITHM_0, ALGORITHM_1, ALGORITHM_2,
-                ALGORITHM_3));
-        algorithmeCombo.select(0);
-        algorithmeCombo.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                setAlgorithm();
-            }
-        });
-
-        Label absLabel = new Label(parent, NONE);
-        absLabel.setText("ABS");
-
-        absNumeratorText = new Text(parent, BORDER | RIGHT);
-        absNumeratorText.setText("000");
-        absNumeratorText.addModifyListener(e -> {
-            try {
-                int absNumerator = Integer.parseInt(absNumeratorText.getText());
-                System.out.println("input absNumerator: " + absNumerator);
-                if (controller != null && controller.getAlgorithm() instanceof StaticAlgorithm) {
-                    StaticAlgorithm staticAlgorithm = (StaticAlgorithm) controller.getAlgorithm();
-                    staticAlgorithm.setAbsNumerator(absNumerator);
-                    System.out.println("set absNumerator: " + absNumerator);
-                }
-            } catch (NumberFormatException ex) {
-                // TODO handle caught exception
-            }
-        });
-
-        Label absSlashLabel = new Label(parent, NONE);
-        absSlashLabel.setText("/");
-
-        absDenominatorText = new Text(parent, BORDER | RIGHT);
-        absDenominatorText.setText("000");
-        absDenominatorText.addModifyListener(e -> {
-            try {
-                int absDenominator = Integer.parseInt(absDenominatorText.getText());
-                System.out.println("absDenominator: " + absDenominator);
-                if (controller != null && controller.getAlgorithm() instanceof StaticAlgorithm) {
-                    StaticAlgorithm staticAlgorithm = (StaticAlgorithm) controller.getAlgorithm();
-                    staticAlgorithm.setAbsDenominator(absDenominator);
-                    System.out.println("absDenominator: " + absDenominator);
-                }
-            } catch (NumberFormatException ex) {
-                // TODO handle caught exception
-            }
-        });
-
-        Label creLabel = new Label(parent, NONE);
-        creLabel.setText("CRE");
-        creText = new Text(parent, BORDER | RIGHT);
-        Label creBiasLabel = new Label(parent, NONE);
-
-        creText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                try {
-                    double cre = Double.parseDouble(creText.getText());
-                    double creBias = pow(10, cre / 10);
-                    if (controller != null && controller.getAlgorithm() instanceof StaticAlgorithm) {
-                        StaticAlgorithm staticAlgorithm = (StaticAlgorithm) controller.getAlgorithm();
-                        staticAlgorithm.setCreBias(creBias);
-                    }
-                    creBiasLabel.setText(format("\u21D2 bias: %.3f", creBias));
-                } catch (NumberFormatException ex) {
-                    // TODO handle caught exception
-                }
-            }
-        });
-        creText.setText("0");
-
-        showActiveButton = new Button(parent, CHECK);
-        showActiveButton.setText("Show active only");
-        showActiveButton.setSelection(true);
-
-        updateSeq = new Combo(parent, READ_ONLY);
-        String[] items = array( //
-                "No Update", //
-                "Update for each 1 seq", //
-                "Update for each 10 seq", //
-                "Update for each 100 seq", //
-                "Update for each 1000 seq", //
-                "Update for each 10000 seq" //
-        );
-        updateSeq.setItems(items);
-        updateSeq.select(0);
-        updateSeq.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                selectedIndex = updateSeq.getSelectionIndex();
-                boolean enabled = selectedIndex != 0;
-                mobileTable.setEnabled(enabled);
-            }
-        });
-
-        resetButton = new Button(parent, PUSH);
-        resetButton.setText("Rese&t");
-        resetButton.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                controller.reset();
-            }
-        });
-
-        executeButton = new Button(parent, PUSH);
-        executeButton.setText(START);
-        executeButtonListener = new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                String text = executeButton.getText();
-                if (PAUSE.endsWith(text)) {
-                    controller.pause();
-                    ;
-                    setRunningState(false);
-                } else if (START.endsWith(text)) {
-                    setAlgorithm();
-                    setRunningState(true);
-                    String number = totalSeqText.getText().replaceAll(",", "");
-                    controller.setTotalSeq(Integer.parseInt(number));
-                    controller.start();
-                }
-            }
-        };
-        executeButton.addSelectionListener(executeButtonListener);
-
-        // - - -
-
-        nextButton = new Button(parent, PUSH);
-        nextButton.setText("N&ext");
-        nextButton.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                controller.next();
-            }
-        });
-
-        // - - -
-
-        parent.setLayout(new FormLayout());
-        FormData layoutData;
-
-        // randomCombo
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 1);
-        layoutData.left = new FormAttachment(0);
-        randomCombo.setLayoutData(layoutData);
-
-        // algorithmeCombo
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 1);
-        layoutData.left = new FormAttachment(randomCombo, 8);
-        algorithmeCombo.setLayoutData(layoutData);
-
-        // absLabel
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 3 + 2);
-        layoutData.left = new FormAttachment(algorithmeCombo, 8);
-        absLabel.setLayoutData(layoutData);
-
-        // absNumeratorText
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 1 + 1);
-        layoutData.left = new FormAttachment(absLabel, 8);
-        absNumeratorText.setLayoutData(layoutData);
-        absNumeratorText.setText("20");
-
-        // absSlashLabel
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 3 + 2);
-        layoutData.left = new FormAttachment(absNumeratorText, 0);
-        absSlashLabel.setLayoutData(layoutData);
-
-        // absDenominatorText
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 1 + 1);
-        layoutData.left = new FormAttachment(absSlashLabel, 0);
-        absDenominatorText.setLayoutData(layoutData);
-        absDenominatorText.setText("100");
-
-        // creLabel
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 3 + 2);
-        layoutData.left = new FormAttachment(absDenominatorText, 8);
-        creLabel.setLayoutData(layoutData);
-
-        // creText
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 1 + 1);
-        layoutData.left = new FormAttachment(creLabel, 8);
-        layoutData.right = new FormAttachment(creLabel, 8 + 48, TRAIL);
-        creText.setLayoutData(layoutData);
-
-        // creBiasLabel
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 3 + 2);
-        layoutData.left = new FormAttachment(creText, 8);
-        layoutData.right = new FormAttachment(creText, 8 + 120, TRAIL);
-        creBiasLabel.setLayoutData(layoutData);
-
-        // showActiveButton
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 5);
-        // layoutData.left = new FormAttachment(100, 100, -64 - 8 - 64);
-        layoutData.right = new FormAttachment(updateSeq, -8, LEAD);
-        // layoutData.top = new FormAttachment(100, 0);
-        showActiveButton.setLayoutData(layoutData);
-
-        // updateSeq
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 1);
-        // layoutData.left = new FormAttachment(100, 100, -64 - 8 - 64);
-        layoutData.right = new FormAttachment(resetButton, -8, LEAD);
-        // layoutData.top = new FormAttachment(100, 0);
-        updateSeq.setLayoutData(layoutData);
-
-        // resetButton
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(executeButton, -8 - 64, LEAD);
-        layoutData.right = new FormAttachment(executeButton, -8);
-        // layoutData.top = new FormAttachment(100, 0);
-        resetButton.setLayoutData(layoutData);
-
-        // executeButton
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(nextButton, -8 - 64, LEAD);
-        layoutData.right = new FormAttachment(nextButton, -8);
-        // layoutData.top = new FormAttachment(100, 0);
-        executeButton.setLayoutData(layoutData);
-
-        // nextButton
-        layoutData = new FormData();
-        layoutData.top = new FormAttachment(0, 0);
-        layoutData.left = new FormAttachment(100, 100, -64);
-        layoutData.right = new FormAttachment(100, 0);
-        // layoutData.top = new FormAttachment(100, 0);
-        nextButton.setLayoutData(layoutData);
-
-    }
-
     public boolean save() {
         FileDialog dialog = new FileDialog(shell, SAVE);
         dialog.setText("Save");
         // dialog.setFilterPath(filterPath);
         String[] filterExt = { "*.csv", "*.txt", "*.*" };
         dialog.setFilterExtensions(filterExt);
-        int pa = algorithmeCombo.getSelectionIndex() + 1;
-        String fileName = format("PA%d-%d.csv", pa,
+        String fileName = format("PA%d-%d.csv", algorithmNumber,
                 controller.getSeq());
         dialog.setFileName(fileName);
         String selected = dialog.open();
@@ -584,7 +275,8 @@ public class GuiConsole implements Console {
             writer.write("#Macro Count");
             for (int m = 0; m < controller.getMacros().length; m++) {
                 writer.write(delim);
-                writer.write(valueOf(controller.getMacros()[m].getAllocationCount()));
+                writer.write(valueOf(controller.getMacros()[m]
+                        .getAllocationCount()));
             }
             writer.write("\n");
             writer.flush();
@@ -592,7 +284,8 @@ public class GuiConsole implements Console {
             writer.write("#Macro %");
             for (int m = 0; m < controller.getMacros().length; m++) {
                 writer.write(delim);
-                double percent = 100.0 * controller.getMacros()[m].getAllocationCount() / seq;
+                double percent = 100.0
+                        * controller.getMacros()[m].getAllocationCount() / seq;
                 writer.write(format("%.2f%%", percent));
             }
             writer.write("\n");
@@ -804,6 +497,13 @@ public class GuiConsole implements Console {
 
         totalSeqText = new Text(parent, BORDER | RIGHT);
         totalSeqText.setText("0");
+        totalSeqText.addModifyListener(new ModifyListener() {
+            @Override
+            public void modifyText(ModifyEvent e) {
+                String number = totalSeqText.getText().replaceAll(",", "");
+                controller.setTotalSeq(Integer.parseInt(number));
+            }
+        });
 
         // - - -
 
@@ -895,7 +595,7 @@ public class GuiConsole implements Console {
     @Override
     public void notifyStarted() {
 
-        executeButton.setFocus();
+        buttonPanel.setFocus();
 
         // - - -
 
@@ -1004,9 +704,14 @@ public class GuiConsole implements Console {
 
     private boolean dumped = true;
 
+    private int algorithmNumber;
+
+    protected int updateFrequency;
+
     @Override
-    public void dump(final int seq, final StateContext state, final Macro[] macros,
-            final Pico[] picos, final Mobile[] mobiles, final long elapsed) {
+    public void dump(final int seq, final StateContext state,
+            final Macro[] macros, final Pico[] picos, final Mobile[] mobiles,
+            final long elapsed) {
 
         // if (calculator.isRunning() && t % 5 != 0)
         // return elapsed;
@@ -1034,38 +739,8 @@ public class GuiConsole implements Console {
                 executionTimeText.setText(elapsedTime);
                 estimationTimeLabel.setText(estimatedTime);
 
-                int frequncy;
-                switch (selectedIndex) {
-                case 0:
-                    frequncy = 0;
-                    // No Update
-                    break;
-                case 1:
-                    frequncy = 1;
-                    // Update for each 1 seq
-                    break;
-                case 2:
-                    frequncy = 10;
-                    // Update for each 10 seq
-                    break;
-                case 3:
-                    frequncy = 100;
-                    // Update for each 100 seq
-                    break;
-                case 4:
-                    frequncy = 1000;
-                    // Update for each 1000 seq
-                    break;
-                case 5:
-                    frequncy = 10000;
-                    // Update for each 10000 seq
-                    break;
-                default:
-                    throw new RuntimeException("Unsupported frequency: "
-                            + updateSeq.getItem(updateSeq.getSelectionIndex()));
-                }
                 if (seq == controller.getTotalSeq())
-                    frequncy = 1;
+                    updateFrequency = 1;
 
                 if (state != null) {
 
@@ -1074,9 +749,11 @@ public class GuiConsole implements Console {
                         TableItem item = macroTable.getItem(macro.idx);
                         item.setText(4, valueOf(state.macroIsOn(m) ? "ON"
                                 : "OFF"));
-                        item.setText(5,
-                                format("%.02f", (seq - macros[m].getAllocationCount())
-                                        * 100.0 / seq));
+                        item.setText(
+                                5,
+                                format("%.02f",
+                                        (seq - macros[m].getAllocationCount())
+                                                * 100.0 / seq));
                     }
 
                     for (int p = 0; p < picos.length; p++) {
@@ -1084,9 +761,11 @@ public class GuiConsole implements Console {
                         TableItem item = picoTable.getItem(pico.idx);
                         item.setText(4, valueOf(state.picoIsAbs(p) ? "ABS"
                                 : "non"));
-                        item.setText(5,
-                                format("%.02f", (seq - picos[p].getNonAbsCount())
-                                        * 100.0 / seq));
+                        item.setText(
+                                5,
+                                format("%.02f",
+                                        (seq - picos[p].getNonAbsCount())
+                                                * 100.0 / seq));
                     }
 
                 }
@@ -1097,7 +776,7 @@ public class GuiConsole implements Console {
 
                     throughput += log(mobile.getThroughput() / seq);
 
-                    if (frequncy > 0 && seq % frequncy == 0) {
+                    if (updateFrequency > 0 && seq % updateFrequency == 0) {
 
                         int itemIndex = mobileIdxToItems[mobile.idx];
                         if (itemIndex < 0)
@@ -1134,54 +813,56 @@ public class GuiConsole implements Console {
 
                         if (state != null) {
 
-                        Edge<? extends BaseStation<?>>[] activeEdges = mobile
-                                .getActiveEdges();
-                        double[] macroLambdaR = mobile.getMacroLambdaR();
-                        double[] absPicoLambdaR = mobile.getAbsPicoLambdaR();
-                        double[] nonPicoLambdaR = mobile.getNonPicoLambdaR();
-                        boolean isAbs = state.picoIsAbs(mobile.getPico().idx);
-                        for (int j = 0; j < NUM_RB; j++) {
-                            String bs = null;
-                            double lambdaR = 0;
-                            int rank = 0;
-                            if (activeEdges[j] == null) {
-                                item.setBackground(index + j * 3 + 0, null);
-                                item.setBackground(index + j * 3 + 1, null);
-                                item.setBackground(index + j * 3 + 2, null);
-                            } else {
-                                if (activeEdges[j].baseStation instanceof Macro) {
-                                    Macro macro = (Macro) activeEdges[j].baseStation;
-                                    bs = "MAC";
-                                    lambdaR = macroLambdaR[j];
-                                    rank = macro.getSortedEdges()[j]
-                                            .indexOf(activeEdges[j]);
-                                } else if (activeEdges[j].baseStation instanceof Pico) {
-                                    Pico pico = (Pico) activeEdges[j].baseStation;
-                                    if (isAbs) {
-                                        bs = "ABS";
-                                        lambdaR = absPicoLambdaR[j];
-                                        rank = pico.getSortedAbsEdges()[j]
+                            Edge<? extends BaseStation<?>>[] activeEdges = mobile
+                                    .getActiveEdges();
+                            double[] macroLambdaR = mobile.getMacroLambdaR();
+                            double[] absPicoLambdaR = mobile
+                                    .getAbsPicoLambdaR();
+                            double[] nonPicoLambdaR = mobile
+                                    .getNonPicoLambdaR();
+                            boolean isAbs = state.picoIsAbs(mobile.getPico().idx);
+                            for (int j = 0; j < NUM_RB; j++) {
+                                String bs = null;
+                                double lambdaR = 0;
+                                int rank = 0;
+                                if (activeEdges[j] == null) {
+                                    item.setBackground(index + j * 3 + 0, null);
+                                    item.setBackground(index + j * 3 + 1, null);
+                                    item.setBackground(index + j * 3 + 2, null);
+                                } else {
+                                    if (activeEdges[j].baseStation instanceof Macro) {
+                                        Macro macro = (Macro) activeEdges[j].baseStation;
+                                        bs = "MAC";
+                                        lambdaR = macroLambdaR[j];
+                                        rank = macro.getSortedEdges()[j]
                                                 .indexOf(activeEdges[j]);
-                                    } else {
-                                        bs = "non";
-                                        lambdaR = nonPicoLambdaR[j];
-                                        rank = pico.getSortedNonEdges()[j]
-                                                .indexOf(activeEdges[j]);
+                                    } else if (activeEdges[j].baseStation instanceof Pico) {
+                                        Pico pico = (Pico) activeEdges[j].baseStation;
+                                        if (isAbs) {
+                                            bs = "ABS";
+                                            lambdaR = absPicoLambdaR[j];
+                                            rank = pico.getSortedAbsEdges()[j]
+                                                    .indexOf(activeEdges[j]);
+                                        } else {
+                                            bs = "non";
+                                            lambdaR = nonPicoLambdaR[j];
+                                            rank = pico.getSortedNonEdges()[j]
+                                                    .indexOf(activeEdges[j]);
+                                        }
                                     }
+                                    item.setBackground(index + j * 3 + 0,
+                                            colorActiveBg);
+                                    item.setBackground(index + j * 3 + 1,
+                                            colorActiveBg);
+                                    item.setBackground(index + j * 3 + 2,
+                                            colorActiveBg);
                                 }
-                                item.setBackground(index + j * 3 + 0,
-                                        colorActiveBg);
-                                item.setBackground(index + j * 3 + 1,
-                                        colorActiveBg);
-                                item.setBackground(index + j * 3 + 2,
-                                        colorActiveBg);
+                                texts[index + j * 3] = bs == null ? ""
+                                        : format("%.3f", 1000 * lambdaR);
+                                texts[index + j * 3 + 1] = bs == null ? "" : bs;
+                                texts[index + j * 3 + 2] = bs == null ? ""
+                                        : valueOf(rank);
                             }
-                            texts[index + j * 3] = bs == null ? "" : format(
-                                    "%.3f", 1000 * lambdaR);
-                            texts[index + j * 3 + 1] = bs == null ? "" : bs;
-                            texts[index + j * 3 + 2] = bs == null ? ""
-                                    : valueOf(rank);
-                        }
                         }
 
                         item.setText(texts);
@@ -1195,29 +876,6 @@ public class GuiConsole implements Console {
             }
         });
 
-    }
-
-    public void setAlgorithm() {
-        int index = algorithmeCombo.getSelectionIndex();
-        creText.setEnabled(false);
-        switch (algorithmeCombo.getItem(index)) {
-        case ALGORITHM_0:
-            StaticAlgorithm algorithm = new StaticAlgorithm();
-			controller.setAlgorithm(algorithm);
-            creText.setEnabled(true);
-            break;
-        case ALGORITHM_1:
-            controller.setAlgorithm(new Algorithm1());
-            break;
-        case ALGORITHM_2:
-            controller.setAlgorithm(new Algorithm2());
-            break;
-        case ALGORITHM_3:
-            controller.setAlgorithm(new Algorithm3());
-            break;
-        default:
-            break;
-        }
     }
 
     @Override
@@ -1253,20 +911,15 @@ public class GuiConsole implements Console {
 
     @Override
     public void setAlgorithm(Algorithm algorithm) {
-        if (algorithm instanceof Algorithm1) {
-            algorithmeCombo.select(0);
-        } else if (algorithm instanceof Algorithm2) {
-            algorithmeCombo.select(1);
-        } else if (algorithm instanceof Algorithm3) {
-            algorithmeCombo.select(2);
+        if (algorithm == null) {
+            algorithm = new StaticAlgorithm(); // TODO
         }
+        buttonPanel.setAlgorithm(algorithm);
+        algorithmNumber = algorithm.getNumber();
     }
 
     private void setRunningState(boolean isRunning) {
-        resetButton.setEnabled(!isRunning);
-        executeButton.setText(isRunning ? PAUSE : START);
-        nextButton.setEnabled(!isRunning);
-        algorithmeCombo.setEnabled(!isRunning);
+        buttonPanel.setEnabled(!isRunning);
         totalSeqText.setEnabled(!isRunning);
     }
 
