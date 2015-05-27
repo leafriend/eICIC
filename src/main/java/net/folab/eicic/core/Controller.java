@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
@@ -31,6 +32,8 @@ import net.folab.eicic.model.Pico;
 import net.folab.eicic.model.StateContext;
 
 public class Controller {
+
+    private static final String NEED_TO_SAVE_BEFORE_EXIT = Controller.class.getName() + ".needToSaveBeforeExit";
 
     public static final Map<String, Function<Mobile, String>> COLUMNS = unmodifiableMap(new LinkedHashMap<String, Function<Mobile, String>>() {
         private static final long serialVersionUID = -6689823013265960946L;
@@ -380,6 +383,27 @@ public class Controller {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    public boolean isNeedToSaveBeforeExit() {
+        if (isSaved())
+            return false;
+        return getConfigurationBoolean(NEED_TO_SAVE_BEFORE_EXIT);
+    }
+
+    public boolean getConfigurationBoolean(String key) {
+        String alternative = Boolean.FALSE.toString();
+        return Boolean.parseBoolean(getConfiguration(key, alternative));
+    }
+
+    public Optional<String> getConfiguration(String key) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public String getConfiguration(String key, String alternative) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     /* bean getter/setter *************************************************** */
