@@ -218,7 +218,7 @@ public class Controller {
     }
 
     public void start() {
-        console.notifyStarted();
+        // TODO console.notifyStarted();
         if (seq == 0) {
             algorithm.setUp(macros, picos, mobiles);
         }
