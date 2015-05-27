@@ -24,7 +24,7 @@ public class CliConsole implements Console {
 
     private Algorithm algorithm;
 
-    private Controller controller;
+    private final Controller controller;
 
     private double throughput;
 
@@ -35,6 +35,10 @@ public class CliConsole implements Console {
     private int saved;
 
     private long elapsed;
+
+    public CliConsole(Controller controller) {
+        this.controller = controller;
+    }
 
     @Override
     public synchronized void dump(int seq, StateContext state, Macro[] macros,
@@ -298,11 +302,6 @@ public class CliConsole implements Console {
     @Override
     public void setAlgorithm(Algorithm algorithm) {
         this.algorithm = algorithm;
-    }
-
-    @Override
-    public void setController(Controller controller) {
-        this.controller = controller;
     }
 
     // TODO 중복 구현 제거

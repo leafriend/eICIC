@@ -1,7 +1,6 @@
 package net.folab.eicic.core;
 
 import static java.lang.String.format;
-import net.folab.eicic.core.Controller;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
@@ -21,8 +20,6 @@ public interface Console {
     void setTotalSeq(int totalSeq);
 
     void setAlgorithm(Algorithm algorithm);
-
-    void setController(Controller controller);
 
     static String milisToTimeString(final long elapsed) {
         long sec = elapsed / 1000;

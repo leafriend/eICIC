@@ -132,11 +132,13 @@ public class GuiConsole implements Console {
 
     private int[] mobileIdxToItems = new int[NUM_MOBILES];
 
-    private Controller controller;
+    private final Controller controller;
 
     private Color colorActiveBg;
 
-    public GuiConsole() {
+    public GuiConsole(Controller controller) {
+
+        this.controller = controller;
 
         display = new Display();
 
@@ -1266,11 +1268,6 @@ public class GuiConsole implements Console {
         nextButton.setEnabled(!isRunning);
         algorithmeCombo.setEnabled(!isRunning);
         totalSeqText.setEnabled(!isRunning);
-    }
-
-    @Override
-    public void setController(Controller controller) {
-        this.controller = controller;
     }
 
 }
