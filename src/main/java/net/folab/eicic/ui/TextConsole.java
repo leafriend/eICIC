@@ -38,7 +38,7 @@ public class TextConsole implements Console {
             double throughput = 0.0;
             for (int u = 0; u < mobiles.length; u++) {
                 Mobile mobile = mobiles[u];
-                throughput += mobile.getThroughput() == 0.0 ? 0.0 : log(mobile.getThroughput() / seq);
+                throughput += mobile.getThroughput() == 0.0 ? 0.0 : log(mobile.getThroughput());
             }
 
             out.print("idx\t" + "   Rate User\t" + "       (log)\t" + "  Throughput\t" + "       (log)\t"
@@ -49,8 +49,8 @@ public class TextConsole implements Console {
                 out.print(format("%3d", mobile.idx) + "\t");
                 out.print(format("%12.6f", mobile.getUserRate()) + "\t");
                 out.print(format("%12.6f", log(mobile.getUserRate())) + "\t");
-                out.print(format("%12.6f", mobile.getThroughput() / seq) + "\t");
-                out.print(format("%12.6f", log(mobile.getThroughput() / seq)) + "\t");
+                out.print(format("%12.6f", mobile.getThroughput()) + "\t");
+                out.print(format("%12.6f", log(mobile.getThroughput())) + "\t");
                 out.print(format("%12.6f", mobile.getLambda()) + "\t");
                 out.print(format("%12.6f", mobile.getMu()) + "\n");
             }

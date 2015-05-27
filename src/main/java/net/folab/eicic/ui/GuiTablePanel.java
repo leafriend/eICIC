@@ -369,7 +369,7 @@ public class GuiTablePanel {
         for (int u = 0; u < mobiles.length; u++) {
             Mobile mobile = mobiles[u];
 
-            throughput += log(mobile.getThroughput() / seq);
+            throughput += log(mobile.getThroughput());
 
             if (updateFrequency > 0 && seq % updateFrequency == 0) {
 
@@ -398,9 +398,8 @@ public class GuiTablePanel {
 
                 texts[index++] = format("%.6f", mobile.getUserRate());
                 texts[index++] = format("%.6f", log(mobile.getUserRate()));
-                texts[index++] = format("%.6f", mobile.getThroughput() / seq);
-                texts[index++] = format("%.6f", log(mobile.getThroughput()
-                        / seq));
+                texts[index++] = format("%.6f", mobile.getThroughput());
+                texts[index++] = format("%.6f", log(mobile.getThroughput()));
                 texts[index++] = format("%.6f", mobile.getLambda());
                 texts[index++] = format("%.6f", mobile.getMu());
 

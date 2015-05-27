@@ -51,7 +51,7 @@ public class CliConsole implements Console {
         for (int u = 0; u < mobiles.length; u++) {
             Mobile mobile = mobiles[u];
             throughput += mobile.getThroughput() == 0.0 ? 0.0 : log(mobile
-                    .getThroughput() / seq);
+                    .getThroughput());
         }
 
         if (frequency > 0 && seq % frequency == 0) {
@@ -75,9 +75,8 @@ public class CliConsole implements Console {
             out.print(format("%3d", mobile.idx) + "\t");
             out.print(format("%12.6f", mobile.getUserRate()) + "\t");
             out.print(format("%12.6f", log(mobile.getUserRate())) + "\t");
-            out.print(format("%12.6f", mobile.getThroughput() / seq) + "\t");
-            out.print(format("%12.6f", log(mobile.getThroughput() / seq))
-                    + "\t");
+            out.print(format("%12.6f", mobile.getThroughput()) + "\t");
+            out.print(format("%12.6f", log(mobile.getThroughput())) + "\t");
             out.print(format("%12.6f", mobile.getLambda()) + "\t");
             out.print(format("%12.6f", mobile.getMu()) + "\n");
         }
@@ -269,9 +268,8 @@ public class CliConsole implements Console {
                 writer.write(format("%3d", mobile.idx) + ",");
                 writer.write(format("%12.6f", mobile.getUserRate()) + ",");
                 writer.write(format("%12.6f", log(mobile.getUserRate())) + ",");
-                writer.write(format("%12.6f", mobile.getThroughput() / seq)
-                        + ",");
-                writer.write(format("%12.6f", log(mobile.getThroughput() / seq))
+                writer.write(format("%12.6f", mobile.getThroughput()) + ",");
+                writer.write(format("%12.6f", log(mobile.getThroughput()))
                         + ",");
                 writer.write(format("%12.6f", mobile.getLambda()) + ",");
                 writer.write(format("%12.6f", mobile.getMu()) + "\n");

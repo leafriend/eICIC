@@ -24,7 +24,11 @@ public class Mobile {
 
     public final double qos;
 
+    private int seq = 0;
+
     private double instantRate;
+
+    private double totalThroughput;
 
     private double throughput;
 
@@ -142,7 +146,8 @@ public class Mobile {
                 }
             }
         }
-        throughput += instantRate;
+        totalThroughput += instantRate;
+        throughput = totalThroughput / seq++;
     }
 
     public void calculateUserRate() {
@@ -158,7 +163,7 @@ public class Mobile {
                 : ((t < 10000) ? STEPSIZE2 : STEPSIZE3);
 
         final double lambda;
-        if ((abs(throughput / t - userRate) * this.lambda < 0.05))
+        if ((abs(totalThroughput / t - userRate) * this.lambda < 0.05))
             lambda = this.lambda - step_size * (instantRate - userRate);
         else
             lambda = this.lambda - step_size2 * (instantRate - userRate);
@@ -205,6 +210,10 @@ public class Mobile {
 
     public double[] getNonPicoLambdaR() {
         return nonPicoLambdaR;
+    }
+
+    public double getTotalThroughput() {
+        return totalThroughput;
     }
 
     public double getThroughput() {

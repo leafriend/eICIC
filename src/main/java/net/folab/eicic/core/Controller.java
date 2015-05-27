@@ -109,7 +109,7 @@ public class Controller {
             double sum = 0;
             StringBuilder sb = new StringBuilder();
             for (int u = 0; u < mobiles.length; u++) {
-                double util = Math.log(mobiles[u].getThroughput() / seq);
+                double util = Math.log(mobiles[u].getThroughput());
                 sb.append(",").append(util);
                 sum += util;
             }
