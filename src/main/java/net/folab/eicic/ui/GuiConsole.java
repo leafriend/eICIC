@@ -20,8 +20,10 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
@@ -125,6 +127,24 @@ public class GuiConsole implements Console {
                 int x = (bound.width - width) / 2;
                 int y = (bound.height - height) / 2;
                 dialog.setBounds(x, y, width, height);
+
+                Link link = new Link(dialog, CENTER);
+                link.setText("<A>https://github.com/leafriend/eICIC</A>");
+                link.addSelectionListener(new SelectionAdapter(){
+                    @Override
+                    public void widgetSelected(SelectionEvent e) {
+                        Program.launch(e.text);
+                    }
+                });
+
+                dialog.setLayout(new FormLayout());
+                FormData layoutData;
+
+                layoutData = new FormData();
+                layoutData.top = new FormAttachment(0, 8);
+                layoutData.left = new FormAttachment(0, 8);
+                layoutData.right = new FormAttachment(100, 8);
+                link.setLayoutData(layoutData);
 
                 dialog.open();
             };
