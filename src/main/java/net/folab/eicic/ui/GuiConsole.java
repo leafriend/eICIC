@@ -317,8 +317,9 @@ public class GuiConsole implements Console {
 
                 double sumUtility = tablePanel.dump(seq, state, macros, picos,
                         mobiles);
+                double sumRate = 0;
 
-                statusPanel.dump(seq, elapsed, sumUtility);
+                statusPanel.dump(seq, elapsed, sumUtility, sumRate);
 
                 dumped = true;
             }
