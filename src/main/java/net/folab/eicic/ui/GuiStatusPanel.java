@@ -34,6 +34,8 @@ public class GuiStatusPanel {
 
     private Text utilityText;
 
+    private Text rateText;
+
     private Label estimationTimeLabel;
 
     private Text totalSeqText;
@@ -78,6 +80,14 @@ public class GuiStatusPanel {
 
         // - - -
 
+        Label rateLabel = new Label(control, NONE);
+        rateLabel.setText("Sum Rate:");
+
+        rateText = new Text(control, READ_ONLY | RIGHT);
+        rateText.setText("0.000");
+
+        // - - -
+
         control.setLayout(new FormLayout());
         FormData layoutData;
 
@@ -95,6 +105,21 @@ public class GuiStatusPanel {
         layoutData.left = new FormAttachment(utilityLabel, 0);
         layoutData.right = new FormAttachment(utilityLabel, 64, TRAIL);
         utilityText.setLayoutData(layoutData);
+
+        //
+
+        // rateLabel
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 3);
+        layoutData.left = new FormAttachment(utilityText, 8);
+        rateLabel.setLayoutData(layoutData);
+
+        // rateText
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 3);
+        layoutData.left = new FormAttachment(rateLabel, 0);
+        layoutData.right = new FormAttachment(rateLabel, 64, TRAIL);
+        rateText.setLayoutData(layoutData);
 
         //
 
