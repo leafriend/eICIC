@@ -302,7 +302,7 @@ public class GuiTablePanel {
         return control;
     }
 
-    public double dump(int seq, StateContext state, Macro[] macros,
+    public double[] dump(int seq, StateContext state, Macro[] macros,
             Pico[] picos, Mobile[] mobiles) {
 
         if (state != null) {
@@ -330,10 +330,12 @@ public class GuiTablePanel {
         }
 
         double sumUtility = 0.0;
+        double sumRate = 0.0;
         for (int u = 0; u < mobiles.length; u++) {
             Mobile mobile = mobiles[u];
 
             sumUtility += log(mobile.getThroughput());
+            sumRate += mobile.getUserRate();
 
             if (updateFrequency > 0 && seq % updateFrequency == 0) {
 
@@ -421,7 +423,7 @@ public class GuiTablePanel {
 
         }
 
-        return sumUtility;
+        return new double[] { sumUtility, sumRate };
 
     }
 
