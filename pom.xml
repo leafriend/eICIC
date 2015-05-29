@@ -99,8 +99,7 @@
                 <version>2.7</version>
                 <executions>
                     <execution>
-                        <id>copy-data</id>
-                        <!-- here the phase you need -->
+                        <id>copy-res</id>
                         <phase>package</phase>
                         <goals>
                             <goal>copy-resources</goal>
@@ -110,6 +109,21 @@
                             <resources>
                                 <resource>
                                     <directory>${basedir}/res</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-conf</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/${project.name}-${project.version}/conf</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/conf</directory>
                                 </resource>
                             </resources>
                         </configuration>

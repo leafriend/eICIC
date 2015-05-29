@@ -246,7 +246,7 @@ public class GuiConsole implements Console {
         shell.addShellListener(new ShellAdapter() {
             @Override
             public void shellClosed(ShellEvent e) {
-                if (!controller.isSaved()) {
+                if (controller.isNeedToSaveBeforeExit()) {
                     MessageBox messageBox = new MessageBox(shell,
                             APPLICATION_MODAL | YES | CANCEL | NO
                                     | ICON_WARNING);
