@@ -3,6 +3,7 @@ package net.folab.eicic.ui;
 import static org.eclipse.swt.SWT.*;
 import net.folab.eicic.algorithm.Algorithm2;
 import net.folab.eicic.core.Algorithm;
+import net.folab.eicic.core.Configuration;
 import net.folab.eicic.core.Console;
 import net.folab.eicic.core.Controller;
 import net.folab.eicic.model.Macro;
@@ -15,6 +16,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -22,14 +24,18 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 public class GuiConsole implements Console {
+
+    private Configuration configuration;
 
     private Display display;
 
@@ -44,6 +50,8 @@ public class GuiConsole implements Console {
     private final Controller controller;
 
     public GuiConsole(Controller controller) {
+
+        configuration = new Configuration(getClass());
 
         this.controller = controller;
 
@@ -235,14 +243,42 @@ public class GuiConsole implements Console {
 
         // - - -
 
-        int width = 1280;
-        int height = 800;
         Rectangle bound = display.getPrimaryMonitor().getClientArea();
-        int x = (bound.width - width) / 2;
-        int y = (bound.height - height) / 2;
-        shell.setBounds(x, y, width, height);
 
-        shell.open();
+        int width = configuration.getInteger("shell.width", 1280);;
+        int height = configuration.getInteger("shell.height", 800);;
+        int x = configuration.getInteger("shell.x", (bound.width - width) / 2);
+        int y = configuration.getInteger("shell.y", (bound.height - height) / 2);
+        boolean maximized = configuration.getBoolean("shell.maximized");
+
+        shell.setBounds(x, y, width, height);
+        shell.setMaximized(maximized);
+
+        Listener resizeHandler = new Listener() {
+            public void handleEvent(Event e) {
+                if (!shell.getMaximized()) {
+                    Point size = shell.getSize();
+                    configuration.setInteger("shell.width", size.x);
+                    configuration.setInteger("shell.height", size.y);
+                }
+                configuration.setBoolean("shell.maximized",
+                        shell.getMaximized());
+            }
+        };
+        Listener moveHandler = new Listener() {
+            public void handleEvent(Event e) {
+                if (!shell.getMaximized()) {
+                    Point location = shell.getLocation();
+                    configuration.setInteger("shell.x", location.x);
+                    configuration.setInteger("shell.y", location.y);
+                }
+            }
+        };
+        resizeHandler.handleEvent(null);
+        moveHandler.handleEvent(null);
+
+        shell.addListener(Resize, resizeHandler);
+        shell.addListener(Move, moveHandler);
         shell.addShellListener(new ShellAdapter() {
             @Override
             public void shellClosed(ShellEvent e) {
@@ -281,6 +317,7 @@ public class GuiConsole implements Console {
                 Algorithm2.executor.shutdown(); // TODO Generalize
             }
         });
+        shell.open();
 
         while (!shell.isDisposed())
             if (!display.readAndDispatch())
