@@ -28,17 +28,17 @@ public class GuiStatusPanel {
 
     private Composite control;
 
-    private Text seqText;
-
-    private Text executionTimeText;
-
     private Text utilityText;
 
     private Text rateText;
 
-    private Label estimationTimeLabel;
+    private Text seqText;
 
     private Text totalSeqText;
+
+    private Text executionTimeText;
+
+    private Label estimationTimeLabel;
 
     public GuiStatusPanel(Composite wrapper, Controller controller) {
 
