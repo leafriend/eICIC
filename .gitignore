@@ -16,3 +16,6 @@ target
 .classpath
 .project
 .settings
+
+# Configuration to be ignored
+conf/net.folab.eicic.ui.GuiConsole.properties
