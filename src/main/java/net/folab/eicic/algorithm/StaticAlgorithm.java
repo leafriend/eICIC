@@ -46,9 +46,6 @@ public class StaticAlgorithm implements Algorithm {
 
         boolean isAbs = (seq % absDenominator) < absNumerator;
 
-        System.out.println(String.format("(%d %% %f) < %f: %b", seq,
-                absDenominator, absNumerator, isAbs));
-
         int macroState = 0;
         if (!isAbs) {
             for (int m = 0; m < macros.length; m++) {

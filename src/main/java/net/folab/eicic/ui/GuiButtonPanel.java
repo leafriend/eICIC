@@ -134,11 +134,9 @@ public class GuiButtonPanel {
         absNumeratorText.addModifyListener(e -> {
             try {
                 int absNumerator = Integer.parseInt(absNumeratorText.getText());
-                System.out.println("input absNumerator: " + absNumerator);
                 if (controller != null && controller.getAlgorithm() instanceof StaticAlgorithm) {
                     StaticAlgorithm staticAlgorithm = (StaticAlgorithm) controller.getAlgorithm();
                     staticAlgorithm.setAbsNumerator(absNumerator);
-                    System.out.println("set absNumerator: " + absNumerator);
                 }
             } catch (NumberFormatException ex) {
                 // TODO handle caught exception
@@ -153,11 +151,9 @@ public class GuiButtonPanel {
         absDenominatorText.addModifyListener(e -> {
             try {
                 int absDenominator = Integer.parseInt(absDenominatorText.getText());
-                System.out.println("absDenominator: " + absDenominator);
                 if (controller != null && controller.getAlgorithm() instanceof StaticAlgorithm) {
                     StaticAlgorithm staticAlgorithm = (StaticAlgorithm) controller.getAlgorithm();
                     staticAlgorithm.setAbsDenominator(absDenominator);
-                    System.out.println("absDenominator: " + absDenominator);
                 }
             } catch (NumberFormatException ex) {
                 // TODO handle caught exception
