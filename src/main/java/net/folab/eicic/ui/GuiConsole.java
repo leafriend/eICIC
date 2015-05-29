@@ -315,10 +315,10 @@ public class GuiConsole implements Console {
                 if (seq == controller.getTotalSeq())
                     updateFrequency = 1; // TODO ?
 
-                double throughput = tablePanel.dump(seq, state, macros, picos,
+                double sumUtility = tablePanel.dump(seq, state, macros, picos,
                         mobiles);
 
-                statusPanel.dump(seq, elapsed, throughput);
+                statusPanel.dump(seq, elapsed, sumUtility);
 
                 dumped = true;
             }

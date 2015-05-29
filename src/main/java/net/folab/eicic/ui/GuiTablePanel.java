@@ -329,11 +329,11 @@ public class GuiTablePanel {
 
         }
 
-        double throughput = 0.0;
+        double sumUtility = 0.0;
         for (int u = 0; u < mobiles.length; u++) {
             Mobile mobile = mobiles[u];
 
-            throughput += log(mobile.getThroughput());
+            sumUtility += log(mobile.getThroughput());
 
             if (updateFrequency > 0 && seq % updateFrequency == 0) {
 
@@ -421,7 +421,7 @@ public class GuiTablePanel {
 
         }
 
-        return throughput;
+        return sumUtility;
 
     }
 
