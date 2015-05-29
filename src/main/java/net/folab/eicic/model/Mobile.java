@@ -150,14 +150,14 @@ public class Mobile {
         throughput = totalThroughput / seq++;
     }
 
-    public void calculateUserRate() {
+    public void calculateUserRateMSU() {
         if (lambda == 0.0)
             userRate = RATE_MAX;
         else
             userRate = 0.8 * userRate + 0.2 * (1.0 + mu) / lambda;
     }
 
-    public void calculateDualVariables(int t) {
+    public void calculateDualVariablesMSU(int t) {
         final double step_size = 1.0 / ((double) t);
         final double step_size2 = (t > 100000) ? STEPSIZE4
                 : ((t < 10000) ? STEPSIZE2 : STEPSIZE3);
@@ -175,6 +175,28 @@ public class Mobile {
         else
             mu = this.mu - step_size2 * (log(userRate) - qos);
         this.mu = (0.0 > mu) ? 0.0 : mu;
+    }
+
+    public void calculateUserRateMSR() {
+        if (lambda == 0.0)
+            userRate = RATE_MAX;
+        else
+            userRate = instantRate;
+    }
+
+    public void calculateDualVariablesMSR(int t) {
+        final double step_size = 1.0 / ((double) t);
+        final double step_size2 = (t > 100000) ? STEPSIZE4
+                : ((t < 10000) ? STEPSIZE2 : STEPSIZE3);
+
+        final double mu;
+        if ((abs(log(userRate) - qos) * this.mu < 0.01))
+            mu = this.mu - step_size * (userRate - qos);
+        else
+            mu = this.mu - step_size2 * (userRate - qos);
+        this.mu = (0.0 > mu) ? 0.0 : mu;
+
+        this.lambda = 1 + this.mu;
     }
 
     @Override

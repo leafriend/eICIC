@@ -7,6 +7,16 @@ import net.folab.eicic.model.StateContext;
 
 public class Calculator {
 
+    public static enum MaximizeTarget {
+
+        SUM_UTILITY,
+
+        SUM_RATE,
+
+    }
+
+    private MaximizeTarget maximizeTarget = MaximizeTarget.SUM_UTILITY;
+
     private final Macro[] macros;
 
     private final Pico[] picos;
@@ -42,10 +52,27 @@ public class Calculator {
 
         for (int u = 0; u < mobiles.length; u++)
             mobiles[u].calculateThroughput(state);
-        for (int u = 0; u < mobiles.length; u++)
-            mobiles[u].calculateUserRate();
-        for (int u = 0; u < mobiles.length; u++)
-            mobiles[u].calculateDualVariables(seq);
+
+        switch (maximizeTarget) {
+
+        case SUM_UTILITY:
+            for (int u = 0; u < mobiles.length; u++)
+                mobiles[u].calculateUserRateMSU();
+            for (int u = 0; u < mobiles.length; u++)
+                mobiles[u].calculateDualVariablesMSU(seq);
+            break;
+
+        case SUM_RATE:
+            for (int u = 0; u < mobiles.length; u++)
+                mobiles[u].calculateUserRateMSR();
+            for (int u = 0; u < mobiles.length; u++)
+                mobiles[u].calculateDualVariablesMSR(seq);
+            break;
+
+        default:
+            throw new RuntimeException("Unsupported maximize target: " + maximizeTarget);
+        }
+
 
         for (int m = 0; m < macros.length; m++)
             macros[m].count(state);
