@@ -2,6 +2,8 @@ package net.folab.eicic.ui;
 
 import static java.lang.Math.pow;
 import static java.lang.String.format;
+import static java.lang.Integer.parseInt;
+import static java.lang.Double.parseDouble;
 import static org.eclipse.swt.SWT.BORDER;
 import static org.eclipse.swt.SWT.CHECK;
 import static org.eclipse.swt.SWT.LEAD;
@@ -137,6 +139,9 @@ public class GuiButtonPanel {
                 if (controller != null && controller.getAlgorithm() instanceof StaticAlgorithm) {
                     StaticAlgorithm staticAlgorithm = (StaticAlgorithm) controller.getAlgorithm();
                     staticAlgorithm.setAbsNumerator(absNumerator);
+                    double cre = parseDouble(creText.getText());
+                    double creBias = pow(10, cre / 10);
+                    staticAlgorithm.setCreBias(creBias);
                 }
             } catch (NumberFormatException ex) {
                 // TODO handle caught exception
@@ -402,7 +407,12 @@ public class GuiButtonPanel {
                 this.algorithm = new StaticAlgorithm();
                 double absNumerator = Integer.parseInt(absNumeratorText
                         .getText());
-                ((StaticAlgorithm) algorithm).setAbsNumerator(absNumerator);
+
+                StaticAlgorithm staticAlgorithm = (StaticAlgorithm) algorithm;
+                staticAlgorithm.setAbsNumerator(absNumerator);
+                double cre = parseDouble(creText.getText());
+                double creBias = pow(10, cre / 10);
+                staticAlgorithm.setCreBias(creBias);
                 creText.setEnabled(true);
                 break;
             case ALGORITHM_1:
