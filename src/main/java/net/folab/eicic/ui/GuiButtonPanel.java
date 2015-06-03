@@ -135,7 +135,7 @@ public class GuiButtonPanel {
         absNumeratorText.setText("000");
         absNumeratorText.addModifyListener(e -> {
             try {
-                int absNumerator = Integer.parseInt(absNumeratorText.getText());
+                int absNumerator = parseInt(absNumeratorText.getText());
                 if (controller != null && controller.getAlgorithm() instanceof StaticAlgorithm) {
                     StaticAlgorithm staticAlgorithm = (StaticAlgorithm) controller.getAlgorithm();
                     staticAlgorithm.setAbsNumerator(absNumerator);
@@ -155,7 +155,7 @@ public class GuiButtonPanel {
         absDenominatorText.setText("000");
         absDenominatorText.addModifyListener(e -> {
             try {
-                int absDenominator = Integer.parseInt(absDenominatorText.getText());
+                int absDenominator = parseInt(absDenominatorText.getText());
                 if (controller != null && controller.getAlgorithm() instanceof StaticAlgorithm) {
                     StaticAlgorithm staticAlgorithm = (StaticAlgorithm) controller.getAlgorithm();
                     staticAlgorithm.setAbsDenominator(absDenominator);
@@ -174,7 +174,7 @@ public class GuiButtonPanel {
             @Override
             public void modifyText(ModifyEvent e) {
                 try {
-                    double cre = Double.parseDouble(creText.getText());
+                    double cre = parseDouble(creText.getText());
                     double creBias = pow(10, cre / 10);
                     if (controller != null
                             && controller.getAlgorithm() instanceof StaticAlgorithm) {
@@ -405,9 +405,7 @@ public class GuiButtonPanel {
             switch (algorithmCombo.getItem(index)) {
             case ALGORITHM_0:
                 this.algorithm = new StaticAlgorithm();
-                double absNumerator = Integer.parseInt(absNumeratorText
-                        .getText());
-
+                double absNumerator = parseInt(absNumeratorText.getText());
                 StaticAlgorithm staticAlgorithm = (StaticAlgorithm) algorithm;
                 staticAlgorithm.setAbsNumerator(absNumerator);
                 double cre = parseDouble(creText.getText());
