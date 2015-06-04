@@ -30,6 +30,8 @@ public class GuiStatusPanel {
 
     private Text utilityText;
 
+    private Text throughputText;
+
     private Text rateText;
 
     private Text seqText;
@@ -80,6 +82,14 @@ public class GuiStatusPanel {
 
         // - - -
 
+        Label throughLabel = new Label(control, NONE);
+        throughLabel.setText("Avg. Sum Through:");
+
+        throughputText = new Text(control, READ_ONLY | RIGHT);
+        throughputText.setText("0.000");
+
+        // - - -
+
         Label rateLabel = new Label(control, NONE);
         rateLabel.setText("Inst. Sum Rate:");
 
@@ -108,10 +118,25 @@ public class GuiStatusPanel {
 
         //
 
-        // rateLabel
+        // throughLabel
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 3);
         layoutData.left = new FormAttachment(utilityText, 8);
+        throughLabel.setLayoutData(layoutData);
+
+        // throughputText
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 3);
+        layoutData.left = new FormAttachment(throughLabel, 0);
+        layoutData.right = new FormAttachment(throughLabel, 64, TRAIL);
+        throughputText.setLayoutData(layoutData);
+
+        //
+
+        // rateLabel
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 3);
+        layoutData.left = new FormAttachment(throughputText, 8);
         rateLabel.setLayoutData(layoutData);
 
         // rateText
