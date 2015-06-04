@@ -73,7 +73,7 @@ public class GuiStatusPanel {
         // - - -
 
         Label utilityLabel = new Label(control, NONE);
-        utilityLabel.setText("Sum Utility:");
+        utilityLabel.setText("Avg. Sum Utility:");
 
         utilityText = new Text(control, READ_ONLY | RIGHT);
         utilityText.setText("0.000");
@@ -81,7 +81,7 @@ public class GuiStatusPanel {
         // - - -
 
         Label rateLabel = new Label(control, NONE);
-        rateLabel.setText("Sum Rate:");
+        rateLabel.setText("Inst. Sum Rate:");
 
         rateText = new Text(control, READ_ONLY | RIGHT);
         rateText.setText("0.000");
