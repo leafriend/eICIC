@@ -355,7 +355,7 @@ public class GuiConsole implements Console {
                 double[] sums = tablePanel.dump(seq, state, macros, picos,
                         mobiles);
 
-                statusPanel.dump(seq, elapsed, sums[0], sums[1]);
+                statusPanel.dump(seq, elapsed, sums[0], sums[1], sums[2]);
 
                 dumped = true;
             }

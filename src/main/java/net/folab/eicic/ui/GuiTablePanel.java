@@ -332,11 +332,13 @@ public class GuiTablePanel {
         }
 
         double sumUtility = 0.0;
+        double sumThroughput = 0.0;
         double sumRate = 0.0;
         for (int u = 0; u < mobiles.length; u++) {
             Mobile mobile = mobiles[u];
 
             sumUtility += log(mobile.getThroughput());
+            sumThroughput += mobile.getThroughput();
             sumRate += mobile.getUserRate();
 
             if (updateFrequency > 0 && seq % updateFrequency == 0) {
@@ -443,7 +445,7 @@ public class GuiTablePanel {
 
         }
 
-        return new double[] { sumUtility, sumRate };
+        return new double[] { sumUtility, sumThroughput, sumRate };
 
     }
 

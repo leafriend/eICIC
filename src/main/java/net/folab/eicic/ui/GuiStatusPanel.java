@@ -189,7 +189,7 @@ public class GuiStatusPanel {
         return control;
     }
 
-    public void dump(int seq, long elapsed, double sumUtility, double sumRate) {
+    public void dump(int seq, long elapsed, double sumUtility, double sumThroughput, double sumRate) {
 
         seqText.setText(format("%,d", seq));
 
@@ -205,6 +205,7 @@ public class GuiStatusPanel {
         estimationTimeLabel.setText(estimatedTime);
 
         utilityText.setText(format("%.3f", sumUtility));
+        throughputText.setText(format("%.3f", sumThroughput));
         rateText.setText(format("%.3f", sumRate));
 
     }
