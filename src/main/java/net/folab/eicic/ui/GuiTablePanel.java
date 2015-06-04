@@ -121,6 +121,7 @@ public class GuiTablePanel {
         // addColumn(mobileTable, 80, "P. Dist.");
         // addColumn(mobileTable, 80, "P. " + LAMBDA + "R");
         // addColumn(mobileTable, 80, "P. M. " + LAMBDA + "R");
+        addColumn(mobileTable, 32, "C");
         addColumn(mobileTable, 96, "User Rate");
         addColumn(mobileTable, 96, "log(User Rate)");
         addColumn(mobileTable, 96, "Throughput");
@@ -274,7 +275,7 @@ public class GuiTablePanel {
     }
 
     public void showMobile(Mobile mobile, TableItem item) {
-        String[] texts = new String[11 + NUM_RB];
+        String[] texts = new String[12 + NUM_RB];
         int i = 1;
         texts[i++] = format("%.3f", mobile.x);
         texts[i++] = format("%.3f", mobile.y);
@@ -287,6 +288,7 @@ public class GuiTablePanel {
         // texts[i++] = format("%.3f", mobile.getPicoEdge().distance);
         // texts[i++] = format("%.3f", mobile.getPico().pa3LambdaR);
         // texts[i++] = null;
+        texts[i++] = "";
 
         texts[i++] = format("%.6f", mobile.getUserRate());
         texts[i++] = format("%.6f", log(mobile.getUserRate()));
@@ -344,7 +346,7 @@ public class GuiTablePanel {
                     continue;
 
                 TableItem item = mobileTable.getItem(itemIndex);
-                String[] texts = new String[11 + NUM_RB * 3];
+                String[] texts = new String[12 + NUM_RB * 3];
                 int index = 1;
                 texts[index++] = null;
                 texts[index++] = null;
@@ -361,6 +363,24 @@ public class GuiTablePanel {
                 // mobile.getPico().pa3LambdaR);
                 // texts[index++] = format("%.3f",
                 // mobile.getPico().pa3MobileLambdaR[mobile.idx]);
+                String connection = null;
+                for (int r = 0; r < NUM_RB; r++) {
+                    Edge<? extends BaseStation<?>> edge = mobile.getActiveEdges()[r];
+                    if (edge == null)
+                        continue;
+                    if (edge.baseStation instanceof Macro) {
+                        if (connection == null || "M".equals(connection))
+                            connection = "M";
+                        else
+                            connection = "X";
+                    } else if (edge.baseStation instanceof Pico) {
+                        if (connection == null || "P".equals(connection))
+                            connection = "P";
+                        else
+                            connection = "X";
+                    }
+                }
+                texts[index++] = connection == null ? "" : connection;
 
                 texts[index++] = format("%.6f", mobile.getUserRate());
                 texts[index++] = format("%.6f", log(mobile.getUserRate()));
