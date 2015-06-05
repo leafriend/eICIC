@@ -135,6 +135,12 @@ public class Controller {
         }
         this.algorithm = algorithm;
         this.totalSeq = totalSeq;
+
+        reset();
+
+        calculator = new Calculator(macros, picos, mobiles);
+        calculator.setAlgorithm(algorithm);
+
     }
 
     public static void dump(String string, int seq, Mobile[] mobiles) {
@@ -161,11 +167,6 @@ public class Controller {
     }
 
     public void display() {
-
-        reset();
-
-        calculator = new Calculator(macros, picos, mobiles);
-        calculator.setAlgorithm(algorithm);
 
         runner = new Runnable() {
             @Override
