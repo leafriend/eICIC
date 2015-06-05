@@ -28,8 +28,7 @@ public class Calculator {
 
     private boolean isStatic = false;
 
-    public Calculator(Macro[] macros, Pico[] picos, Mobile[] mobiles,
-            Console console) {
+    public Calculator(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
         super();
         this.macros = macros;
         this.picos = picos;

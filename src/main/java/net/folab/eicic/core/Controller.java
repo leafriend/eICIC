@@ -164,7 +164,7 @@ public class Controller {
 
         reset();
 
-        calculator = new Calculator(macros, picos, mobiles, console);
+        calculator = new Calculator(macros, picos, mobiles);
         calculator.setAlgorithm(algorithm);
 
         runner = new Runnable() {
