@@ -251,6 +251,7 @@ public class GuiButtonPanel {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 controller.reset();
+                // FIXME console.dump(seq, null, macros, picos, mobiles, accumuMillis);
             }
         });
 

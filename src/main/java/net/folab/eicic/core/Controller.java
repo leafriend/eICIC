@@ -252,8 +252,6 @@ public class Controller {
         for (Pico pico : picos)
             pico.init();
 
-        console.dump(seq, null, macros, picos, mobiles, accumuMillis);
-
     }
 
     public void start() {
