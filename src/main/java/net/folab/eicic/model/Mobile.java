@@ -177,6 +177,10 @@ public class Mobile {
         this.mu = (0.0 > mu) ? 0.0 : mu;
     }
 
+    public void calculateDualVariablesMSUStatic(int t) {
+        // FIXME pooheup
+    }
+
     public void calculateUserRateMSR() {
         if (lambda == 0.0)
             userRate = RATE_MAX;
@@ -197,6 +201,10 @@ public class Mobile {
         this.mu = (0.0 > mu) ? 0.0 : mu;
 
         this.lambda = 1 + this.mu;
+    }
+
+    public void calculateDualVariablesMSRStatic(int t) {
+        // FIXME pooheup
     }
 
     @Override
