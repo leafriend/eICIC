@@ -70,6 +70,8 @@ public class Mobile {
 
     private int picoCount = 0;
 
+    private char connection;
+
     public Mobile(int idx, double x, double y, double qos) {
         super();
         this.idx = idx;
@@ -305,7 +307,11 @@ public class Mobile {
     }
 
     public char getConnection() {
-        char connection = '\0';
+        return connection;
+    }
+
+    public void count() {
+        connection = '\0';
         for (int r = 0; r < NUM_RB; r++) {
             Edge<? extends BaseStation<?>> edge = activeEdges[r];
             if (edge == null)
@@ -322,10 +328,7 @@ public class Mobile {
                     connection = 'X';
             }
         }
-        return connection;
-    }
 
-    public void count() {
         switch (getConnection()) {
         case 'M':
             macroCount++;
