@@ -32,6 +32,8 @@ import net.folab.eicic.model.StateContext;
 
 public class Controller {
 
+    private static final String TOTAL_SEQ = "totalSeq";
+
     private static final String NEED_TO_SAVE_BEFORE_EXIT = "needToSaveBeforeExit";
 
     public static final Map<String, Function<Mobile, String>> COLUMNS = unmodifiableMap(new LinkedHashMap<String, Function<Mobile, String>>() {
@@ -411,6 +413,7 @@ public class Controller {
 
     public void setTotalSeq(int totalSeq) {
         this.totalSeq = totalSeq;
+        configuration.setInteger(TOTAL_SEQ, totalSeq);
     }
 
     public int getSeq() {
