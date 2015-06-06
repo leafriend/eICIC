@@ -313,6 +313,14 @@ public class Mobile {
         return channel;
     }
 
+    public double getAllMacroChannel() {
+        double channel = 0.0;
+        for (int r = 0; r < macroEdge.channelGain.length; r++) {
+            channel += macroEdge.channelGain[r];
+        }
+        return channel;
+    }
+
     public double getActivePicoChannel() {
         double channel = 0.0;
         for (int r = 0; r < picoEdge.baseStation.activeEdges.length; r++) {
@@ -322,6 +330,14 @@ public class Mobile {
             if (edge.mobile.equals(this)) {
                 channel = +edge.channelGain[r];
             }
+        }
+        return channel;
+    }
+
+    public double getAllPicoChannel() {
+        double channel = 0.0;
+        for (int r = 0; r < picoEdge.channelGain.length; r++) {
+            channel += picoEdge.channelGain[r];
         }
         return channel;
     }
