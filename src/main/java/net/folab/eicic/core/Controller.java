@@ -46,6 +46,8 @@ public class Controller {
             add("Y", u -> u.y, 80);
             add("M", u -> u.getMacro().idx, 32);
             add("P", u -> u.getPico().idx, 32);
+            addC("#M", u -> u.getMacroCount(), 64);
+            addC("#P", u -> u.getPicoCount(), 64);
             addC("C", u -> u.getConnection(), 32);
             addC("User Rate", u -> u.getUserRate(), 96);
             addC("log(User Rate)", u -> log(u.getUserRate()), 96);
