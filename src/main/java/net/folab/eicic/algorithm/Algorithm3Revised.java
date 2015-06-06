@@ -9,8 +9,8 @@ public class Algorithm3Revised extends Algorithm3 {
 
         for (Mobile mobile : mobiles) {
 
-            double macroChannel = mobile.getMacroChannel();
-            double picoChannel = mobile.getPicoChannel();
+            double macroChannel = mobile.getActiveMacroChannel();
+            double picoChannel = mobile.getActivePicoChannel();
 
             if (macroChannel > picoChannel) {
                 // Macro로 할당받은 R이 더 큰 경우
