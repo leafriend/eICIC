@@ -6,7 +6,6 @@ import static java.lang.String.valueOf;
 import static net.folab.eicic.model.Constants.NUM_MACROS;
 import static net.folab.eicic.model.Constants.NUM_MOBILES;
 import static net.folab.eicic.model.Constants.NUM_PICOS;
-import static net.folab.eicic.model.Constants.NUM_RB;
 import static net.folab.eicic.ui.Util.array;
 import static org.eclipse.swt.SWT.BORDER;
 import static org.eclipse.swt.SWT.CTRL;
@@ -16,10 +15,8 @@ import static org.eclipse.swt.SWT.MULTI;
 import static org.eclipse.swt.SWT.NONE;
 import static org.eclipse.swt.SWT.RIGHT;
 import static org.eclipse.swt.SWT.SHIFT;
-
 import net.folab.eicic.core.Controller;
-import net.folab.eicic.model.BaseStation;
-import net.folab.eicic.model.Edge;
+import net.folab.eicic.core.FieldView;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
@@ -110,30 +107,16 @@ public class GuiTablePanel {
             }
         });
 
-        addColumn(mobileTable, 32, "#");
-        addColumn(mobileTable, 80, "X");
-        addColumn(mobileTable, 80, "Y");
-        addColumn(mobileTable, 32, "M");
-        // addColumn(mobileTable, 80, "M. Dist.");
-        // addColumn(mobileTable, 80, "M. " + LAMBDA + "R");
-        // addColumn(mobileTable, 80, "M. M. " + LAMBDA + "R");
-        addColumn(mobileTable, 32, "P");
-        // addColumn(mobileTable, 80, "P. Dist.");
-        // addColumn(mobileTable, 80, "P. " + LAMBDA + "R");
-        // addColumn(mobileTable, 80, "P. M. " + LAMBDA + "R");
-        addColumn(mobileTable, 32, "C");
-        addColumn(mobileTable, 96, "User Rate");
-        addColumn(mobileTable, 96, "log(User Rate)");
-        addColumn(mobileTable, 96, "Throughput");
-        addColumn(mobileTable, 96, "log(Throughput)");
-        addColumn(mobileTable, 96, LAMBDA);
-        addColumn(mobileTable, 96, MU);
-
-        for (int i = 0; i < NUM_RB; i++) {
-            addColumn(mobileTable, 80, LAMBDA + "R " + i);
-            addColumn(mobileTable, 48, "BS " + i, LEFT);
-            addColumn(mobileTable, 24, "Rank  " + i);
+        for (FieldView<Mobile, ?> column : Controller.COLUMNS) {
+            addColumn(mobileTable, column.width, column.name);
         }
+
+// TODO Ryu, revert this code
+//        for (int i = 0; i < NUM_RB; i++) {
+//            addColumn(mobileTable, 80, LAMBDA + "R " + i);
+//            addColumn(mobileTable, 48, "BS " + i, LEFT);
+//            addColumn(mobileTable, 24, "Rank  " + i);
+//        }
 
         for (int i = 0; i < NUM_MOBILES; i++) {
             TableItem item = new TableItem(mobileTable, NONE);
@@ -275,28 +258,13 @@ public class GuiTablePanel {
     }
 
     public void showMobile(Mobile mobile, TableItem item) {
-        String[] texts = new String[12 + NUM_RB];
-        int i = 1;
-        texts[i++] = format("%.3f", mobile.x);
-        texts[i++] = format("%.3f", mobile.y);
-        texts[i++] = valueOf(mobile.getMacro().idx);
-        // texts[i++] = format("%.3f", mobile.getMacroEdge().distance);
-        // texts[i++] = format("%.3f", mobile.getMacro().pa3LambdaR);
-        // texts[i++] = null;
-
-        texts[i++] = valueOf(mobile.getPico().idx);
-        // texts[i++] = format("%.3f", mobile.getPicoEdge().distance);
-        // texts[i++] = format("%.3f", mobile.getPico().pa3LambdaR);
-        // texts[i++] = null;
-        texts[i++] = "";
-
-        texts[i++] = format("%.6f", mobile.getUserRate());
-        texts[i++] = format("%.6f", log(mobile.getUserRate()));
-        texts[i++] = format("%.6f", 0.0);
-        texts[i++] = format("%.6f", Double.NEGATIVE_INFINITY);
-        texts[i++] = format("%.6f", mobile.getLambda());
-        texts[i++] = format("%.6f", mobile.getMu());
-
+        String[] texts = new String[Controller.COLUMNS.size()];
+        int index = 0;
+        for (FieldView<Mobile, ?> column : Controller.COLUMNS) {
+            if (!column.changeable)
+                texts[index] = filter(column.getter.apply(mobile));
+            index++;
+        }
         item.setText(texts);
     }
 
@@ -348,97 +316,64 @@ public class GuiTablePanel {
                     continue;
 
                 TableItem item = mobileTable.getItem(itemIndex);
-                String[] texts = new String[12 + NUM_RB * 3];
-                int index = 1;
-                texts[index++] = null;
-                texts[index++] = null;
-                texts[index++] = null;
-                // texts[index++] = null;
-                // texts[index++] = format("%.3f",
-                // mobile.getMacro().pa3LambdaR);
-                // texts[index++] = format("%.3f",
-                // mobile.getMacro().pa3MobileLambdaR[mobile.idx]);
-
-                texts[index++] = null;
-                // texts[index++] = null;
-                // texts[index++] = format("%.3f",
-                // mobile.getPico().pa3LambdaR);
-                // texts[index++] = format("%.3f",
-                // mobile.getPico().pa3MobileLambdaR[mobile.idx]);
-                String connection = null;
-                for (int r = 0; r < NUM_RB; r++) {
-                    Edge<? extends BaseStation<?>> edge = mobile.getActiveEdges()[r];
-                    if (edge == null)
-                        continue;
-                    if (edge.baseStation instanceof Macro) {
-                        if (connection == null || "M".equals(connection))
-                            connection = "M";
-                        else
-                            connection = "X";
-                    } else if (edge.baseStation instanceof Pico) {
-                        if (connection == null || "P".equals(connection))
-                            connection = "P";
-                        else
-                            connection = "X";
+                String[] texts = new String[Controller.COLUMNS.size()];
+                int index = 0;
+                for (FieldView<Mobile, ?> column : Controller.COLUMNS) {
+                    if (column.changeable) {
+                        texts[index] = filter(column.getter.apply(mobile));
                     }
+                    index++;
                 }
-                texts[index++] = connection == null ? "" : connection;
 
-                texts[index++] = format("%.6f", mobile.getUserRate());
-                texts[index++] = format("%.6f", log(mobile.getUserRate()));
-                texts[index++] = format("%.6f", mobile.getThroughput());
-                texts[index++] = format("%.6f", log(mobile.getThroughput()));
-                texts[index++] = format("%.6f", mobile.getLambda());
-                texts[index++] = format("%.6f", mobile.getMu());
-
-                if (state != null) {
-
-                    Edge<? extends BaseStation<?>>[] activeEdges = mobile
-                            .getActiveEdges();
-                    double[] macroLambdaR = mobile.getMacroLambdaR();
-                    double[] absPicoLambdaR = mobile.getAbsPicoLambdaR();
-                    double[] nonPicoLambdaR = mobile.getNonPicoLambdaR();
-                    boolean isAbs = state.picoIsAbs(mobile.getPico().idx);
-                    for (int j = 0; j < NUM_RB; j++) {
-                        String bs = null;
-                        double lambdaR = 0;
-                        int rank = 0;
-                        if (activeEdges[j] == null) {
-                            item.setBackground(index + j * 3 + 0, null);
-                            item.setBackground(index + j * 3 + 1, null);
-                            item.setBackground(index + j * 3 + 2, null);
-                        } else {
-                            if (activeEdges[j].baseStation instanceof Macro) {
-                                Macro macro = (Macro) activeEdges[j].baseStation;
-                                bs = "MAC";
-                                lambdaR = macroLambdaR[j];
-                                rank = macro.getSortedEdges()[j]
-                                        .indexOf(activeEdges[j]);
-                            } else if (activeEdges[j].baseStation instanceof Pico) {
-                                Pico pico = (Pico) activeEdges[j].baseStation;
-                                if (isAbs) {
-                                    bs = "ABS";
-                                    lambdaR = absPicoLambdaR[j];
-                                    rank = pico.getSortedAbsEdges()[j]
-                                            .indexOf(activeEdges[j]);
-                                } else {
-                                    bs = "non";
-                                    lambdaR = nonPicoLambdaR[j];
-                                    rank = pico.getSortedNonEdges()[j]
-                                            .indexOf(activeEdges[j]);
-                                }
-                            }
-                            item.setBackground(index + j * 3 + 0, colorActiveBg);
-                            item.setBackground(index + j * 3 + 1, colorActiveBg);
-                            item.setBackground(index + j * 3 + 2, colorActiveBg);
-                        }
-                        texts[index + j * 3] = bs == null ? "" : format("%.3f",
-                                1000 * lambdaR);
-                        texts[index + j * 3 + 1] = bs == null ? "" : bs;
-                        texts[index + j * 3 + 2] = bs == null ? ""
-                                : valueOf(rank);
-                    }
-                }
+// TODO Ryu, revert this code
+//                if (state != null) {
+//
+//                    Edge<? extends BaseStation<?>>[] activeEdges = mobile
+//                            .getActiveEdges();
+//                    double[] macroLambdaR = mobile.getMacroLambdaR();
+//                    double[] absPicoLambdaR = mobile.getAbsPicoLambdaR();
+//                    double[] nonPicoLambdaR = mobile.getNonPicoLambdaR();
+//                    boolean isAbs = state.picoIsAbs(mobile.getPico().idx);
+//                    for (int j = 0; j < NUM_RB; j++) {
+//                        String bs = null;
+//                        double lambdaR = 0;
+//                        int rank = 0;
+//                        if (activeEdges[j] == null) {
+//                            item.setBackground(index + j * 3 + 0, null);
+//                            item.setBackground(index + j * 3 + 1, null);
+//                            item.setBackground(index + j * 3 + 2, null);
+//                        } else {
+//                            if (activeEdges[j].baseStation instanceof Macro) {
+//                                Macro macro = (Macro) activeEdges[j].baseStation;
+//                                bs = "MAC";
+//                                lambdaR = macroLambdaR[j];
+//                                rank = macro.getSortedEdges()[j]
+//                                        .indexOf(activeEdges[j]);
+//                            } else if (activeEdges[j].baseStation instanceof Pico) {
+//                                Pico pico = (Pico) activeEdges[j].baseStation;
+//                                if (isAbs) {
+//                                    bs = "ABS";
+//                                    lambdaR = absPicoLambdaR[j];
+//                                    rank = pico.getSortedAbsEdges()[j]
+//                                            .indexOf(activeEdges[j]);
+//                                } else {
+//                                    bs = "non";
+//                                    lambdaR = nonPicoLambdaR[j];
+//                                    rank = pico.getSortedNonEdges()[j]
+//                                            .indexOf(activeEdges[j]);
+//                                }
+//                            }
+//                            item.setBackground(index + j * 3 + 0, colorActiveBg);
+//                            item.setBackground(index + j * 3 + 1, colorActiveBg);
+//                            item.setBackground(index + j * 3 + 2, colorActiveBg);
+//                        }
+//                        texts[index + j * 3] = bs == null ? "" : format("%.3f",
+//                                1000 * lambdaR);
+//                        texts[index + j * 3 + 1] = bs == null ? "" : bs;
+//                        texts[index + j * 3 + 2] = bs == null ? ""
+//                                : valueOf(rank);
+//                    }
+//                }
 
                 item.setText(texts);
             }
@@ -447,6 +382,14 @@ public class GuiTablePanel {
 
         return new double[] { sumUtility, sumThroughput, sumRate };
 
+    }
+
+    private String filter(Object value) {
+        if (value instanceof Double) {
+            Double d = (Double) value;
+            return format("%.6f", d);
+        }
+        return valueOf(value);
     }
 
     public void setUpdateFrequency(int updateFrequency) {
