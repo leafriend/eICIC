@@ -66,6 +66,10 @@ public class Mobile {
      */
     public boolean saConnectToMacro = false;
 
+    private int macroCount = 0;
+
+    private int picoCount = 0;
+
     public Mobile(int idx, double x, double y, double qos) {
         super();
         this.idx = idx;
@@ -321,6 +325,23 @@ public class Mobile {
         return connection;
     }
 
+    public void count() {
+        switch (getConnection()) {
+        case 'M':
+            macroCount++;
+            break;
+        case 'P':
+            picoCount++;
+            break;
+        case 'S':
+            macroCount++;
+            picoCount++;
+            break;
+        default:
+            break;
+        }
+    }
+
     public double getActiveMacroChannel() {
         double channel = 0.0;
         for (int r = 0; r < macroEdge.baseStation.activeEdges.length; r++) {
@@ -361,6 +382,14 @@ public class Mobile {
             channel += picoEdge.channelGain[r];
         }
         return channel;
+    }
+
+    public int getMacroCount() {
+        return macroCount;
+    }
+
+    public int getPicoCount() {
+        return picoCount;
     }
 
 }
