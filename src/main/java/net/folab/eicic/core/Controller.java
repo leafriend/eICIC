@@ -55,12 +55,12 @@ public class Controller {
             add("μ", u -> valueOf(u.getMu()), 96);
         }
 
-        <T> FieldView<Mobile, T> add(String name, Function<Mobile, T> getter) {
-            return new FieldView<>(name, getter);
+        <T> void add(String name, Function<Mobile, T> getter) {
+            add(new FieldView<>(name, getter));
         }
 
-        <T> FieldView<Mobile, T> add(String name, Function<Mobile, T> getter, int width) {
-            return new FieldView<>(name, getter, width);
+        <T> void add(String name, Function<Mobile, T> getter, int width) {
+            add(new FieldView<>(name, getter, width));
         }
 
     });
