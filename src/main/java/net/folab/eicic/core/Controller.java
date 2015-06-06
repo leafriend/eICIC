@@ -41,26 +41,26 @@ public class Controller {
         private static final long serialVersionUID = -6689823013265960946L;
 
         {
-            add("#", u -> valueOf(u.idx), 32);
-            add("X", u -> valueOf(u.x), 80);
-            add("Y", u -> valueOf(u.y), 80);
-            add("M", u -> valueOf(u.getMacro().idx), 32);
-            add("P", u -> valueOf(u.getPico().idx), 32);
-            add("C", u -> "", 32);
-            add("User Rate", u -> valueOf(u.getUserRate()), 96);
-            add("log(User Rate)", u -> valueOf(log(u.getUserRate())), 96);
-            add("Throughput", u -> valueOf(u.getThroughput()), 96);
-            add("log(User Rate)", u -> valueOf(log(u.getUserRate())), 96);
-            add("λ", u -> valueOf(u.getLambda()), 96);
-            add("μ", u -> valueOf(u.getMu()), 96);
-        }
-
-        <T> void add(String name, Function<Mobile, T> getter) {
-            add(new FieldView<>(name, getter));
+            add("#", u -> u.idx, 32);
+            add("X", u -> u.x, 80);
+            add("Y", u -> u.y, 80);
+            add("M", u -> u.getMacro().idx, 32);
+            add("P", u -> u.getPico().idx, 32);
+            addC("C", u -> u.getConnection(), 32);
+            addC("User Rate", u -> u.getUserRate(), 96);
+            addC("log(User Rate)", u -> log(u.getUserRate()), 96);
+            addC("Throughput", u -> u.getThroughput(), 96);
+            addC("log(User Rate)", u -> log(u.getUserRate()), 96);
+            addC("λ", u -> u.getLambda(), 96);
+            addC("μ", u -> u.getMu(), 96);
         }
 
         <T> void add(String name, Function<Mobile, T> getter, int width) {
-            add(new FieldView<>(name, getter, width));
+            add(new FieldView<>(name, getter, width, false));
+        }
+
+        <T> void addC(String name, Function<Mobile, T> getter, int width) {
+            add(new FieldView<>(name, getter, width, true));
         }
 
     });
