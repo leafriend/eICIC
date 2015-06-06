@@ -1,14 +1,12 @@
 package net.folab.eicic;
 
 import static java.util.Arrays.asList;
-import static net.folab.eicic.ui.Util.newInstance;
 
 import java.io.IOException;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
-import net.folab.eicic.core.Algorithm;
 import net.folab.eicic.core.Controller;
 
 public class Main {
@@ -74,12 +72,8 @@ public class Main {
             return parser;
         }
 
-        Algorithm algorithm = null;
-        if (algorithmClassName != null)
-            algorithm = newInstance(algorithmClassName);
-
         if (!"net.folab.eicic.ui.GuiConsole".equals(consoleClassName)
-                && algorithm == null) {
+                && algorithmClassName == null) {
             return parser;
         }
 
@@ -94,7 +88,7 @@ public class Main {
             return parser;
         }
 
-        Controller controller = new Controller(consoleClassName, algorithm, totalSeq);
+        Controller controller = new Controller(consoleClassName, algorithmClassName, totalSeq);
         controller.display();
 
         return null;

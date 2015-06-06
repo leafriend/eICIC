@@ -128,12 +128,21 @@ public class Controller {
         }
     }
 
-    public Controller(String consoleClassName, Algorithm algorithm, Integer totalSeq) {
+    public Controller(String consoleClassName, String algorithmClassName, Integer totalSeq) {
         super();
 
         configuration = new Configuration(getClass());
 
         reset();
+
+        if (algorithmClassName == null)
+            algorithmClassName = configuration.getConfiguration(ALGORITHM_CLASS_NAME, null);
+
+        if (algorithmClassName != null) {
+            this.algorithm = newInstance(algorithmClassName);
+        } else {
+
+        }
 
         calculator = new Calculator(macros, picos, mobiles);
         calculator.setAlgorithm(algorithm);
@@ -142,7 +151,6 @@ public class Controller {
         if (console == null) {
             //return parser;
         }
-        this.algorithm = algorithm;
 
         if (totalSeq == null) {
             this.totalSeq = configuration.getInteger(TOTAL_SEQ, -1);
