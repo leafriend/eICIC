@@ -300,4 +300,30 @@ public class Mobile {
         return activeEdges;
     }
 
+    public double getMacroChannel() {
+        double channel = 0.0;
+        for (int r = 0; r < macroEdge.baseStation.activeEdges.length; r++) {
+            Edge<Macro> edge = macroEdge.baseStation.activeEdges[r];
+            if (edge == null)
+                continue;
+            if (edge.mobile.equals(this)) {
+                channel = +edge.channelGain[r];
+            }
+        }
+        return channel;
+    }
+
+    public double getPicoChannel() {
+        double channel = 0.0;
+        for (int r = 0; r < picoEdge.baseStation.activeEdges.length; r++) {
+            Edge<Pico> edge = picoEdge.baseStation.activeEdges[r];
+            if (edge == null)
+                continue;
+            if (edge.mobile.equals(this)) {
+                channel = +edge.channelGain[r];
+            }
+        }
+        return channel;
+    }
+
 }
