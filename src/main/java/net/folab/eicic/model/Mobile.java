@@ -179,12 +179,13 @@ public class Mobile {
 
     public void calculateDualVariablesMSUStatic(int t) {
         // FIXME pooheup
-    	final double step_size = 1.0 / ((double) t);
+        final double step_size = 1.0 / ((double) t);
         final double step_size2 = (t > 100000) ? STEPSIZE4
                 : ((t < 10000) ? STEPSIZE2 : STEPSIZE3);
 
         final double lambda;
-        if ((abs(totalThroughput / t - userRate) * this.lambda < 0.05) ||(t>20000))
+        if ((abs(totalThroughput / t - userRate) * this.lambda < 0.05)
+                || (t > 20000))
             lambda = this.lambda - step_size * (instantRate - userRate);
         else
             lambda = this.lambda - step_size2 * (instantRate - userRate);
@@ -197,7 +198,6 @@ public class Mobile {
             mu = this.mu - step_size2 * (log(userRate) - qos);
         this.mu = (0.0 > mu) ? 0.0 : mu;
 
-    	
     }
 
     public void calculateUserRateMSR() {
@@ -223,9 +223,9 @@ public class Mobile {
     }
 
     public void calculateDualVariablesMSRStatic(int t) {
-//    	calculateDualVariablesMSR(t);
+        // calculateDualVariablesMSR(t);
         // FIXME pooheup
-    	
+
         final double step_size = 1.0 / ((double) t);
         final double step_size2 = (t > 100000) ? STEPSIZE4
                 : ((t < 10000) ? STEPSIZE2 : STEPSIZE3);
@@ -238,7 +238,7 @@ public class Mobile {
         this.mu = (0.0 > mu) ? 0.0 : mu;
 
         this.lambda = 1 + this.mu;
-    	
+
     }
 
     @Override
