@@ -53,9 +53,9 @@ public class Main {
 
         OptionSet optionSet = parser.parse(args);
 
-        int totalSeq = 0;
+        Integer totalSeq = null;
         if (optionSet.has(seqOption))
-            totalSeq = optionSet.valueOf(seqOption).intValue();
+            totalSeq = optionSet.valueOf(seqOption);
 
         String algorithmClassName = null;
         if (optionSet.has(algorithmOption)) {
@@ -84,7 +84,7 @@ public class Main {
         }
 
         if (!"net.folab.eicic.ui.GuiConsole".equals(consoleClassName)
-                && totalSeq < 1) {
+                && totalSeq != null && totalSeq.intValue() < 1) {
             return parser;
         }
 

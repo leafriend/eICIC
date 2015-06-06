@@ -126,7 +126,7 @@ public class Controller {
         }
     }
 
-    public Controller(String consoleClassName, Algorithm algorithm, int totalSeq) {
+    public Controller(String consoleClassName, Algorithm algorithm, Integer totalSeq) {
         super();
 
         configuration = new Configuration(getClass());
@@ -141,7 +141,16 @@ public class Controller {
             //return parser;
         }
         this.algorithm = algorithm;
-        this.totalSeq = totalSeq;
+
+        if (totalSeq == null) {
+            this.totalSeq = configuration.getInteger(TOTAL_SEQ, -1);
+            if (this.totalSeq < 0) {
+                configuration.setInteger(TOTAL_SEQ, 0);
+                this.totalSeq = 0;
+            }
+        } else {
+            this.totalSeq = totalSeq.intValue();
+        }
 
     }
 
