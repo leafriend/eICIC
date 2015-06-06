@@ -32,6 +32,8 @@ import net.folab.eicic.model.StateContext;
 
 public class Controller {
 
+    private static final String ALGORITHM_CLASS_NAME = "algorithmClassName";
+
     private static final String TOTAL_SEQ = "totalSeq";
 
     private static final String NEED_TO_SAVE_BEFORE_EXIT = "needToSaveBeforeExit";
@@ -413,6 +415,9 @@ public class Controller {
 
     public void setAlgorithm(Algorithm algorithm) {
         this.algorithm = algorithm;
+        if (algorithm == null)
+            throw new RuntimeException(); // FIXME
+        configuration.set(ALGORITHM_CLASS_NAME, algorithm.getClass().getName());
         calculator.setAlgorithm(algorithm);
     }
 
