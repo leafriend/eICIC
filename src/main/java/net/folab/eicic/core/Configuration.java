@@ -56,6 +56,11 @@ public class Configuration {
         save();
     }
 
+    public void set(String key, String value) {
+        properties.setProperty(key, value);
+        save();
+    }
+
     public int getInteger(String key, int alternative) {
         Optional<String> value = getConfiguration(key);
         if (value.isPresent())
