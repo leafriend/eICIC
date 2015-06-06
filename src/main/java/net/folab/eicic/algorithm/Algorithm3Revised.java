@@ -28,7 +28,22 @@ public class Algorithm3Revised extends Algorithm3 {
                     mobileConnectsMacro[mobile.idx] = false;
 
                 } else {
-                    // FIXME Macro와 Pico로 부터 하나도 할당받지 못한 경우 (0인 경우)
+                    // Macro와 Pico로 부터 하나도 할당받지 못한 경우 (0인 경우)
+                    double allMacroChannel = mobile.getAllMacroChannel();
+                    double allPicoChannel = mobile.getAllPicoChannel();
+
+                    if (allMacroChannel > allPicoChannel) {
+                        // Macro의 모든 채널값 합이 더 큰 경우
+                        mobileConnectsMacro[mobile.idx] = true;
+
+                    } else if (allMacroChannel < allPicoChannel) {
+                        // Pico의 모든 채널값 합이 더 큰 경우
+                        mobileConnectsMacro[mobile.idx] = false;
+
+                    } else {
+                        mobileConnectsMacro[mobile.idx] = false;
+
+                    }
 
                 }
 
