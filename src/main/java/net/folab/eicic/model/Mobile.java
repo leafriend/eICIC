@@ -300,6 +300,27 @@ public class Mobile {
         return activeEdges;
     }
 
+    public char getConnection() {
+        char connection = '\0';
+        for (int r = 0; r < NUM_RB; r++) {
+            Edge<? extends BaseStation<?>> edge = activeEdges[r];
+            if (edge == null)
+                continue;
+            if (edge.baseStation instanceof Macro) {
+                if (connection == '\0' || connection == 'M')
+                    connection = 'M';
+                else
+                    connection = 'X';
+            } else if (edge.baseStation instanceof Pico) {
+                if (connection == '\0' || connection == 'P')
+                    connection = 'P';
+                else
+                    connection = 'X';
+            }
+        }
+        return connection;
+    }
+
     public double getActiveMacroChannel() {
         double channel = 0.0;
         for (int r = 0; r < macroEdge.baseStation.activeEdges.length; r++) {
