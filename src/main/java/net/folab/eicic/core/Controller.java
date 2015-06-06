@@ -129,17 +129,17 @@ public class Controller {
 
         configuration = new Configuration(getClass());
 
+        reset();
+
+        calculator = new Calculator(macros, picos, mobiles);
+        calculator.setAlgorithm(algorithm);
+
         console = newInstance(consoleClassName, this);
         if (console == null) {
             //return parser;
         }
         this.algorithm = algorithm;
         this.totalSeq = totalSeq;
-
-        reset();
-
-        calculator = new Calculator(macros, picos, mobiles);
-        calculator.setAlgorithm(algorithm);
 
     }
 
