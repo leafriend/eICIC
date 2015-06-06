@@ -17,9 +17,7 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
@@ -38,21 +36,32 @@ public class Controller {
 
     private static final String NEED_TO_SAVE_BEFORE_EXIT = "needToSaveBeforeExit";
 
-    public static final Map<String, Function<Mobile, String>> COLUMNS = unmodifiableMap(new LinkedHashMap<String, Function<Mobile, String>>() {
+    public static final List<FieldView<Mobile, ?>> COLUMNS = unmodifiableList(new ArrayList<FieldView<Mobile, ?>>() {
+
         private static final long serialVersionUID = -6689823013265960946L;
+
         {
-            put("#", u -> valueOf(u.idx));
-            put("X", u -> valueOf(u.x));
-            put("Y", u -> valueOf(u.y));
-            put("M", u -> valueOf(u.getMacro().idx));
-            put("P", u -> valueOf(u.getPico().idx));
-            put("User Rate", u -> valueOf(u.getUserRate()));
-            put("log(User Rate)", u -> valueOf(log(u.getUserRate())));
-            put("Throughput", u -> valueOf(u.getThroughput()));
-            put("log(User Rate)", u -> valueOf(log(u.getUserRate())));
-            put("λ", u -> valueOf(u.getLambda()));
-            put("μ", u -> valueOf(u.getMu()));
+            add("#", u -> valueOf(u.idx));
+            add("X", u -> valueOf(u.x));
+            add("Y", u -> valueOf(u.y));
+            add("M", u -> valueOf(u.getMacro().idx));
+            add("P", u -> valueOf(u.getPico().idx));
+            add("User Rate", u -> valueOf(u.getUserRate()));
+            add("log(User Rate)", u -> valueOf(log(u.getUserRate())));
+            add("Throughput", u -> valueOf(u.getThroughput()));
+            add("log(User Rate)", u -> valueOf(log(u.getUserRate())));
+            add("λ", u -> valueOf(u.getLambda()));
+            add("μ", u -> valueOf(u.getMu()));
         }
+
+        <T> FieldView<Mobile, T> add(String name, Function<Mobile, T> getter) {
+            return new FieldView<>(name, getter);
+        }
+
+        <T> FieldView<Mobile, T> add(String name, Function<Mobile, T> getter, int width) {
+            return new FieldView<>(name, getter, width);
+        }
+
     });
 
     private Configuration configuration;
@@ -368,14 +377,14 @@ public class Controller {
 
             StringBuilder headers = new StringBuilder();
             isFirst[0] = true;
-            COLUMNS.forEach((name, func) -> {
+            COLUMNS.forEach(view -> {
                 String d = "";
                 if (isFirst[0]) {
                     isFirst[0] = false;
                 } else {
                     d = delim;
                 }
-                headers.append(d).append(name);
+                headers.append(d).append(view.name);
             });
             writer.write(headers.toString());
             writer.write("\n");
@@ -384,14 +393,14 @@ public class Controller {
                 StringBuilder values = new StringBuilder();
                 Mobile mobile = mobiles[u];
                 isFirst[0] = true;
-                COLUMNS.forEach((name, func) -> {
+                COLUMNS.forEach(view -> {
                     String d = "";
                     if (isFirst[0]) {
                         isFirst[0] = false;
                     } else {
                         d = delim;
                     }
-                    values.append(d).append(func.apply(mobile));
+                    values.append(d).append(view.getter.apply(mobile));
                 });
                 writer.write(values.toString());
                 writer.write("\n");
