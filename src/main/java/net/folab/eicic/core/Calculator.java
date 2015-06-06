@@ -101,11 +101,12 @@ public class Calculator {
 
         }
 
-
         for (int m = 0; m < macros.length; m++)
             macros[m].count(state);
         for (int p = 0; p < picos.length; p++)
             picos[p].count(state);
+        for (int u = 0; u < mobiles.length; u++)
+            mobiles[u].count();
 
         return state;
 
