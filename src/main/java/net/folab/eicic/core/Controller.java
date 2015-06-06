@@ -41,17 +41,18 @@ public class Controller {
         private static final long serialVersionUID = -6689823013265960946L;
 
         {
-            add("#", u -> valueOf(u.idx));
-            add("X", u -> valueOf(u.x));
-            add("Y", u -> valueOf(u.y));
-            add("M", u -> valueOf(u.getMacro().idx));
-            add("P", u -> valueOf(u.getPico().idx));
-            add("User Rate", u -> valueOf(u.getUserRate()));
-            add("log(User Rate)", u -> valueOf(log(u.getUserRate())));
-            add("Throughput", u -> valueOf(u.getThroughput()));
-            add("log(User Rate)", u -> valueOf(log(u.getUserRate())));
-            add("λ", u -> valueOf(u.getLambda()));
-            add("μ", u -> valueOf(u.getMu()));
+            add("#", u -> valueOf(u.idx), 32);
+            add("X", u -> valueOf(u.x), 80);
+            add("Y", u -> valueOf(u.y), 80);
+            add("M", u -> valueOf(u.getMacro().idx), 32);
+            add("P", u -> valueOf(u.getPico().idx), 32);
+            add("C", u -> "", 32);
+            add("User Rate", u -> valueOf(u.getUserRate()), 96);
+            add("log(User Rate)", u -> valueOf(log(u.getUserRate())), 96);
+            add("Throughput", u -> valueOf(u.getThroughput()), 96);
+            add("log(User Rate)", u -> valueOf(log(u.getUserRate())), 96);
+            add("λ", u -> valueOf(u.getLambda()), 96);
+            add("μ", u -> valueOf(u.getMu()), 96);
         }
 
         <T> FieldView<Mobile, T> add(String name, Function<Mobile, T> getter) {
