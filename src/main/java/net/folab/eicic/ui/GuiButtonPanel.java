@@ -21,6 +21,7 @@ import net.folab.eicic.algorithm.Algorithm2;
 import net.folab.eicic.algorithm.Algorithm3;
 import net.folab.eicic.algorithm.Algorithm3Revised;
 import net.folab.eicic.algorithm.Algorithm3Revised2;
+import net.folab.eicic.algorithm.Algorithm3Revised3;
 import net.folab.eicic.algorithm.StaticAlgorithm;
 import net.folab.eicic.core.Algorithm;
 import net.folab.eicic.core.Controller;
@@ -58,6 +59,8 @@ public class GuiButtonPanel {
     private static final String ALGORITHM_3_REVISED = "4: Algorithm 3 Revised";
 
     private static final String ALGORITHM_3_REVISED_2 = "5: Algorithm 3 Revised 2";
+
+    private static final String ALGORITHM_3_REVISED_3 = "6: Algorithm 3 Revised 3";
 
     private static final String START = "Sta&rt";
 
@@ -125,7 +128,8 @@ public class GuiButtonPanel {
 
         algorithmCombo = new Combo(control, READ_ONLY);
         algorithmCombo.setItems(array(ALGORITHM_0, ALGORITHM_1, ALGORITHM_2,
-                ALGORITHM_3, ALGORITHM_3_REVISED, ALGORITHM_3_REVISED_2));
+                ALGORITHM_3, ALGORITHM_3_REVISED, ALGORITHM_3_REVISED_2,
+                ALGORITHM_3_REVISED_3));
         algorithmCombo.select(0);
         algorithmCombo.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -434,6 +438,9 @@ public class GuiButtonPanel {
                 break;
             case ALGORITHM_3_REVISED_2:
                 this.algorithm = new Algorithm3Revised2();
+                break;
+            case ALGORITHM_3_REVISED_3:
+                this.algorithm = new Algorithm3Revised3();
                 break;
             default:
                 break;
