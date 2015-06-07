@@ -45,9 +45,9 @@ public class Algorithm2 implements Algorithm {
                 + "-" + dateFormat.format(new Date()) + ".db");
         jdbc = new JdbcTemplate(dataSource);
 
-        jdbc.update("CREATE TABLE MACRO_STATE (SEQ INTEGER NOT NULL, IDX INTEGER NOT NULL, CH REAL NOT NULL, LR REAL NOT NULL, IS_ON INTEGER NOT NULL)");
-        jdbc.update("CREATE TABLE PICO_STATE (SEQ INTEGER NOT NULL, IDX INTEGER NOT NULL, CH REAL NOT NULL, LR REAL NOT NULL)");
-        jdbc.update("CREATE TABLE MOBILE_STATE (SEQ INTEGER NOT NULL, IDX INTEGER NOT NULL, MACRO INTEGER NOT NULL, PICO INTEGER NOT NULL, CONN TEXT NOT NULL"
+        jdbc.update("CREATE TABLE MACRO (SEQ INTEGER NOT NULL, IDX INTEGER NOT NULL, CH REAL NOT NULL, LR REAL NOT NULL, IS_ON INTEGER NOT NULL)");
+        jdbc.update("CREATE TABLE PICO (SEQ INTEGER NOT NULL, IDX INTEGER NOT NULL, CH REAL NOT NULL, LR REAL NOT NULL)");
+        jdbc.update("CREATE TABLE MOBILE (SEQ INTEGER NOT NULL, IDX INTEGER NOT NULL, MACRO INTEGER NOT NULL, PICO INTEGER NOT NULL, CONN TEXT NOT NULL"
                 + ", M_ALL_CH REAL NOT NULL, M_ALL_LR REAL NOT NULL"
                 + ", M_ACT_CH REAL NOT NULL, M_ACT_LR REAL NOT NULL"
                 + ", M_ACT_COUNT INTEGER NOT NULL"
@@ -140,7 +140,7 @@ public class Algorithm2 implements Algorithm {
             double lambdaR = macro.getLambdaR();
             boolean isOn = (bestMacroState >> macro.idx & 1) == 1;
             jdbc.update(
-                    "INSERT INTO MACRO_STATE (SEQ, IDX, CH, LR, IS_ON) VALUES (?, ?, ?, ?, ?)",
+                    "INSERT INTO MACRO (SEQ, IDX, CH, LR, IS_ON) VALUES (?, ?, ?, ?, ?)",
                     seq, macro.idx, channel, lambdaR, isOn);
         }
 
@@ -148,7 +148,7 @@ public class Algorithm2 implements Algorithm {
             double channel = pico.getChannel();
             double lambdaR = pico.getLambdaR();
             jdbc.update(
-                    "INSERT INTO PICO_STATE (SEQ, IDX, CH, LR) VALUES (?, ?, ?, ?)",
+                    "INSERT INTO PICO (SEQ, IDX, CH, LR) VALUES (?, ?, ?, ?)",
                     seq, pico.idx, channel, lambdaR);
         }
 
@@ -164,7 +164,7 @@ public class Algorithm2 implements Algorithm {
             double activePicoChannel = mobile.getActivePicoChannel();
             double activePicoLambdaR = mobile.getActivePicoLambdaR();
             double activePicoChannelCount = mobile.getActivePicoChannelCount();
-            jdbc.update("INSERT INTO MOBILE_STATE (SEQ, IDX, MACRO, PICO, CONN" //
+            jdbc.update("INSERT INTO MOBILE (SEQ, IDX, MACRO, PICO, CONN" //
                     + ", M_ALL_CH, M_ALL_LR, M_ACT_CH, M_ACT_LR, M_ACT_COUNT" //
                     + ", P_ALL_CH, P_ALL_LR, P_ACT_CH, P_ACT_LR, P_ACT_COUNT" //
                     + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
