@@ -139,9 +139,8 @@ public class CliConsole implements Console {
             }
 
             if (command.equals("save")) {
-                String selected = "PA" + controller.getAlgorithm().getNumber();
-                selected += "-" + seq;
-                selected += ".csv";
+                String extension = ".csv";
+                String selected = controller.getDefaultSaveFileName(extension);
                 save(selected);
                 continue;
             } else if (command.startsWith("save ")){
