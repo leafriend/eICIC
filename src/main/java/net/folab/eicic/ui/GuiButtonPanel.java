@@ -57,6 +57,8 @@ public class GuiButtonPanel {
 
     private Combo algorithmCombo;
 
+    private Button optionButton;
+
     private Text absNumeratorText;
 
     private Text absDenominatorText;
@@ -130,6 +132,9 @@ public class GuiButtonPanel {
                 setAlgorithm();
             }
         });
+
+        optionButton = new Button(control, PUSH);
+        optionButton.setText("O&ption");
 
         Label absLabel = new Label(control, NONE);
         absLabel.setText("ABS");
@@ -306,10 +311,17 @@ public class GuiButtonPanel {
         layoutData.left = new FormAttachment(randomCombo, 8);
         algorithmCombo.setLayoutData(layoutData);
 
+        // optionButton
+        layoutData = new FormData();
+        layoutData.top = new FormAttachment(0, 1);
+        layoutData.left = new FormAttachment(algorithmCombo, 8);
+        layoutData.right = new FormAttachment(algorithmCombo, 8 + 64, TRAIL);
+        optionButton.setLayoutData(layoutData);
+
         // absLabel
         layoutData = new FormData();
         layoutData.top = new FormAttachment(0, 3 + 2);
-        layoutData.left = new FormAttachment(algorithmCombo, 8);
+        layoutData.left = new FormAttachment(optionButton, 8);
         absLabel.setLayoutData(layoutData);
 
         // absNumeratorText
