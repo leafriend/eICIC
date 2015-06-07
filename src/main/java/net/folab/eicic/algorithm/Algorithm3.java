@@ -19,11 +19,6 @@ public class Algorithm3 implements Algorithm {
     final boolean[] mobileConnectsMacro = new boolean[NUM_MOBILES];
 
     @Override
-    public int getNumber() {
-        return 3;
-    }
-
-    @Override
     public StateContext calculate(int seq, Macro[] macros, Pico[] picos, Mobile[] mobiles) {
 
         Edge<?>[][] bestEdges = new Edge[mobiles.length][NUM_RB];

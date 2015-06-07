@@ -19,11 +19,6 @@ public class StaticAlgorithm implements Algorithm {
     private double creBias = 1;
 
     @Override
-    public int getNumber() {
-        return 0;
-    }
-
-    @Override
     public void setUp(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
         for (int u = 0; u < mobiles.length; u++) {
             Mobile mobile = mobiles[u];

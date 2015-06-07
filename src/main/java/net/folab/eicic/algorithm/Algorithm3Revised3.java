@@ -5,11 +5,6 @@ import net.folab.eicic.model.Mobile;
 public class Algorithm3Revised3 extends Algorithm3 {
 
     @Override
-    public int getNumber() {
-        return 4;
-    }
-
-    @Override
     public void chooseMobileConnection(Mobile[] mobiles) {
 
         for (Mobile mobile : mobiles) {

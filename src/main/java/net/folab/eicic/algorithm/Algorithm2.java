@@ -4,6 +4,10 @@ import static net.folab.eicic.model.Constants.NUM_MACROS;
 import static net.folab.eicic.model.Constants.NUM_MOBILES;
 import static net.folab.eicic.model.Constants.NUM_RB;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -37,12 +41,8 @@ public class Algorithm2 implements Algorithm {
     }
 
     @Override
-    public int getNumber() {
-        return 2;
-    }
-
-    @Override
-    public StateContext calculate(int seq, Macro[] macros, Pico[] picos, Mobile[] mobiles) {
+    public StateContext calculate(int seq, Macro[] macros, Pico[] picos,
+            Mobile[] mobiles) {
 
         for (int macroState = 0; macroState < NUM_MACRO_STATES; macroState++) {
             if (macroStateResults[macroState] == null)
@@ -90,8 +90,43 @@ public class Algorithm2 implements Algorithm {
 
         assert bestMacroState >= 0;
 
+        dumpFile(seq, macros, picos, mobiles);
+
         return state;
 
+    }
+
+    private void dumpFile(int seq, Macro[] macros, Pico[] picos, Mobile[] mobiles) {
+        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(
+                    "logs/Algorithm2-" + seq + ".csv", false)));) {
+
+            out.print("#seq,");
+            out.print(seq);
+            out.print("\n");
+
+            out.print("#");
+            out.print(",");
+            out.print("Activ.");
+            out.print(",");
+            out.print("R");
+            out.print(",");
+            out.print("λR");
+            out.print("\n");
+
+            for (Macro macro : macros) {
+                out.print(macro.idx);
+                out.print(",");
+                out.print(state.getMacrosIsOn()[macro.idx] ? "ON" : "OFF");
+                out.print(",");
+                out.print(String.format("%.6f", macro.getChannel()));
+                out.print(",");
+                out.print(String.format("%.6f", macro.getLambdaR()));
+                out.print("\n");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
