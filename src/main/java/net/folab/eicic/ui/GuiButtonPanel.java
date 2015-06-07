@@ -264,6 +264,8 @@ public class GuiButtonPanel {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 String text = executeButton.getText();
+                randomCombo.setEnabled(false);
+                algorithmCombo.setEnabled(false);
                 if (PAUSE.endsWith(text)) {
                     controller.pause();
                     executeButton.setText(START);
@@ -434,7 +436,6 @@ public class GuiButtonPanel {
     public void setEnabled(boolean enabled) {
         resetButton.setEnabled(enabled);
         nextButton.setEnabled(enabled);
-        algorithmCombo.setEnabled(enabled);
     }
 
     public UpdateFrequencyListener getUpdateFrequencyListener() {
