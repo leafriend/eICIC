@@ -153,6 +153,7 @@ public class Algorithm2 implements Algorithm {
         }
 
         for (Mobile mobile : mobiles) {
+            mobile.count();
             double allMacroChannel = mobile.getMacro().getChannel();
             double allMacroLambdaR = mobile.getMacro().getLambdaR();
             double activeMacroChannel = mobile.getActiveMacroChannel();
