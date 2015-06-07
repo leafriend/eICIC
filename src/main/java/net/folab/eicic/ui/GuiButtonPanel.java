@@ -1,9 +1,13 @@
 package net.folab.eicic.ui;
 
+import static java.lang.Double.parseDouble;
+import static java.lang.Integer.parseInt;
 import static java.lang.Math.pow;
 import static java.lang.String.format;
-import static java.lang.Integer.parseInt;
-import static java.lang.Double.parseDouble;
+import static java.util.Arrays.stream;
+import static net.folab.eicic.algorithm.AlgorithmFactory.getAlgorithmClasses;
+import static net.folab.eicic.algorithm.AlgorithmFactory.getInstance;
+import static net.folab.eicic.ui.Util.array;
 import static org.eclipse.swt.SWT.BORDER;
 import static org.eclipse.swt.SWT.CHECK;
 import static org.eclipse.swt.SWT.LEAD;
@@ -12,16 +16,9 @@ import static org.eclipse.swt.SWT.PUSH;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RIGHT;
 import static org.eclipse.swt.SWT.TRAIL;
-import static net.folab.eicic.ui.Util.array;
 
 import java.util.Random;
 
-import net.folab.eicic.algorithm.Algorithm1;
-import net.folab.eicic.algorithm.Algorithm2;
-import net.folab.eicic.algorithm.Algorithm3;
-import net.folab.eicic.algorithm.Algorithm3Revised;
-import net.folab.eicic.algorithm.Algorithm3Revised2;
-import net.folab.eicic.algorithm.Algorithm3Revised3;
 import net.folab.eicic.algorithm.StaticAlgorithm;
 import net.folab.eicic.core.Algorithm;
 import net.folab.eicic.core.Controller;
@@ -47,20 +44,6 @@ public class GuiButtonPanel {
         public void updateFrequencyModified(int updateFrequency);
 
     }
-
-    private static final String ALGORITHM_0 = "0: Static Algorithm";
-
-    private static final String ALGORITHM_1 = "1: Algorithm 1";
-
-    private static final String ALGORITHM_2 = "2: Algorithm 2";
-
-    private static final String ALGORITHM_3 = "3: Algorithm 3";
-
-    private static final String ALGORITHM_3_REVISED = "4: Algorithm 3 Revised";
-
-    private static final String ALGORITHM_3_REVISED_2 = "5: Algorithm 3 Revised 2";
-
-    private static final String ALGORITHM_3_REVISED_3 = "6: Algorithm 3 Revised 3";
 
     private static final String START = "Sta&rt";
 
@@ -127,9 +110,19 @@ public class GuiButtonPanel {
         });
 
         algorithmCombo = new Combo(control, READ_ONLY);
-        algorithmCombo.setItems(array(ALGORITHM_0, ALGORITHM_1, ALGORITHM_2,
-                ALGORITHM_3, ALGORITHM_3_REVISED, ALGORITHM_3_REVISED_2,
-                ALGORITHM_3_REVISED_3));
+        algorithmCombo.setItems(stream(getAlgorithmClasses())
+                .map(c -> c.getSimpleName())
+                .map(s -> {
+                    StringBuilder sb = new StringBuilder();
+                    for (char ch : s.toCharArray()) {
+                        if (('A' <= ch && ch <= 'Z')
+                                || ('0' <= ch && ch <= '9')) {
+                            sb.append(' ');
+                        }
+                        sb.append(ch);
+                    }
+                    return sb.toString().trim();
+                }).toArray(s -> new String[s]));
         algorithmCombo.select(0);
         algorithmCombo.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -405,46 +398,31 @@ public class GuiButtonPanel {
 
     public void setAlgorithm(Algorithm algorithm) {
         this.algorithm = algorithm;
-        if (algorithm != null)
-            algorithmCombo.select(algorithm.getNumber());
+        if (algorithm != null) {
+            String algorithmName = algorithm.getClass().getSimpleName();
+            for (int i = 0; i < algorithmCombo.getItemCount(); i++) {
+                if (algorithmCombo.getItem(i).replaceAll(" ", "").equals(algorithmName)) {
+                    algorithmCombo.select(i);
+                    break;
+                }
+            }
+        }
     }
 
     public void setAlgorithm() {
         int index = algorithmCombo.getSelectionIndex();
-        if (algorithm == null || algorithm.getNumber() != index) {
-            creText.setEnabled(false);
-            switch (algorithmCombo.getItem(index)) {
-            case ALGORITHM_0:
-                this.algorithm = new StaticAlgorithm();
-                double absNumerator = parseInt(absNumeratorText.getText());
-                StaticAlgorithm staticAlgorithm = (StaticAlgorithm) algorithm;
-                staticAlgorithm.setAbsNumerator(absNumerator);
-                double cre = parseDouble(creText.getText());
-                double creBias = pow(10, cre / 10);
-                staticAlgorithm.setCreBias(creBias);
-                creText.setEnabled(true);
-                break;
-            case ALGORITHM_1:
-                this.algorithm = new Algorithm1();
-                break;
-            case ALGORITHM_2:
-                this.algorithm = new Algorithm2();
-                break;
-            case ALGORITHM_3:
-                this.algorithm = new Algorithm3();
-                break;
-            case ALGORITHM_3_REVISED:
-                this.algorithm = new Algorithm3Revised();
-                break;
-            case ALGORITHM_3_REVISED_2:
-                this.algorithm = new Algorithm3Revised2();
-                break;
-            case ALGORITHM_3_REVISED_3:
-                this.algorithm = new Algorithm3Revised3();
-                break;
-            default:
-                break;
-            }
+        creText.setEnabled(false);
+        String algorithmName = algorithmCombo.getItem(index).replaceAll(" ", "");
+        this.algorithm = getInstance(algorithmName);
+        if ("StaticAlgorithm".equals(algorithmName)) {
+            // FIXME Remove direct access to StaticAlgorithm
+            double absNumerator = parseInt(absNumeratorText.getText());
+            StaticAlgorithm staticAlgorithm = (StaticAlgorithm) algorithm;
+            staticAlgorithm.setAbsNumerator(absNumerator);
+            double cre = parseDouble(creText.getText());
+            double creBias = pow(10, cre / 10);
+            staticAlgorithm.setCreBias(creBias);
+            creText.setEnabled(true);
         }
         controller.setAlgorithm(algorithm);
     }
