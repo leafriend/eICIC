@@ -126,11 +126,13 @@ public class Algorithm2 implements Algorithm {
 
         assert bestMacroState >= 0;
 
+        logOnDb(seq, bestMacroState, state, macros, picos, mobiles);
 
         return state;
 
     }
 
+    private void logOnDb(int seq, int bestMacroState, StateContext state2,
             Macro[] macros, Pico[] picos, Mobile[] mobiles) {
 
         for (Macro macro : macros) {
