@@ -28,6 +28,8 @@ import net.folab.eicic.core.Controller;
 import net.folab.eicic.core.Option;
 import net.folab.eicic.model.Edge;
 
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -177,9 +179,49 @@ public class GuiButtonPanel {
                         layoutData.right = new FormAttachment(50, 0);
                         label.setLayoutData(layoutData);
 
-                        Text text = new Text(row, BORDER);
+                        Class<?> type = field.getType();
+
+                        int textStyle = BORDER;
+                        if (Double.class.equals(type) || double.class.equals(type)) {
+                            textStyle = textStyle | RIGHT;
+                        } else {
+                            throw new RuntimeException("Unsupported type: " + type); // TODO
+                        }
+                        Text text = new Text(row, textStyle);
                         if (focus == null)
                             focus = text;
+
+                        if (Double.class.equals(type) || double.class.equals(type)) {
+                            text.addKeyListener(new KeyAdapter() {
+                                public void keyPressed(KeyEvent e) {
+                                    if ('0' <= e.character
+                                            && e.character <= '9') {
+
+                                    } else if ('.' == e.character) {
+                                        if (text.getText().indexOf('.') >= 0) {
+                                            e.doit = false;
+                                        }
+                                    } else if (e.character != 0
+                                            && e.character != 8
+                                            && e.character != 127) {
+                                        e.doit = false;
+                                    }
+                                };
+                            });
+                        } else {
+                            throw new RuntimeException("Unsupported type: " + type); // TODO
+                        }
+
+                        field.setAccessible(true);
+                        Object value ;
+                        try {
+                            value = field.get(algorithm);
+                        } catch (IllegalArgumentException
+                                | IllegalAccessException e1) {
+                            throw new RuntimeException(e1); // TODO
+                        }
+                        text.setText(String.valueOf(value));
+
 
                         layoutData = new FormData();
                         layoutData.top = new FormAttachment(0, 0);
