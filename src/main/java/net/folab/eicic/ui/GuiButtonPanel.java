@@ -8,8 +8,10 @@ import static java.util.Arrays.stream;
 import static net.folab.eicic.algorithm.AlgorithmFactory.getAlgorithmClasses;
 import static net.folab.eicic.algorithm.AlgorithmFactory.getInstance;
 import static net.folab.eicic.ui.Util.array;
+import static org.eclipse.swt.SWT.APPLICATION_MODAL;
 import static org.eclipse.swt.SWT.BORDER;
 import static org.eclipse.swt.SWT.CHECK;
+import static org.eclipse.swt.SWT.DIALOG_TRIM;
 import static org.eclipse.swt.SWT.LEAD;
 import static org.eclipse.swt.SWT.NONE;
 import static org.eclipse.swt.SWT.PUSH;
@@ -17,24 +19,29 @@ import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RIGHT;
 import static org.eclipse.swt.SWT.TRAIL;
 
+import java.lang.reflect.Field;
 import java.util.Random;
 
 import net.folab.eicic.algorithm.StaticAlgorithm;
 import net.folab.eicic.core.Algorithm;
 import net.folab.eicic.core.Controller;
+import net.folab.eicic.core.Option;
 import net.folab.eicic.model.Edge;
 
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 public class GuiButtonPanel {
@@ -135,6 +142,115 @@ public class GuiButtonPanel {
 
         optionButton = new Button(control, PUSH);
         optionButton.setText("O&ption");
+        optionButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+
+                Shell dialog = new Shell(control.getShell(), DIALOG_TRIM | APPLICATION_MODAL);
+                int index = algorithmCombo.getSelectionIndex();
+                dialog.setText("Option - " + algorithmCombo.getItem(index));
+
+                Control focus = null;
+
+                Control previous = null;
+
+                Algorithm algorithm = controller.getAlgorithm();
+                for (Field field : algorithm.getClass().getDeclaredFields()) {
+                    Option option = field.getAnnotation(Option.class);
+                    if (option != null) {
+
+                        Composite row = new Composite(dialog, NONE);
+                        row.setLayout(new FormLayout());
+
+                        String name = option.name();
+                        if (name.isEmpty()) {
+                            // TODO
+                            name = field.getName();
+                        }
+                        FormData layoutData;
+
+                        Label label = new Label(row, NONE);
+                        label.setText(name);
+
+                        layoutData = new FormData();
+                        layoutData.top = new FormAttachment(0, 0);
+                        layoutData.left = new FormAttachment(0, 0);
+                        layoutData.right = new FormAttachment(50, 0);
+                        label.setLayoutData(layoutData);
+
+                        Text text = new Text(row, BORDER);
+                        if (focus == null)
+                            focus = text;
+
+                        layoutData = new FormData();
+                        layoutData.top = new FormAttachment(0, 0);
+                        layoutData.left = new FormAttachment(50, 0);
+                        layoutData.right = new FormAttachment(100, 0);
+                        text.setLayoutData(layoutData);
+
+                        layoutData = new FormData();
+                        if (previous == null) {
+                            layoutData.top = new FormAttachment(0, 8);
+                        } else {
+                            layoutData.top = new FormAttachment(previous, 8);
+                        }
+                        layoutData.left = new FormAttachment(0, 8);
+                        layoutData.right = new FormAttachment(100, -8);
+                        row.setLayoutData(layoutData);
+
+                        previous = row;
+
+                    }
+                }
+
+                int width = 400;
+                int height = 300;
+                Rectangle bound = control.getDisplay().getPrimaryMonitor().getClientArea();
+                int x = (bound.width - width) / 2;
+                int y = (bound.height - height) / 2;
+                dialog.setBounds(x, y, width, height);
+
+                Button okButton = new Button(dialog, PUSH);
+                okButton.setText("&OK");
+                okButton.setFocus();
+                okButton.addSelectionListener(new SelectionAdapter() {
+                    @Override
+                    public void widgetSelected(SelectionEvent e) {
+                        dialog.close();
+                    }
+                });
+                if (focus == null)
+                    focus = okButton;
+
+                Button cancelButton = new Button(dialog, PUSH);
+                cancelButton.setText("Cance&l");
+                cancelButton.setFocus();
+                cancelButton.addSelectionListener(new SelectionAdapter() {
+                    @Override
+                    public void widgetSelected(SelectionEvent e) {
+                        dialog.close();
+                    }
+                });
+
+                dialog.setLayout(new FormLayout());
+                FormData layoutData;
+
+                layoutData = new FormData();
+                layoutData.left = new FormAttachment(cancelButton, -8 - 64, LEAD);
+                layoutData.right = new FormAttachment(cancelButton, -8, LEAD);
+                layoutData.bottom = new FormAttachment(100, -8);
+                okButton.setLayoutData(layoutData);
+
+                layoutData = new FormData();
+                layoutData.left = new FormAttachment(100, -8 - 64);
+                layoutData.right = new FormAttachment(100, -8);
+                layoutData.bottom = new FormAttachment(100, -8);
+                cancelButton.setLayoutData(layoutData);
+
+                dialog.open();
+                focus.setFocus();
+
+            };
+        });
 
         Label absLabel = new Label(control, NONE);
         absLabel.setText("ABS");
