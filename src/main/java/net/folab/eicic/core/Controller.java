@@ -323,7 +323,8 @@ public class Controller {
      * @return default file name
      */
     public String getDefaultSaveFileName(final String extension) {
-        return format("PA%d-%d." + extension, algorithm.getNumber(), seq);
+        String algorithmName = algorithm.getClass().getName();
+        return format("logs/%s-%d.%s", algorithmName, seq, extension);
     }
 
     public void save(String fileName) {
