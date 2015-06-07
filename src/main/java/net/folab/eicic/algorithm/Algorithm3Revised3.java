@@ -42,8 +42,8 @@ public class Algorithm3Revised3 extends Algorithm3 {
 
                     } else {
                         // Macro와 Pico로 부터 하나도 할당받지 못한 경우 (0인 경우)
-                        double allMacroChannel = mobile.getAllMacroChannel();
-                        double allPicoChannel = mobile.getAllPicoChannel();
+                        double allMacroChannel = mobile.getMacro().getChannel();
+                        double allPicoChannel = mobile.getPico().getChannel();
 
                         if (allMacroChannel > allPicoChannel) {
                             // Macro의 모든 채널값 합이 더 큰 경우

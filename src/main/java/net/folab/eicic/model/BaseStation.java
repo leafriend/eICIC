@@ -61,4 +61,26 @@ public abstract class BaseStation<T extends BaseStation<T>> {
         return activeEdges;
     }
 
+    public double getChannel() {
+        double channel = 0.0;
+        for (int r = 0; r < activeEdges.length; r++) {
+            Edge<T> edge = activeEdges[r];
+            if (edge == null)
+                continue;
+            channel += edge.channelGain[r];
+        }
+        return channel;
+    }
+
+    public double getLambdaR() {
+        double lambdaR = 0.0;
+        for (int r = 0; r < activeEdges.length; r++) {
+            Edge<T> edge = activeEdges[r];
+            if (edge == null)
+                continue;
+            lambdaR += edge.channelGain[r] * edge.mobile.getLambda();
+        }
+        return lambdaR;
+    }
+
 }

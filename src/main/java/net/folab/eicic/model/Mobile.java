@@ -352,10 +352,23 @@ public class Mobile {
             if (edge == null)
                 continue;
             if (edge.mobile.equals(this)) {
-                channel = +edge.channelGain[r];
+                channel += edge.channelGain[r];
             }
         }
         return channel;
+    }
+
+    public double getActiveMacroLambdaR() {
+        double lambdaR = 0.0;
+        for (int r = 0; r < macroEdge.baseStation.activeEdges.length; r++) {
+            Edge<Macro> edge = macroEdge.baseStation.activeEdges[r];
+            if (edge == null)
+                continue;
+            if (edge.mobile.equals(this)) {
+                lambdaR += edge.channelGain[r] * edge.mobile.lambda;
+            }
+        }
+        return lambdaR;
     }
 
     public double getActiveMacroChannelCount() {
@@ -371,14 +384,6 @@ public class Mobile {
         return count;
     }
 
-    public double getAllMacroChannel() {
-        double channel = 0.0;
-        for (int r = 0; r < macroEdge.channelGain.length; r++) {
-            channel += macroEdge.channelGain[r];
-        }
-        return channel;
-    }
-
     public double getActivePicoChannel() {
         double channel = 0.0;
         for (int r = 0; r < picoEdge.baseStation.activeEdges.length; r++) {
@@ -386,10 +391,23 @@ public class Mobile {
             if (edge == null)
                 continue;
             if (edge.mobile.equals(this)) {
-                channel = +edge.channelGain[r];
+                channel += edge.channelGain[r];
             }
         }
         return channel;
+    }
+
+    public double getActivePicoLambdaR() {
+        double lambdaR = 0.0;
+        for (int r = 0; r < picoEdge.baseStation.activeEdges.length; r++) {
+            Edge<Pico> edge = picoEdge.baseStation.activeEdges[r];
+            if (edge == null)
+                continue;
+            if (edge.mobile.equals(this)) {
+                lambdaR += edge.channelGain[r] * edge.mobile.lambda;
+            }
+        }
+        return lambdaR;
     }
 
     public double getActivePicoChannelCount() {
@@ -403,14 +421,6 @@ public class Mobile {
             }
         }
         return count;
-    }
-
-    public double getAllPicoChannel() {
-        double channel = 0.0;
-        for (int r = 0; r < picoEdge.channelGain.length; r++) {
-            channel += picoEdge.channelGain[r];
-        }
-        return channel;
     }
 
     public int getMacroCount() {
