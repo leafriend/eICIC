@@ -52,7 +52,7 @@ public class Controller {
             addC("User Rate", u -> u.getUserRate(), 96);
             addC("log(User Rate)", u -> log(u.getUserRate()), 96);
             addC("Throughput", u -> u.getThroughput(), 96);
-            addC("log(getThroughput)", u -> log(u.getThroughput()), 96);
+            addC("log(Throughput)", u -> log(u.getThroughput()), 96);
             addC("λ", u -> u.getLambda(), 96);
             addC("μ", u -> u.getMu(), 96);
         }
