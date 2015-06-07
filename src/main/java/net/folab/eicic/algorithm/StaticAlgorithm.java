@@ -3,6 +3,7 @@ package net.folab.eicic.algorithm;
 import static net.folab.eicic.model.Constants.*;
 import static java.lang.Math.*;
 import net.folab.eicic.core.Algorithm;
+import net.folab.eicic.core.Option;
 import net.folab.eicic.model.BaseStation;
 import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
@@ -12,10 +13,12 @@ import net.folab.eicic.model.StateContext;
 
 public class StaticAlgorithm implements Algorithm {
 
+    @Option(name = "ABS Numerator")
     private double absNumerator = 20;
 
     private double absDenominator = 100;
 
+    @Option(name = "CRE Bias")
     private double creBias = 1;
 
     @Override
