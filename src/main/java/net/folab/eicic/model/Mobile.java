@@ -311,18 +311,18 @@ public class Mobile {
     }
 
     public void count() {
-        connection = '\0';
+        connection = ' ';
         for (int r = 0; r < NUM_RB; r++) {
             Edge<? extends BaseStation<?>> edge = activeEdges[r];
             if (edge == null)
                 continue;
             if (edge.baseStation instanceof Macro) {
-                if (connection == '\0' || connection == 'M')
+                if (connection == ' ' || connection == 'M')
                     connection = 'M';
                 else
                     connection = 'X';
             } else if (edge.baseStation instanceof Pico) {
-                if (connection == '\0' || connection == 'P')
+                if (connection == ' ' || connection == 'P')
                     connection = 'P';
                 else
                     connection = 'X';
