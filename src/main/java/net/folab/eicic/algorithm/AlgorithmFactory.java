@@ -1,8 +1,13 @@
 package net.folab.eicic.algorithm;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import net.folab.eicic.core.Algorithm;
 
 public class AlgorithmFactory {
+
+    private static final Map<Class<? extends Algorithm>, Algorithm> INSTANCES = new LinkedHashMap<Class<? extends Algorithm>, Algorithm>();
 
     public static Class<? extends Algorithm>[] getAlgorithmClasses() {
         @SuppressWarnings("unchecked")
@@ -19,10 +24,31 @@ public class AlgorithmFactory {
 
     public static Algorithm getInstance(String algorithmName) {
         try {
-            return (Algorithm) Class.forName(AlgorithmFactory.class.getPackage().getName() + "." + algorithmName).newInstance();
-        } catch (InstantiationException | IllegalAccessException
-                | ClassNotFoundException e) {
+
+            @SuppressWarnings("unchecked")
+            Class<? extends Algorithm> algorithmClass = (Class<? extends Algorithm>) Class
+                    .forName(AlgorithmFactory.class.getPackage().getName()
+                            + "." + algorithmName);
+
+            if (INSTANCES.containsKey(algorithmClass)) {
+                return INSTANCES.get(algorithmClass);
+            }
+
+            Algorithm instance = algorithmClass.newInstance();
+            INSTANCES.put(algorithmClass, instance);
+
+            return instance;
+
+        } catch (ClassNotFoundException | InstantiationException
+                | IllegalAccessException e) {
             throw new RuntimeException(e);
+        }
+
+    }
+
+    public static void terminate() {
+        for (Algorithm algorithm : INSTANCES.values()) {
+            algorithm.terminate();
         }
     }
 

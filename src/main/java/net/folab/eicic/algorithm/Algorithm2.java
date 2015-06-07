@@ -18,7 +18,7 @@ public class Algorithm2 implements Algorithm {
 
     private static final int NUM_MACRO_STATES = 1 << NUM_MACROS;
 
-    public static final ExecutorService executor = Executors
+    private static final ExecutorService executor = Executors
             .newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     private StateContext state;
@@ -26,6 +26,11 @@ public class Algorithm2 implements Algorithm {
     private Edge<?>[][] bestEdges = new Edge[NUM_MOBILES][NUM_RB];
 
     private Algorithm2MacroStates[] macroStateResults = new Algorithm2MacroStates[NUM_MACRO_STATES];
+
+    @Override
+    public void terminate() {
+        executor.shutdown();
+    }
 
     public static void delay(int delay) {
         try {

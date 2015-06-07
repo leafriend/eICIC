@@ -22,6 +22,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
 
+import net.folab.eicic.algorithm.AlgorithmFactory;
 import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
@@ -233,7 +234,6 @@ public class Controller {
 
                 isRunning = false;
                 if (seq == totalSeq) {
-                    algorithm.tearDown(macros, picos, mobiles);
                     console.notifyEnded();
                 }
 
@@ -309,9 +309,10 @@ public class Controller {
         isRunning = false;
     }
 
-    public void stop() {
+    public void terminate() {
         isRunning = false;
         executorService.shutdown();
+        AlgorithmFactory.terminate();
     }
 
     /**

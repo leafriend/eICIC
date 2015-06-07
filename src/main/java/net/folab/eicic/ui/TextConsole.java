@@ -74,7 +74,7 @@ public class TextConsole implements Console {
 
     @Override
     public void notifyEnded() {
-        controller.stop();
+        controller.terminate();
     }
 
     @Override

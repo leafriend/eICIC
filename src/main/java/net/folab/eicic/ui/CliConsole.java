@@ -164,7 +164,7 @@ public class CliConsole implements Console {
 
             if ("exit".equals(command)) {
                 if (confirm(console)) {
-                    controller.stop();
+                    controller.terminate();
                     break;
                 } else {
                     continue;

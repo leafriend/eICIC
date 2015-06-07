@@ -1,7 +1,6 @@
 package net.folab.eicic.ui;
 
 import static org.eclipse.swt.SWT.*;
-import net.folab.eicic.algorithm.Algorithm2;
 import net.folab.eicic.core.Algorithm;
 import net.folab.eicic.core.Configuration;
 import net.folab.eicic.core.Console;
@@ -313,8 +312,8 @@ public class GuiConsole implements Console {
                     }
                 }
 
-                controller.stop();
-                Algorithm2.executor.shutdown(); // TODO Generalize
+                controller.terminate();
+
             }
         });
         shell.open();

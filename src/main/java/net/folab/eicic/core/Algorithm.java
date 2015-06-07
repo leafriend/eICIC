@@ -13,7 +13,7 @@ public interface Algorithm {
         // DO NOTHING
     }
 
-    default void tearDown(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
+    default void terminate() {
         // DO NOTHING
     }
 
