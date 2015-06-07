@@ -188,8 +188,9 @@ public class CliConsole implements Console {
                 + Console.milisToTimeString(left) + " = "
                 + Console.milisToTimeString(estimated);
 
-        out.print(String.format("PA%d:%7.3f @ %d/%d : %s> ",
-                algorithm.getNumber(), throughput, seq, totalSeq, time));
+        String algorithmName = algorithm.getClass().getSimpleName();
+        out.print(String.format("%s:%7.3f @ %d/%d : %s> ", algorithmName,
+                throughput, seq, totalSeq, time));
     }
 
     private boolean confirm(java.io.Console console) {
