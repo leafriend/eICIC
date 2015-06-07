@@ -2,6 +2,7 @@ package net.folab.eicic;
 
 import static java.util.Arrays.asList;
 
+import java.io.File;
 import java.io.IOException;
 
 import joptsimple.OptionParser;
@@ -14,6 +15,7 @@ public class Main {
     private static final String DEFAULT_CONSOLE_CLASS_NAME = "net.folab.eicic.ui.CliConsole";
 
     public static void main(String[] args) {
+        new File("logs").mkdir(); // TODO remove this code when available
         OptionParser parser = run(args);
         if (parser != null)
             try {
