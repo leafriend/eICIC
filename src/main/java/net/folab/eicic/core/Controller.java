@@ -107,7 +107,7 @@ public class Controller {
             this.type = type;
         }
 
-        public abstract T generate(int idx, double[] values);
+        public abstract T generate(double[] values);
 
     }
 
@@ -121,14 +121,13 @@ public class Controller {
 
             BufferedReader reader = new BufferedReader(new FileReader(file));
             String line;
-            int idx = 0;
             while ((line = reader.readLine()) != null) {
                 String[] tokens = line.split(delim);
                 double[] values = new double[tokens.length];
                 for (int i = 0; i < tokens.length; i++) {
                     values[i] = Double.parseDouble(tokens[i]);
                 }
-                list.add(generator.generate(idx++, values));
+                list.add(generator.generate(values));
             }
             reader.close();
 
@@ -251,26 +250,82 @@ public class Controller {
         seq = 0;
         accumuMillis = 0;
 
-        macros = loadObject("res/macro.csv", new Generator<Macro>(Macro.class) {
+        String file = "res/topology.csv";
+
+        String delim = "( |\t)+";
+        if (file.toLowerCase().endsWith(".csv"))
+            delim = ",";
+
+        List<Macro> macros = new ArrayList<>();
+        List<Pico> picos = new ArrayList<>();
+        List<Mobile> mobiles = new ArrayList<>();
+
+        Generator<Macro> macroGenerator = new Generator<Macro>(Macro.class) {
             @Override
-            public Macro generate(int idx, double[] values) {
-                return new Macro(idx, values[1], values[2], values[3]);
+            public Macro generate(double[] values) {
+                return new Macro((int) values[0], values[1], values[2],
+                        values[3]);
             }
-        });
-        picos = loadObject("res/pico.csv", new Generator<Pico>(Pico.class) {
+        };
+        Generator<Pico> picoGenerator = new Generator<Pico>(Pico.class) {
             @Override
-            public Pico generate(int idx, double[] values) {
-                return new Pico(idx, values[1], values[2], values[3]);
+            public Pico generate(double[] values) {
+                return new Pico((int) values[0], values[1], values[2],
+                        values[3]);
             }
-        });
-        mobiles = loadObject("res/mobile.csv", new Generator<Mobile>(
-                Mobile.class) {
+        };
+        Generator<Mobile> mobileGenerator = new Generator<Mobile>(Mobile.class) {
             @Override
-            public Mobile generate(int idx, double[] values) {
-                return new Mobile(idx, values[1], values[2], values[3],
-                        values[4], values[5], values[6]);
+            public Mobile generate(double[] values) {
+                return new Mobile((int) values[0], values[1], values[2],
+                        values[3], values[4], values[5], values[6]);
             }
-        });
+        };
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+
+            String line;
+
+            @SuppressWarnings("rawtypes")
+            List list = null;
+            Generator<?> generator = null;
+
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (line.startsWith("#")) {
+                    if ("#Macro".equals(line)) {
+                        list = macros;
+                        generator = macroGenerator;
+                    } else if ("#Pico".equals(line)) {
+                        list = picos;
+                        generator = picoGenerator;
+                    } else if ("#Mobile".equals(line)) {
+                        list = mobiles;
+                        generator = mobileGenerator;
+                    }
+                    continue;
+                }
+
+                String[] tokens = line.split(delim);
+                double[] values = new double[tokens.length];
+                for (int i = 0; i < tokens.length; i++) {
+                    values[i] = Double.parseDouble(tokens[i]);
+                }
+                list.add(generator.generate(values));
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException("File: " + file, e);
+        }
+
+        Macro[] macroArray = (Macro[]) Array.newInstance(Macro.class, macros.size());
+        this.macros = macros.toArray(macroArray);
+
+        Pico[] picoArray = (Pico[]) Array.newInstance(Pico.class, picos.size());
+        this.picos = picos.toArray(picoArray);
+
+        Mobile[] mobileArray = (Mobile[]) Array.newInstance(Mobile.class, mobiles.size());
+        this.mobiles = mobiles.toArray(mobileArray);
 
         for (Macro macro : macros)
             for (Mobile mobile : mobiles)
