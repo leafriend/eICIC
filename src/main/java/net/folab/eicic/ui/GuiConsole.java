@@ -91,7 +91,21 @@ public class GuiConsole implements Console {
         MenuItem open = new MenuItem(file, PUSH);
         open.setText("&Open\tCtrl+O");
         open.setAccelerator(CTRL + 'O');
-        open.setEnabled(false);
+        open.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                FileDialog dialog = new FileDialog(shell, OPEN);
+                dialog.setText("Open");
+                // dialog.setFilterPath(filterPath);
+                String[] filterExt = { "*.csv", "*.txt", "*.*" };
+                dialog.setFilterExtensions(filterExt);
+                String fileName = controller.getDefaultSaveFileName("csv");
+                dialog.setFileName(fileName);
+                fileName  = dialog.open();
+                if (fileName != null) {
+                    controller.reset(fileName);
+                }
+            };
+        });
 
         MenuItem save = new MenuItem(file, PUSH);
         save.setText("&Save\tCtrl+S");

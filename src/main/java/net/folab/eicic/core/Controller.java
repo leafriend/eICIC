@@ -249,6 +249,8 @@ public class Controller {
 
     public void reset(String file) {
 
+        configuration.set(TOPOLOGY_FILE, file);
+
         seq = 0;
         accumuMillis = 0;
 
@@ -340,6 +342,9 @@ public class Controller {
             macro.init();
         for (Pico pico : picos)
             pico.init();
+
+        if (console != null)
+            console.dump(0, null, this.macros, this.picos, this.mobiles, 0);
 
     }
 
