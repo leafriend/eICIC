@@ -89,12 +89,12 @@ public class GuiConsole implements Console {
         fileHeader.setMenu(file);
 
         MenuItem open = new MenuItem(file, PUSH);
-        open.setText("&Open");
+        open.setText("&Open\tCtrl+O");
         open.setAccelerator(CTRL + 'O');
         open.setEnabled(false);
 
         MenuItem save = new MenuItem(file, PUSH);
-        save.setText("&Save");
+        save.setText("&Save\tCtrl+S");
         save.setAccelerator(CTRL + 'S');
         save.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -105,7 +105,7 @@ public class GuiConsole implements Console {
         new MenuItem(file, SEPARATOR);
 
         MenuItem exit = new MenuItem(file, PUSH);
-        exit.setText("E&xit");
+        exit.setText("E&xit\tCtrl+Q");
         exit.setAccelerator(CTRL + 'Q');
         exit.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
