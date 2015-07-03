@@ -275,6 +275,29 @@ public class GuiTablePanel {
     public double[] dump(int seq, StateContext state, Macro[] macros,
             Pico[] picos, Mobile[] mobiles) {
 
+        if (seq == 0) {
+
+            for (Macro macro : macros) {
+                TableItem item = macroTable.getItem(macro.idx);
+                item.setText(1, valueOf(format("%.3f", macro.x)));
+                item.setText(2, valueOf(format("%.3f", macro.y)));
+                item.setText(3, valueOf(format("%.2f", macro.txPower)));
+            }
+
+            for (Pico pico : picos) {
+                TableItem item = picoTable.getItem(pico.idx);
+                item.setText(1, valueOf(format("%.3f", pico.x)));
+                item.setText(2, valueOf(format("%.3f", pico.y)));
+                item.setText(3, valueOf(format("%.2f", pico.txPower)));
+            }
+
+            for (Mobile mobile : mobiles) {
+                TableItem item = mobileTable.getItem(mobile.idx);
+                showMobile(mobile, item);
+            }
+
+        }
+
         if (state != null) {
 
             for (int m = 0; m < macros.length; m++) {
