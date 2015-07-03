@@ -6,6 +6,8 @@ public class StateContext {
 
     private static final StateContext[] INSTANCES = new StateContext[1 << NUM_MACROS];
 
+    public final int macroState;
+
     private final Macro[] macros;
 
     private final boolean[] macrosIsOn;
@@ -27,6 +29,8 @@ public class StateContext {
 
     private StateContext(int macroState, Macro[] macros, Pico[] picos,
             Mobile[] mobiles) {
+
+        this.macroState = macroState;
 
         this.macros = macros;
         this.macrosIsOn = new boolean[macros.length];
