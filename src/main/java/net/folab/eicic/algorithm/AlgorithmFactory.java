@@ -11,14 +11,15 @@ public class AlgorithmFactory {
 
     public static Class<? extends Algorithm>[] getAlgorithmClasses() {
         @SuppressWarnings("unchecked")
-        Class<? extends Algorithm>[] classes = new Class[7];
+        Class<? extends Algorithm>[] classes = new Class[8];
         classes[0] = StaticAlgorithm.class;
         classes[1] = Algorithm1.class;
         classes[2] = Algorithm2.class;
-        classes[3] = Algorithm3.class;
-        classes[4] = Algorithm3Revised.class;
-        classes[5] = Algorithm3Revised2.class;
-        classes[6] = Algorithm3Revised3.class;
+        classes[3] = Algorithm2LessMemory.class;
+        classes[4] = Algorithm3.class;
+        classes[5] = Algorithm3Revised.class;
+        classes[6] = Algorithm3Revised2.class;
+        classes[7] = Algorithm3Revised3.class;
         return classes;
     }
 
