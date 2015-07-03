@@ -374,7 +374,7 @@ public class GuiButtonPanel {
         resetButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                controller.reset();
+                controller.reset(controller.getTopologyFile());
                 // FIXME console.dump(seq, null, macros, picos, mobiles, accumuMillis);
             }
         });

@@ -108,7 +108,7 @@ public class CliConsole implements Console {
 
             if (command.equals("reset")) {
                 if (confirm(console))
-                    controller.reset();
+                    controller.reset(controller.getTopologyFile());
                 continue;
             }
 

@@ -37,6 +37,8 @@ public class Controller {
 
     private static final String NEED_TO_SAVE_BEFORE_EXIT = "needToSaveBeforeExit";
 
+    private static final String TOPOLOGY_FILE = "topologyFile";
+
     public static final List<FieldView<Mobile, ?>> COLUMNS = unmodifiableList(new ArrayList<FieldView<Mobile, ?>>() {
 
         private static final long serialVersionUID = -6689823013265960946L;
@@ -145,7 +147,7 @@ public class Controller {
 
         configuration = new Configuration(getClass());
 
-        reset();
+        reset(getTopologyFile());
 
         if (algorithmClassName == null)
             algorithmClassName = configuration.getConfiguration(ALGORITHM_CLASS_NAME, null);
@@ -245,12 +247,10 @@ public class Controller {
 
     }
 
-    public void reset() {
+    public void reset(String file) {
 
         seq = 0;
         accumuMillis = 0;
-
-        String file = "res/topology.csv";
 
         String delim = "( |\t)+";
         if (file.toLowerCase().endsWith(".csv"))
@@ -482,6 +482,10 @@ public class Controller {
         if (isSaved())
             return false;
         return configuration.getBoolean(NEED_TO_SAVE_BEFORE_EXIT);
+    }
+
+    public String getTopologyFile() {
+        return configuration.getConfiguration(TOPOLOGY_FILE).orElse(null);
     }
 
     /* bean getter/setter *************************************************** */
