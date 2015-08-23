@@ -295,13 +295,13 @@ public class Controller {
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
                 if (line.startsWith("#")) {
-                    if ("#Macro".equals(line)) {
+                    if (line.startsWith("#Macro")) {
                         list = macros;
                         generator = macroGenerator;
-                    } else if ("#Pico".equals(line)) {
+                    } else if (line.startsWith("#Pico")) {
                         list = picos;
                         generator = picoGenerator;
-                    } else if ("#Mobile".equals(line)) {
+                    } else if (line.startsWith("#Mobile")) {
                         list = mobiles;
                         generator = mobileGenerator;
                     }
@@ -311,7 +311,11 @@ public class Controller {
                 String[] tokens = line.split(delim);
                 double[] values = new double[tokens.length];
                 for (int i = 0; i < tokens.length; i++) {
-                    values[i] = Double.parseDouble(tokens[i]);
+                    if (tokens[i].isEmpty())
+                        // TODO 토큰이 빈 문자열인 경우 처리
+                        values[i] = 0.0;
+                    else
+                        values[i] = Double.parseDouble(tokens[i]);
                 }
                 list.add(generator.generate(values));
             }
