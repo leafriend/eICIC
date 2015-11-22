@@ -2,6 +2,8 @@ package net.folab.eicic.model;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.log;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 import static net.folab.eicic.model.Constants.BW_PER_RB;
 import static net.folab.eicic.model.Constants.MEGA;
 import static net.folab.eicic.model.Constants.NOISE;
@@ -15,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Mobile {
+
+    public final Macro parentMacro;
 
     public final int idx;
 
@@ -72,20 +76,35 @@ public class Mobile {
 
     private char connection;
 
-    public Mobile(int idx, double x, double y, double qos) {
+    public Mobile(int idx, double x, double y, double qos, List<Macro> macros) {
         super();
         this.idx = idx;
         this.x = x;
         this.y = y;
         this.qos = qos;
+        this.parentMacro = findParentMacro(macros);
     }
 
     public Mobile(int idx, double x, double y, double qos, double lambda,
-            double mu, double userRate) {
-        this(idx, x, y, qos);
+            double mu, double userRate, List<Macro> macros) {
+        this(idx, x, y, qos, macros);
         this.lambda = lambda;
         this.mu = mu;
         this.userRate = userRate;
+    }
+
+    private Macro findParentMacro(List<Macro> macros) {
+        double nearest = Double.MAX_VALUE;
+        Macro paretnMacro = null;
+        for (Macro macro : macros) {
+            double distance = sqrt(
+                    pow(macro.getX() - x, 2) + pow(macro.getY() - y, 2));
+            if (distance < nearest) {
+                nearest = distance;
+                paretnMacro = macro;
+            }
+        }
+        return paretnMacro;
     }
 
     public void calculateDataRate() {
@@ -110,16 +129,15 @@ public class Mobile {
 
             absPicoDataRate[i] = calculateDataRate(BW_PER_RB,
                     picoEdge.channelGain[i], //
-                    /* macroChannelGain + */picoChannelGain
-                            - picoEdge.channelGain[i] + NOISE)
-                    / MEGA;
+                    /* macroChannelGain + */
+                    picoChannelGain - picoEdge.channelGain[i] + NOISE) / MEGA;
             ;
             absPicoLambdaR[i] = lambda * absPicoDataRate[i];
 
             nonPicoDataRate[i] = calculateDataRate(BW_PER_RB,
                     picoEdge.channelGain[i], //
-                    macroChannelGain + picoChannelGain
-                            - picoEdge.channelGain[i] + NOISE)
+                    macroChannelGain + picoChannelGain - picoEdge.channelGain[i]
+                            + NOISE)
                     / MEGA;
             ;
             nonPicoLambdaR[i] = lambda * nonPicoDataRate[i];

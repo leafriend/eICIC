@@ -273,14 +273,14 @@ public class Controller {
             @Override
             public Pico generate(double[] values) {
                 return new Pico((int) values[0], values[1], values[2],
-                        values[3]);
+                        values[3], macros);
             }
         };
         Generator<Mobile> mobileGenerator = new Generator<Mobile>(Mobile.class) {
             @Override
             public Mobile generate(double[] values) {
                 return new Mobile((int) values[0], values[1], values[2],
-                        values[3], values[4], values[5], values[6]);
+                        values[3], values[4], values[5], values[6], macros);
             }
         };
 

@@ -14,6 +14,8 @@ import java.util.List;
 
 public class Pico extends BaseStation<Pico> {
 
+    public final Macro parentMacro;
+
     final List<Macro> macrosInterfering = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
@@ -37,11 +39,11 @@ public class Pico extends BaseStation<Pico> {
         public int compare(Edge<Pico> a, Edge<Pico> b) {
             if (isAbs) {
                 return (int) signum( //
-                b.mobile.absPicoLambdaR[i] - a.mobile.absPicoLambdaR[i] //
+                        b.mobile.absPicoLambdaR[i] - a.mobile.absPicoLambdaR[i] //
                 );
             } else {
                 return (int) signum( //
-                b.mobile.nonPicoLambdaR[i] - a.mobile.nonPicoLambdaR[i] //
+                        b.mobile.nonPicoLambdaR[i] - a.mobile.nonPicoLambdaR[i] //
                 );
             }
         }
@@ -50,6 +52,7 @@ public class Pico extends BaseStation<Pico> {
 
     private static final PicoEdgeComparator[] ABS_COMPARATORS = new PicoEdgeComparator[NUM_RB];
     private static final PicoEdgeComparator[] NON_COMPARATORS = new PicoEdgeComparator[NUM_RB];
+
     static {
         for (int i = 0; i < NUM_RB; i++) {
             ABS_COMPARATORS[i] = new PicoEdgeComparator(true, i);
@@ -57,8 +60,24 @@ public class Pico extends BaseStation<Pico> {
         }
     }
 
-    public Pico(int idx, double x, double y, double txPower) {
+    public Pico(int idx, double x, double y, double txPower,
+            List<Macro> macros) {
         super(idx, x, y, txPower);
+        this.parentMacro = findParentMacro(macros);
+    }
+
+    private Macro findParentMacro(List<Macro> macros) {
+        double nearest = Double.MAX_VALUE;
+        Macro paretnMacro = null;
+        for (Macro macro : macros) {
+            double distance = sqrt(pow(macro.getX() - getX(), 2)
+                    + pow(macro.getY() - getY(), 2));
+            if (distance < nearest) {
+                nearest = distance;
+                paretnMacro = macro;
+            }
+        }
+        return paretnMacro;
     }
 
     public void init() {
