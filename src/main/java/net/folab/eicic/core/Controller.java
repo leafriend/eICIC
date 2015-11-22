@@ -39,36 +39,39 @@ public class Controller {
 
     private static final String TOPOLOGY_FILE = "topologyFile";
 
-    public static final List<FieldView<Mobile, ?>> COLUMNS = unmodifiableList(new ArrayList<FieldView<Mobile, ?>>() {
+    public static final List<FieldView<Mobile, ?>> COLUMNS = unmodifiableList(
+            new ArrayList<FieldView<Mobile, ?>>() {
 
-        private static final long serialVersionUID = -6689823013265960946L;
+                private static final long serialVersionUID = -6689823013265960946L;
 
-        {
-            add("#", u -> u.idx, 32);
-            add("X", u -> u.x, 80);
-            add("Y", u -> u.y, 80);
-            add("M", u -> u.getMacro().idx, 32);
-            add("P", u -> u.getPico().idx, 32);
-            addC("#M", u -> u.getMacroCount(), 64);
-            addC("#P", u -> u.getPicoCount(), 64);
-            addC("C", u -> u.getConnection(), 32);
-            addC("User Rate", u -> u.getUserRate(), 96);
-            addC("log(User Rate)", u -> log(u.getUserRate()), 96);
-            addC("Throughput", u -> u.getThroughput(), 96);
-            addC("log(Throughput)", u -> log(u.getThroughput()), 96);
-            addC("λ", u -> u.getLambda(), 96);
-            addC("μ", u -> u.getMu(), 96);
-        }
+                {
+                    add("#", u -> u.idx, 32);
+                    add("X", u -> u.x, 80);
+                    add("Y", u -> u.y, 80);
+                    add("M", u -> u.getMacro().idx, 32);
+                    add("P", u -> u.getPico().idx, 32);
+                    addC("#M", u -> u.getMacroCount(), 64);
+                    addC("#P", u -> u.getPicoCount(), 64);
+                    addC("C", u -> u.getConnection(), 32);
+                    addC("User Rate", u -> u.getUserRate(), 96);
+                    addC("log(User Rate)", u -> log(u.getUserRate()), 96);
+                    addC("Throughput", u -> u.getThroughput(), 96);
+                    addC("log(Throughput)", u -> log(u.getThroughput()), 96);
+                    addC("λ", u -> u.getLambda(), 96);
+                    addC("μ", u -> u.getMu(), 96);
+                }
 
-        <T> void add(String name, Function<Mobile, T> getter, int width) {
-            add(new FieldView<>(name, getter, width, false));
-        }
+                <T> void add(String name, Function<Mobile, T> getter,
+                        int width) {
+                    add(new FieldView<>(name, getter, width, false));
+                }
 
-        <T> void addC(String name, Function<Mobile, T> getter, int width) {
-            add(new FieldView<>(name, getter, width, true));
-        }
+                <T> void addC(String name, Function<Mobile, T> getter,
+                        int width) {
+                    add(new FieldView<>(name, getter, width, true));
+                }
 
-    });
+            });
 
     private Configuration configuration;
 
@@ -142,7 +145,8 @@ public class Controller {
         }
     }
 
-    public Controller(String consoleClassName, String algorithmClassName, Integer totalSeq) {
+    public Controller(String consoleClassName, String algorithmClassName,
+            Integer totalSeq) {
         super();
 
         configuration = new Configuration(getClass());
@@ -150,7 +154,8 @@ public class Controller {
         reset(getTopologyFile());
 
         if (algorithmClassName == null)
-            algorithmClassName = configuration.getConfiguration(ALGORITHM_CLASS_NAME, null);
+            algorithmClassName = configuration
+                    .getConfiguration(ALGORITHM_CLASS_NAME, null);
 
         if (algorithmClassName != null) {
             this.algorithm = newInstance(algorithmClassName);
@@ -163,7 +168,7 @@ public class Controller {
 
         console = newInstance(consoleClassName, this);
         if (console == null) {
-            //return parser;
+            // return parser;
         }
 
         if (totalSeq == null) {
@@ -220,7 +225,8 @@ public class Controller {
 
                     // TODO 옵션으로 추출
                     if (seq % 100 == 0) {
-                        dump(algorithm.getClass().getSimpleName(), seq, mobiles);
+                        dump(algorithm.getClass().getSimpleName(), seq,
+                                mobiles);
                     }
 
                     if (seq == nextSeq)
@@ -276,7 +282,8 @@ public class Controller {
                         values[3], macros);
             }
         };
-        Generator<Mobile> mobileGenerator = new Generator<Mobile>(Mobile.class) {
+        Generator<Mobile> mobileGenerator = new Generator<Mobile>(
+                Mobile.class) {
             @Override
             public Mobile generate(double[] values) {
                 return new Mobile((int) values[0], values[1], values[2],
@@ -324,24 +331,32 @@ public class Controller {
             throw new RuntimeException("File: " + file, e);
         }
 
-        Macro[] macroArray = (Macro[]) Array.newInstance(Macro.class, macros.size());
+        Macro[] macroArray = (Macro[]) Array.newInstance(Macro.class,
+                macros.size());
         this.macros = macros.toArray(macroArray);
 
         Pico[] picoArray = (Pico[]) Array.newInstance(Pico.class, picos.size());
         this.picos = picos.toArray(picoArray);
 
-        Mobile[] mobileArray = (Mobile[]) Array.newInstance(Mobile.class, mobiles.size());
+        Mobile[] mobileArray = (Mobile[]) Array.newInstance(Mobile.class,
+                mobiles.size());
         this.mobiles = mobiles.toArray(mobileArray);
 
         for (Macro macro : macros)
-            for (Mobile mobile : mobiles)
+            for (Mobile mobile : mobiles) {
+                macro.shift(mobile.parentMacro);
                 new Edge<>(macro, mobile);
+                macro.revertShift();
+            }
         for (Macro macro : macros)
             for (Pico pico : picos)
                 pico.checkInterference(macro);
         for (Pico pico : picos)
-            for (Mobile mobile : mobiles)
+            for (Mobile mobile : mobiles) {
+                pico.shift(mobile.parentMacro);
                 new Edge<>(pico, mobile);
+                pico.revertShift();
+            }
         for (Macro macro : macros)
             macro.init();
         for (Pico pico : picos)
@@ -395,8 +410,8 @@ public class Controller {
     public void save(String fileName) {
         try {
 
-            Charset charset = Charset.forName(System
-                    .getProperty("file.encoding"));
+            Charset charset = Charset
+                    .forName(System.getProperty("file.encoding"));
 
             String delim = fileName.toLowerCase().endsWith(".csv") ? "," : "\t";
 

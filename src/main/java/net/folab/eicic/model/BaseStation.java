@@ -14,6 +14,10 @@ public abstract class BaseStation<T extends BaseStation<T>> {
 
     private final double y;
 
+    private double shiftX;
+
+    private double shiftY;
+
     public final double txPower;
 
     public final List<Edge<T>> edges = new ArrayList<>();
@@ -84,11 +88,37 @@ public abstract class BaseStation<T extends BaseStation<T>> {
     }
 
     public double getX() {
-        return x;
+        return x + shiftX;
     }
 
     public double getY() {
-        return y;
+        return y + shiftY;
+    }
+
+    /**
+     * @param parentMacro
+     *            모바일의 매크로로서 가운데에 위치하는 매크로
+     */
+    public void shift(Macro parentMacro) {
+
+        /**
+         * 이 base station의 매크로로서 이동을 할 수도 있는 매크로; 하지 않을 수도 있다.
+         */
+        Macro selfMacro = getSelfMacro();
+
+        // 매크로가 shift해야 할지 말지 판별
+
+        // 매크로 shift
+        shiftX = 0.0;
+        shiftY = 0.0;
+
+    }
+
+    public abstract Macro getSelfMacro();
+
+    public void revertShift() {
+        shiftX = 0.0d;
+        shiftY = 0.0d;
     }
 
 }

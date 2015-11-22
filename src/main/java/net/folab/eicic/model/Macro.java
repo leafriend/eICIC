@@ -86,4 +86,9 @@ public class Macro extends BaseStation<Macro> {
         return allocationCount;
     }
 
+    @Override
+    public Macro getSelfMacro() {
+        return this;
+    }
+
 }

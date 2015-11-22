@@ -129,4 +129,9 @@ public class Pico extends BaseStation<Pico> {
         return nonAbsCount;
     }
 
+    @Override
+    public Macro getSelfMacro() {
+        return parentMacro;
+    }
+
 }
