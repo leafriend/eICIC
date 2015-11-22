@@ -106,11 +106,160 @@ public abstract class BaseStation<T extends BaseStation<T>> {
          */
         Macro selfMacro = getSelfMacro();
 
+        switch (parentMacro.idx) {
+        case 1:
+            switch (selfMacro.idx) {
+            case 3:
+                shiftX = 2500.0;
+                shiftY = -866.0;
+                break;
+
+            case 4:
+                shiftX = 2500.0;
+                shiftY = -866.0;
+                break;
+
+            case 5:
+                shiftX = 2000.0;
+                shiftY = 1732.0;
+                break;
+
+            default:
+                shiftX = 0.0;
+                shiftY = 0.0;
+                break;
+            }
+            break;
+
+        case 2:
+            switch (selfMacro.idx) {
+            case 4:
+                shiftX = 2000.0;
+                shiftY = 1732.0;
+                break;
+
+            case 5:
+                shiftX = 2000.0;
+                shiftY = 1732.0;
+                break;
+
+            case 6:
+                shiftX = -500.0;
+                shiftY = 2598.0;
+                break;
+
+            default:
+                shiftX = 0.0;
+                shiftY = 0.0;
+                break;
+            }
+            break;
+
+        case 3:
+            switch (selfMacro.idx) {
+            case 1:
+                shiftX = -2500.0;
+                shiftY = 866.0;
+                break;
+
+            case 5:
+                shiftX = -500.0;
+                shiftY = 2598.0;
+                break;
+
+            case 6:
+                shiftX = -500.0;
+                shiftY = 2598.0;
+                break;
+
+            default:
+                shiftX = 0.0;
+                shiftY = 0.0;
+                break;
+            }
+            break;
+
+        case 4:
+            switch (selfMacro.idx) {
+            case 1:
+                shiftX = -2500.0;
+                shiftY = 866.0;
+                break;
+
+            case 2:
+                shiftX = -2000.0;
+                shiftY = -1732.0;
+                break;
+
+            case 6:
+                shiftX = -2500.0;
+                shiftY = 866.0;
+                break;
+
+            default:
+                shiftX = 0.0;
+                shiftY = 0.0;
+                break;
+            }
+            break;
+
+        case 5:
+            switch (selfMacro.idx) {
+            case 1:
+                shiftX = -2000.0;
+                shiftY = -1732.0;
+                break;
+
+            case 2:
+                shiftX = -2000.0;
+                shiftY = -1732.0;
+                break;
+
+            case 3:
+                shiftX = 500.0;
+                shiftY = -2598.0;
+                break;
+
+            default:
+                shiftX = 0.0;
+                shiftY = 0.0;
+                break;
+            }
+            break;
+
+        case 6:
+            switch (selfMacro.idx) {
+            case 2:
+                shiftX = 500.0;
+                shiftY = -2598.0;
+                break;
+
+            case 3:
+                shiftX = 500.0;
+                shiftY = -2598.0;
+                break;
+
+            case 4:
+                shiftX = 2500.0;
+                shiftY = -866.0;
+                break;
+
+            default:
+                shiftX = 0.0;
+                shiftY = 0.0;
+                break;
+            }
+            break;
+
+        default:
+            shiftX = 0.0;
+            shiftY = 0.0;
+            break;
+        }
+
         // 매크로가 shift해야 할지 말지 판별
 
         // 매크로 shift
-        shiftX = 0.0;
-        shiftY = 0.0;
 
     }
 
