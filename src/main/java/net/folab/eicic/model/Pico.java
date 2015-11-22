@@ -69,8 +69,8 @@ public class Pico extends BaseStation<Pico> {
     }
 
     public void checkInterference(Macro macro) {
-        double distance = sqrt(pow(macro.x - this.x, 2)
-                + pow(macro.y - this.y, 2));
+        double distance = sqrt(pow(macro.getX() - this.getX(), 2)
+                + pow(macro.getY() - this.getY(), 2));
         if (distance < MACRO_INTERFERING_RANGE_ON_PICO)
             macrosInterfering.add(macro);
     }

@@ -236,16 +236,16 @@ public class GuiTablePanel {
         Macro[] macros = controller.getMacros();
         for (Macro macro : macros) {
             TableItem item = macroTable.getItem(macro.idx);
-            item.setText(1, valueOf(format("%.3f", macro.x)));
-            item.setText(2, valueOf(format("%.3f", macro.y)));
+            item.setText(1, valueOf(format("%.3f", macro.getX())));
+            item.setText(2, valueOf(format("%.3f", macro.getY())));
             item.setText(3, valueOf(format("%.2f", macro.txPower)));
         }
 
         Pico[] picos = controller.getPicos();
         for (Pico pico : picos) {
             TableItem item = picoTable.getItem(pico.idx);
-            item.setText(1, valueOf(format("%.3f", pico.x)));
-            item.setText(2, valueOf(format("%.3f", pico.y)));
+            item.setText(1, valueOf(format("%.3f", pico.getX())));
+            item.setText(2, valueOf(format("%.3f", pico.getY())));
             item.setText(3, valueOf(format("%.2f", pico.txPower)));
         }
 
@@ -279,15 +279,15 @@ public class GuiTablePanel {
 
             for (Macro macro : macros) {
                 TableItem item = macroTable.getItem(macro.idx);
-                item.setText(1, valueOf(format("%.3f", macro.x)));
-                item.setText(2, valueOf(format("%.3f", macro.y)));
+                item.setText(1, valueOf(format("%.3f", macro.getX())));
+                item.setText(2, valueOf(format("%.3f", macro.getY())));
                 item.setText(3, valueOf(format("%.2f", macro.txPower)));
             }
 
             for (Pico pico : picos) {
                 TableItem item = picoTable.getItem(pico.idx);
-                item.setText(1, valueOf(format("%.3f", pico.x)));
-                item.setText(2, valueOf(format("%.3f", pico.y)));
+                item.setText(1, valueOf(format("%.3f", pico.getX())));
+                item.setText(2, valueOf(format("%.3f", pico.getY())));
                 item.setText(3, valueOf(format("%.2f", pico.txPower)));
             }
 

@@ -10,9 +10,9 @@ public abstract class BaseStation<T extends BaseStation<T>> {
 
     public final int idx;
 
-    public final double x;
+    private final double x;
 
-    public final double y;
+    private final double y;
 
     public final double txPower;
 
@@ -81,6 +81,14 @@ public abstract class BaseStation<T extends BaseStation<T>> {
             lambdaR += edge.channelGain[r] * edge.mobile.getLambda();
         }
         return lambdaR;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
     }
 
 }
