@@ -83,6 +83,7 @@ public class Mobile {
         this.y = y;
         this.qos = qos;
         this.parentMacro = findParentMacro(macros);
+        this.parentMacro.registerChildMobile(this);
     }
 
     public Mobile(int idx, double x, double y, double qos, double lambda,

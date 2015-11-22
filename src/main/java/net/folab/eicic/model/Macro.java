@@ -34,6 +34,10 @@ public class Macro extends BaseStation<Macro> {
         }
     }
 
+    private final List<Pico> childPicos = new ArrayList<>();
+
+    private final List<Mobile> childMobiles = new ArrayList<>();
+
     @SuppressWarnings("unchecked")
     private final List<Edge<Macro>>[] sortedEdges = new List[NUM_RB];
 
@@ -47,6 +51,20 @@ public class Macro extends BaseStation<Macro> {
         for (int i = 0; i < NUM_RB; i++) {
             sortedEdges[i] = new ArrayList<>(edges);
         }
+    }
+
+    public void registerChildPico(Pico pico) {
+        if (pico.parentMacro != this)
+            throw new RuntimeException(
+                    "Pico tried to register as child to Macro which is not parent");
+        childPicos.add(pico);
+    }
+
+    public void registerChildMobile(Mobile mobile) {
+        if (mobile.parentMacro != this)
+            throw new RuntimeException(
+                    "Mobile tried to register as child to Macro which is not parent");
+        childMobiles.add(mobile);
     }
 
     public void sortMobiles() {

@@ -64,6 +64,7 @@ public class Pico extends BaseStation<Pico> {
             List<Macro> macros) {
         super(idx, x, y, txPower);
         this.parentMacro = findParentMacro(macros);
+        this.parentMacro.registerChildPico(this);
     }
 
     private Macro findParentMacro(List<Macro> macros) {
