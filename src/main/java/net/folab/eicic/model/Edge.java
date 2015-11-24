@@ -8,7 +8,12 @@ import static net.folab.eicic.model.Constants.PATH_LOSS_EXPO;
 
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Edge<T extends BaseStation<T>> {
+
+    private Logger logger = LoggerFactory.getLogger(Edge.class);
 
     private static Random RANDOM = new Random(System.currentTimeMillis());
 
@@ -66,6 +71,12 @@ public class Edge<T extends BaseStation<T>> {
                 baseStation.mobiles.add(mobile);
             }
         }
+
+        logger.debug("{}\t{}\tMobile\t{}\t{}\t{}",
+                baseStation.getClass().getSimpleName(), baseStation.idx,
+                mobile.idx, this.distance,
+                (sqrt(pow(mobile.parentMacro.getX() - mobile.x, 2)
+                        + pow(mobile.parentMacro.getY() - mobile.y, 2))));
 
     }
 
