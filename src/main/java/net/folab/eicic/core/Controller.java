@@ -3,6 +3,8 @@ package net.folab.eicic.core;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static net.folab.eicic.ui.Util.newInstance;
+import static java.util.Arrays.*;
+import static java.util.stream.Collectors.*;
 import static java.util.Collections.*;
 import static java.lang.Math.*;
 
@@ -206,6 +208,24 @@ public class Controller {
 
     }
 
+    public static void dump(String string, int seq, List<Double> lambdas) {
+
+        try {
+            FileWriter writer = new FileWriter(new File(string + "-lambda.csv"), true);
+            writer.write(String.valueOf(seq));
+            StringBuilder sb = new StringBuilder();
+            sb.append(",").append(
+                lambdas.stream().map(d -> d.toString()).collect(joining(",")));
+            writer.write(sb.toString());
+            writer.write("\n");
+            writer.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
     public void display() {
 
         runner = new Runnable() {
@@ -227,6 +247,8 @@ public class Controller {
                     if (seq % 100 == 0) {
                         dump(algorithm.getClass().getSimpleName(), seq,
                                 mobiles);
+                        dump(algorithm.getClass().getSimpleName(), seq,
+                            stream(mobiles).map(m -> m.getLambda()).collect(toList()));
                     }
 
                     if (seq == nextSeq)
