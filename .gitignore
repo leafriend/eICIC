@@ -20,3 +20,6 @@ target
 
 # Configuration to be ignored
 conf/net.folab.eicic.ui.GuiConsole.properties
+
+# VSCode settings
+.vscode
