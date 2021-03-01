@@ -7,15 +7,13 @@ import net.folab.eicic.model.StateContext;
 
 public interface Algorithm {
 
-    int getNumber();
-
     StateContext calculate(int seq, Macro[] macros, Pico[] picos, Mobile[] mobiles);
 
     default void setUp(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
         // DO NOTHING
     }
 
-    default void tearDown(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
+    default void terminate() {
         // DO NOTHING
     }
 

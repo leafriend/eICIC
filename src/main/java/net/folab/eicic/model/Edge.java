@@ -8,7 +8,12 @@ import static net.folab.eicic.model.Constants.PATH_LOSS_EXPO;
 
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Edge<T extends BaseStation<T>> {
+
+    private Logger logger = LoggerFactory.getLogger(Edge.class);
 
     private static Random RANDOM = new Random(System.currentTimeMillis());
 
@@ -28,8 +33,8 @@ public class Edge<T extends BaseStation<T>> {
         super();
         this.baseStation = baseStation;
         this.mobile = mobile;
-        this.distance = sqrt(pow(baseStation.x - mobile.x, 2)
-                + pow(baseStation.y - mobile.y, 2));
+        this.distance = sqrt(pow(baseStation.getX() - mobile.x, 2)
+                + pow(baseStation.getY() - mobile.y, 2));
         this.channelGainFactor = baseStation.txPower
                 * pow((1.0 / distance), PATH_LOSS_EXPO);
 
@@ -55,7 +60,8 @@ public class Edge<T extends BaseStation<T>> {
             Edge<Pico> picoEdge = (Edge<Pico>) this;
             mobile.allPicoEdges.add(picoEdge);
 
-            if (mobile.picoEdge == null || distance < mobile.picoEdge.distance) {
+            if (mobile.picoEdge == null
+                    || distance < mobile.picoEdge.distance) {
                 if (mobile.picoEdge != null) {
                     mobile.picoEdge.baseStation.edges.remove(mobile.picoEdge);
                     mobile.picoEdge.baseStation.mobiles.remove(mobile);
@@ -65,6 +71,12 @@ public class Edge<T extends BaseStation<T>> {
                 baseStation.mobiles.add(mobile);
             }
         }
+
+        logger.debug("{}\t{}\tMobile\t{}\t{}\t{}",
+                baseStation.getClass().getSimpleName(), baseStation.idx,
+                mobile.idx, this.distance,
+                (sqrt(pow(mobile.parentMacro.getX() - mobile.x, 2)
+                        + pow(mobile.parentMacro.getY() - mobile.y, 2))));
 
     }
 
@@ -93,12 +105,7 @@ public class Edge<T extends BaseStation<T>> {
             Edge<T> activeBaseStationEdge = baseStation.activeEdges[r];
             Edge<? extends BaseStation<?>> activeMobileEdge = mobile.activeEdges[r];
             assert activeBaseStationEdge == activeMobileEdge : activeBaseStationEdge
-                    + " != "
-                    + activeMobileEdge
-                    + " for "
-                    + this
-                    + "["
-                    + r
+                    + " != " + activeMobileEdge + " for " + this + "[" + r
                     + "]: " + isActivated;
             if (activeBaseStationEdge != null)
                 activeBaseStationEdge.isActivated[r] = false;

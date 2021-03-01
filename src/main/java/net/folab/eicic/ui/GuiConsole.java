@@ -1,16 +1,8 @@
 package net.folab.eicic.ui;
 
 import static org.eclipse.swt.SWT.*;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
-
-import net.folab.eicic.algorithm.Algorithm2;
 import net.folab.eicic.core.Algorithm;
+import net.folab.eicic.core.Configuration;
 import net.folab.eicic.core.Console;
 import net.folab.eicic.core.Controller;
 import net.folab.eicic.model.Macro;
@@ -23,12 +15,18 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.program.Program;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
@@ -36,13 +34,13 @@ import org.eclipse.swt.widgets.Shell;
 
 public class GuiConsole implements Console {
 
+    private Configuration configuration;
+
     private Display display;
 
     private Shell shell;
 
     private GuiButtonPanel buttonPanel;
-
-    private int saved;
 
     private GuiTablePanel tablePanel;
 
@@ -51,6 +49,8 @@ public class GuiConsole implements Console {
     private final Controller controller;
 
     public GuiConsole(Controller controller) {
+
+        configuration = new Configuration(getClass());
 
         this.controller = controller;
 
@@ -89,12 +89,26 @@ public class GuiConsole implements Console {
         fileHeader.setMenu(file);
 
         MenuItem open = new MenuItem(file, PUSH);
-        open.setText("&Open");
+        open.setText("&Open\tCtrl+O");
         open.setAccelerator(CTRL + 'O');
-        open.setEnabled(false);
+        open.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                FileDialog dialog = new FileDialog(shell, OPEN);
+                dialog.setText("Open");
+                // dialog.setFilterPath(filterPath);
+                String[] filterExt = { "*.csv", "*.txt", "*.*" };
+                dialog.setFilterExtensions(filterExt);
+                String fileName = controller.getDefaultSaveFileName("csv");
+                dialog.setFileName(fileName);
+                fileName  = dialog.open();
+                if (fileName != null) {
+                    controller.reset(fileName);
+                }
+            };
+        });
 
         MenuItem save = new MenuItem(file, PUSH);
-        save.setText("&Save");
+        save.setText("&Save\tCtrl+S");
         save.setAccelerator(CTRL + 'S');
         save.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -105,7 +119,7 @@ public class GuiConsole implements Console {
         new MenuItem(file, SEPARATOR);
 
         MenuItem exit = new MenuItem(file, PUSH);
-        exit.setText("E&xit");
+        exit.setText("E&xit\tCtrl+Q");
         exit.setAccelerator(CTRL + 'Q');
         exit.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -129,13 +143,57 @@ public class GuiConsole implements Console {
                 dialog.setText("About eICIC");
 
                 int width = 300;
-                int height = 400;
-                Rectangle bound = display.getBounds();
+                int height = 200;
+                Rectangle bound = display.getPrimaryMonitor().getClientArea();
                 int x = (bound.width - width) / 2;
                 int y = (bound.height - height) / 2;
                 dialog.setBounds(x, y, width, height);
 
+                Link link = new Link(dialog, CENTER);
+                String text = "Designed by <A>pooheup</A>\n";
+                text += "Developed by <A>leafriend</A>\n";
+                text += "<A>https://github.com/leafriend/eICIC</A>\n";
+                text += "Version: " + getClass().getPackage().getImplementationVersion();
+                link.setText(text);
+                link.addSelectionListener(new SelectionAdapter() {
+                    @Override
+                    public void widgetSelected(SelectionEvent e) {
+                        if ("pooheup".equals(e.text)
+                                || "leafriend".equals(e.text)) {
+                            Program.launch("https://github.com/" + e.text);
+                        } else {
+                            Program.launch(e.text);
+                        }
+                    }
+                });
+
+                Button close = new Button(dialog, PUSH);
+                close.setText("&Close");
+                close.setFocus();
+                close.addSelectionListener(new SelectionAdapter() {
+                    @Override
+                    public void widgetSelected(SelectionEvent e) {
+                        dialog.close();
+                    }
+                });
+
+                dialog.setLayout(new FormLayout());
+                FormData layoutData;
+
+                layoutData = new FormData();
+                layoutData.top = new FormAttachment(0, 8);
+                layoutData.left = new FormAttachment(0, 8);
+                layoutData.right = new FormAttachment(100, 8);
+                link.setLayoutData(layoutData);
+
+                layoutData = new FormData();
+                layoutData.left = new FormAttachment(0, 8);
+                layoutData.right = new FormAttachment(100, -8);
+                layoutData.bottom = new FormAttachment(100, -8);
+                close.setLayoutData(layoutData);
+
                 dialog.open();
+
             };
         });
 
@@ -176,37 +234,14 @@ public class GuiConsole implements Console {
         // dialog.setFilterPath(filterPath);
         String[] filterExt = { "*.csv", "*.txt", "*.*" };
         dialog.setFilterExtensions(filterExt);
-        String fileName = buttonPanel.getDefaultSaveFileName();
+        String fileName = controller.getDefaultSaveFileName("csv");
         dialog.setFileName(fileName);
-        String selected = dialog.open();
-        if (selected != null) {
-            save(selected);
+        fileName  = dialog.open();
+        if (fileName != null) {
+            controller.save(fileName);
             return true;
         } else {
             return false;
-        }
-    }
-
-    private void save(String selected) {
-        try {
-
-            Charset charset = Charset.forName(System
-                    .getProperty("file.encoding"));
-
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(new File(selected)), charset));
-
-            statusPanel.save(writer, selected);
-
-            tablePanel.save(writer, selected);
-
-            saved = controller.getSeq();
-
-            writer.close();
-
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     }
 
@@ -221,18 +256,46 @@ public class GuiConsole implements Console {
 
         // - - -
 
-        int width = 1280;
-        int height = 800;
-        Rectangle bound = display.getBounds();
-        int x = (bound.width - width) / 2;
-        int y = (bound.height - height) / 2;
-        shell.setBounds(x, y, width, height);
+        Rectangle bound = display.getPrimaryMonitor().getClientArea();
 
-        shell.open();
+        int width = configuration.getInteger("shell.width", 1280);;
+        int height = configuration.getInteger("shell.height", 800);;
+        int x = configuration.getInteger("shell.x", (bound.width - width) / 2);
+        int y = configuration.getInteger("shell.y", (bound.height - height) / 2);
+        boolean maximized = configuration.getBoolean("shell.maximized");
+
+        shell.setBounds(x, y, width, height);
+        shell.setMaximized(maximized);
+
+        Listener resizeHandler = new Listener() {
+            public void handleEvent(Event e) {
+                if (!shell.getMaximized()) {
+                    Point size = shell.getSize();
+                    configuration.setInteger("shell.width", size.x);
+                    configuration.setInteger("shell.height", size.y);
+                }
+                configuration.setBoolean("shell.maximized",
+                        shell.getMaximized());
+            }
+        };
+        Listener moveHandler = new Listener() {
+            public void handleEvent(Event e) {
+                if (!shell.getMaximized()) {
+                    Point location = shell.getLocation();
+                    configuration.setInteger("shell.x", location.x);
+                    configuration.setInteger("shell.y", location.y);
+                }
+            }
+        };
+        resizeHandler.handleEvent(null);
+        moveHandler.handleEvent(null);
+
+        shell.addListener(Resize, resizeHandler);
+        shell.addListener(Move, moveHandler);
         shell.addShellListener(new ShellAdapter() {
             @Override
             public void shellClosed(ShellEvent e) {
-                if (saved != controller.getSeq()) {
+                if (controller.isNeedToSaveBeforeExit()) {
                     MessageBox messageBox = new MessageBox(shell,
                             APPLICATION_MODAL | YES | CANCEL | NO
                                     | ICON_WARNING);
@@ -263,10 +326,11 @@ public class GuiConsole implements Console {
                     }
                 }
 
-                controller.stop();
-                Algorithm2.executor.shutdown(); // TODO Generalize
+                controller.terminate();
+
             }
         });
+        shell.open();
 
         while (!shell.isDisposed())
             if (!display.readAndDispatch())
@@ -301,10 +365,10 @@ public class GuiConsole implements Console {
                 if (seq == controller.getTotalSeq())
                     updateFrequency = 1; // TODO ?
 
-                double throughput = tablePanel.dump(seq, state, macros, picos,
+                double[] sums = tablePanel.dump(seq, state, macros, picos,
                         mobiles);
 
-                statusPanel.dump(seq, elapsed, throughput);
+                statusPanel.dump(seq, elapsed, sums[0], sums[1], sums[2]);
 
                 dumped = true;
             }

@@ -74,8 +74,6 @@ public class Algorithm2MobileResult {
             }
         }
 
-        System.out.print("");
-
     }
 
     /**

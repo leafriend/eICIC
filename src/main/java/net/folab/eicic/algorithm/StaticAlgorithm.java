@@ -3,6 +3,7 @@ package net.folab.eicic.algorithm;
 import static net.folab.eicic.model.Constants.*;
 import static java.lang.Math.*;
 import net.folab.eicic.core.Algorithm;
+import net.folab.eicic.core.Option;
 import net.folab.eicic.model.BaseStation;
 import net.folab.eicic.model.Edge;
 import net.folab.eicic.model.Macro;
@@ -12,16 +13,13 @@ import net.folab.eicic.model.StateContext;
 
 public class StaticAlgorithm implements Algorithm {
 
+    @Option(name = "ABS Numerator")
     private double absNumerator = 20;
 
     private double absDenominator = 100;
 
+    @Option(name = "CRE Bias")
     private double creBias = 1;
-
-    @Override
-    public int getNumber() {
-        return 0;
-    }
 
     @Override
     public void setUp(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
@@ -45,9 +43,6 @@ public class StaticAlgorithm implements Algorithm {
             Mobile[] mobiles) {
 
         boolean isAbs = (seq % absDenominator) < absNumerator;
-
-        System.out.println(String.format("(%d %% %f) < %f: %b", seq,
-                absDenominator, absNumerator, isAbs));
 
         int macroState = 0;
         if (!isAbs) {

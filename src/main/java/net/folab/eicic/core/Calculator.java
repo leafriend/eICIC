@@ -1,11 +1,22 @@
 package net.folab.eicic.core;
 
+import net.folab.eicic.algorithm.StaticAlgorithm;
 import net.folab.eicic.model.Macro;
 import net.folab.eicic.model.Mobile;
 import net.folab.eicic.model.Pico;
 import net.folab.eicic.model.StateContext;
 
 public class Calculator {
+
+    public static enum MaximizeTarget {
+
+        SUM_UTILITY,
+
+        SUM_RATE,
+
+    }
+
+    private MaximizeTarget maximizeTarget = MaximizeTarget.SUM_UTILITY;
 
     private final Macro[] macros;
 
@@ -15,8 +26,9 @@ public class Calculator {
 
     private Algorithm algorithm;
 
-    public Calculator(Macro[] macros, Pico[] picos, Mobile[] mobiles,
-            Console console) {
+    private boolean isStatic = false;
+
+    public Calculator(Macro[] macros, Pico[] picos, Mobile[] mobiles) {
         super();
         this.macros = macros;
         this.picos = picos;
@@ -42,15 +54,59 @@ public class Calculator {
 
         for (int u = 0; u < mobiles.length; u++)
             mobiles[u].calculateThroughput(state);
-        for (int u = 0; u < mobiles.length; u++)
-            mobiles[u].calculateUserRate();
-        for (int u = 0; u < mobiles.length; u++)
-            mobiles[u].calculateDualVariables(seq);
+
+        if (isStatic) {
+
+            switch (maximizeTarget) {
+
+            case SUM_UTILITY:
+                for (int u = 0; u < mobiles.length; u++)
+                    mobiles[u].calculateUserRateMSU();
+                for (int u = 0; u < mobiles.length; u++)
+                    mobiles[u].calculateDualVariablesMSUStatic(seq);
+                break;
+
+            case SUM_RATE:
+                for (int u = 0; u < mobiles.length; u++)
+                    mobiles[u].calculateUserRateMSR();
+                for (int u = 0; u < mobiles.length; u++)
+                    mobiles[u].calculateDualVariablesMSR(seq);
+                break;
+
+            default:
+                throw new RuntimeException("Unsupported maximize target: " + maximizeTarget);
+            }
+
+        } else {
+
+            switch (maximizeTarget) {
+
+            case SUM_UTILITY:
+                for (int u = 0; u < mobiles.length; u++)
+                    mobiles[u].calculateUserRateMSU();
+                for (int u = 0; u < mobiles.length; u++)
+                    mobiles[u].calculateDualVariablesMSU(seq);
+                break;
+
+            case SUM_RATE:
+                for (int u = 0; u < mobiles.length; u++)
+                    mobiles[u].calculateUserRateMSR();
+                for (int u = 0; u < mobiles.length; u++)
+                    mobiles[u].calculateDualVariablesMSR(seq);
+                break;
+
+            default:
+                throw new RuntimeException("Unsupported maximize target: " + maximizeTarget);
+            }
+
+        }
 
         for (int m = 0; m < macros.length; m++)
             macros[m].count(state);
         for (int p = 0; p < picos.length; p++)
             picos[p].count(state);
+        for (int u = 0; u < mobiles.length; u++)
+            mobiles[u].count();
 
         return state;
 
@@ -74,6 +130,7 @@ public class Calculator {
 
     public void setAlgorithm(Algorithm algorithm) {
         this.algorithm = algorithm;
+        this.isStatic = algorithm instanceof StaticAlgorithm;
     }
 
 }

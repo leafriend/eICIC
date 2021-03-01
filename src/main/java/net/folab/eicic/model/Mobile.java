@@ -2,6 +2,8 @@ package net.folab.eicic.model;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.log;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 import static net.folab.eicic.model.Constants.BW_PER_RB;
 import static net.folab.eicic.model.Constants.MEGA;
 import static net.folab.eicic.model.Constants.NOISE;
@@ -16,6 +18,8 @@ import java.util.List;
 
 public class Mobile {
 
+    public final Macro parentMacro;
+
     public final int idx;
 
     public final double x;
@@ -24,7 +28,11 @@ public class Mobile {
 
     public final double qos;
 
+    private int seq = 0;
+
     private double instantRate;
+
+    private double totalThroughput;
 
     private double throughput;
 
@@ -62,20 +70,42 @@ public class Mobile {
      */
     public boolean saConnectToMacro = false;
 
-    public Mobile(int idx, double x, double y, double qos) {
+    private int macroCount = 0;
+
+    private int picoCount = 0;
+
+    private char connection;
+
+    public Mobile(int idx, double x, double y, double qos, List<Macro> macros) {
         super();
         this.idx = idx;
         this.x = x;
         this.y = y;
         this.qos = qos;
+        this.parentMacro = findParentMacro(macros);
+        this.parentMacro.registerChildMobile(this);
     }
 
     public Mobile(int idx, double x, double y, double qos, double lambda,
-            double mu, double userRate) {
-        this(idx, x, y, qos);
+            double mu, double userRate, List<Macro> macros) {
+        this(idx, x, y, qos, macros);
         this.lambda = lambda;
         this.mu = mu;
         this.userRate = userRate;
+    }
+
+    private Macro findParentMacro(List<Macro> macros) {
+        double nearest = Double.MAX_VALUE;
+        Macro paretnMacro = null;
+        for (Macro macro : macros) {
+            double distance = sqrt(
+                    pow(macro.getX() - x, 2) + pow(macro.getY() - y, 2));
+            if (distance < nearest) {
+                nearest = distance;
+                paretnMacro = macro;
+            }
+        }
+        return paretnMacro;
     }
 
     public void calculateDataRate() {
@@ -100,16 +130,15 @@ public class Mobile {
 
             absPicoDataRate[i] = calculateDataRate(BW_PER_RB,
                     picoEdge.channelGain[i], //
-                    /* macroChannelGain + */picoChannelGain
-                            - picoEdge.channelGain[i] + NOISE)
-                    / MEGA;
+                    /* macroChannelGain + */
+                    picoChannelGain - picoEdge.channelGain[i] + NOISE) / MEGA;
             ;
             absPicoLambdaR[i] = lambda * absPicoDataRate[i];
 
             nonPicoDataRate[i] = calculateDataRate(BW_PER_RB,
                     picoEdge.channelGain[i], //
-                    macroChannelGain + picoChannelGain
-                            - picoEdge.channelGain[i] + NOISE)
+                    macroChannelGain + picoChannelGain - picoEdge.channelGain[i]
+                            + NOISE)
                     / MEGA;
             ;
             nonPicoLambdaR[i] = lambda * nonPicoDataRate[i];
@@ -142,23 +171,24 @@ public class Mobile {
                 }
             }
         }
-        throughput += instantRate;
+        totalThroughput += instantRate;
+        throughput = totalThroughput / seq++;
     }
 
-    public void calculateUserRate() {
+    public void calculateUserRateMSU() {
         if (lambda == 0.0)
             userRate = RATE_MAX;
         else
             userRate = 0.8 * userRate + 0.2 * (1.0 + mu) / lambda;
     }
 
-    public void calculateDualVariables(int t) {
+    public void calculateDualVariablesMSU(int t) {
         final double step_size = 1.0 / ((double) t);
         final double step_size2 = (t > 100000) ? STEPSIZE4
                 : ((t < 10000) ? STEPSIZE2 : STEPSIZE3);
 
         final double lambda;
-        if ((abs(throughput / t - userRate) * this.lambda < 0.05))
+        if ((abs(totalThroughput / t - userRate) * this.lambda < 0.05))
             lambda = this.lambda - step_size * (instantRate - userRate);
         else
             lambda = this.lambda - step_size2 * (instantRate - userRate);
@@ -170,6 +200,70 @@ public class Mobile {
         else
             mu = this.mu - step_size2 * (log(userRate) - qos);
         this.mu = (0.0 > mu) ? 0.0 : mu;
+    }
+
+    public void calculateDualVariablesMSUStatic(int t) {
+        // FIXME pooheup
+        final double step_size = 1.0 / ((double) t);
+        final double step_size2 = (t > 100000) ? STEPSIZE4
+                : ((t < 10000) ? STEPSIZE2 : STEPSIZE3);
+
+        final double lambda;
+        if ((abs(totalThroughput / t - userRate) * this.lambda < 0.05)
+                || (t > 20000))
+            lambda = this.lambda - step_size * (instantRate - userRate);
+        else
+            lambda = this.lambda - step_size2 * (instantRate - userRate);
+        this.lambda = lambda > 0 ? lambda : 0.0;
+
+        final double mu;
+        if ((abs(log(userRate) - qos) * this.mu < 0.01))
+            mu = this.mu - step_size * (log(userRate) - qos);
+        else
+            mu = this.mu - step_size2 * (log(userRate) - qos);
+        this.mu = (0.0 > mu) ? 0.0 : mu;
+
+    }
+
+    public void calculateUserRateMSR() {
+        if (lambda == 0.0)
+            userRate = RATE_MAX;
+        else
+            userRate = instantRate;
+    }
+
+    public void calculateDualVariablesMSR(int t) {
+        final double step_size = 1.0 / ((double) t);
+        final double step_size2 = (t > 100000) ? STEPSIZE4
+                : ((t < 10000) ? STEPSIZE2 : STEPSIZE3);
+
+        final double mu;
+        if ((abs(log(userRate) - qos) * this.mu < 0.01))
+            mu = this.mu - step_size * (userRate - qos);
+        else
+            mu = this.mu - step_size2 * (userRate - qos);
+        this.mu = (0.0 > mu) ? 0.0 : mu;
+
+        this.lambda = 1 + this.mu;
+    }
+
+    public void calculateDualVariablesMSRStatic(int t) {
+        // calculateDualVariablesMSR(t);
+        // FIXME pooheup
+
+        final double step_size = 1.0 / ((double) t);
+        final double step_size2 = (t > 100000) ? STEPSIZE4
+                : ((t < 10000) ? STEPSIZE2 : STEPSIZE3);
+
+        final double mu;
+        if ((abs(log(userRate) - qos) * this.mu < 0.01) || (t > 20000))
+            mu = this.mu - step_size * (userRate - qos);
+        else
+            mu = this.mu - step_size2 * (userRate - qos);
+        this.mu = (0.0 > mu) ? 0.0 : mu;
+
+        this.lambda = 1 + this.mu;
+
     }
 
     @Override
@@ -207,6 +301,10 @@ public class Mobile {
         return nonPicoLambdaR;
     }
 
+    public double getTotalThroughput() {
+        return totalThroughput;
+    }
+
     public double getThroughput() {
         return throughput;
     }
@@ -225,6 +323,131 @@ public class Mobile {
 
     public Edge<? extends BaseStation<?>>[] getActiveEdges() {
         return activeEdges;
+    }
+
+    public char getConnection() {
+        return connection;
+    }
+
+    public void count() {
+        connection = ' ';
+        for (int r = 0; r < NUM_RB; r++) {
+            Edge<? extends BaseStation<?>> edge = activeEdges[r];
+            if (edge == null)
+                continue;
+            if (edge.baseStation instanceof Macro) {
+                if (connection == ' ' || connection == 'M')
+                    connection = 'M';
+                else
+                    connection = 'X';
+            } else if (edge.baseStation instanceof Pico) {
+                if (connection == ' ' || connection == 'P')
+                    connection = 'P';
+                else
+                    connection = 'X';
+            }
+        }
+
+        switch (getConnection()) {
+        case 'M':
+            macroCount++;
+            break;
+        case 'P':
+            picoCount++;
+            break;
+        case 'S':
+            macroCount++;
+            picoCount++;
+            break;
+        default:
+            break;
+        }
+    }
+
+    public double getActiveMacroChannel() {
+        double channel = 0.0;
+        for (int r = 0; r < macroEdge.baseStation.activeEdges.length; r++) {
+            Edge<Macro> edge = macroEdge.baseStation.activeEdges[r];
+            if (edge == null)
+                continue;
+            if (edge.mobile.equals(this)) {
+                channel += edge.channelGain[r];
+            }
+        }
+        return channel;
+    }
+
+    public double getActiveMacroLambdaR() {
+        double lambdaR = 0.0;
+        for (int r = 0; r < macroEdge.baseStation.activeEdges.length; r++) {
+            Edge<Macro> edge = macroEdge.baseStation.activeEdges[r];
+            if (edge == null)
+                continue;
+            if (edge.mobile.equals(this)) {
+                lambdaR += edge.channelGain[r] * edge.mobile.lambda;
+            }
+        }
+        return lambdaR;
+    }
+
+    public double getActiveMacroChannelCount() {
+        int count = 0;
+        for (int r = 0; r < macroEdge.baseStation.activeEdges.length; r++) {
+            Edge<Macro> edge = macroEdge.baseStation.activeEdges[r];
+            if (edge == null)
+                continue;
+            if (edge.mobile.equals(this)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public double getActivePicoChannel() {
+        double channel = 0.0;
+        for (int r = 0; r < picoEdge.baseStation.activeEdges.length; r++) {
+            Edge<Pico> edge = picoEdge.baseStation.activeEdges[r];
+            if (edge == null)
+                continue;
+            if (edge.mobile.equals(this)) {
+                channel += edge.channelGain[r];
+            }
+        }
+        return channel;
+    }
+
+    public double getActivePicoLambdaR() {
+        double lambdaR = 0.0;
+        for (int r = 0; r < picoEdge.baseStation.activeEdges.length; r++) {
+            Edge<Pico> edge = picoEdge.baseStation.activeEdges[r];
+            if (edge == null)
+                continue;
+            if (edge.mobile.equals(this)) {
+                lambdaR += edge.channelGain[r] * edge.mobile.lambda;
+            }
+        }
+        return lambdaR;
+    }
+
+    public double getActivePicoChannelCount() {
+        int count = 0;
+        for (int r = 0; r < picoEdge.baseStation.activeEdges.length; r++) {
+            Edge<Pico> edge = picoEdge.baseStation.activeEdges[r];
+            if (edge == null)
+                continue;
+            if (edge.mobile.equals(this)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int getMacroCount() {
+        return macroCount;
+    }
+
+    public int getPicoCount() {
+        return picoCount;
     }
 
 }
